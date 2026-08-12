@@ -74,7 +74,7 @@ export function Navbar() {
               </button>
             ))}
             <a
-              href="https://hhgoa.com/"
+              href="https://hacker-house-goa-2026.devfolio.co/?ref=5d3bdd58f6"
               target="_blank"
               rel="noopener noreferrer"
               className="rounded-full px-4 py-2 font-mono text-[12px] font-bold tracking-[0.14em] text-electric transition-colors hover:text-bone"
@@ -145,7 +145,7 @@ export function Navbar() {
                   <Zap size={16} /> CREATE YOUR ID
                 </motion.button>
                 <motion.a
-                  href="https://hhgoa.com/"
+                  href="https://hacker-house-goa-2026.devfolio.co/?ref=5d3bdd58f6"
                   target="_blank"
                   rel="noopener noreferrer"
                   initial={{ opacity: 0, x: -24 }}

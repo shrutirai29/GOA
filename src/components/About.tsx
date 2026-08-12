@@ -35,7 +35,7 @@ export function About() {
               FRAME THE PHOTO. LOCK THE IDENTITY. SHIP IT TO X. SEE YOU IN GOA.
             </p>
             <a
-              href="https://hhgoa.com/"
+              href="https://hacker-house-goa-2026.devfolio.co/?ref=5d3bdd58f6"
               target="_blank"
               rel="noopener noreferrer"
               className="mt-8 inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-[#f5c542] via-[#ff9a3d] to-[#f59e0b] px-8 py-4 font-mono text-[12px] font-bold tracking-[0.18em] text-[#201303] shadow-[0_12px_40px_-10px_rgba(245,197,66,0.6)] transition-all hover:scale-[1.02] hover:shadow-[0_16px_52px_-10px_rgba(245,197,66,0.85)]"

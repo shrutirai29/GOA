@@ -25,7 +25,7 @@ export function Footer() {
             CREATE ID
           </button>
           <a
-            href="https://hhgoa.com/"
+            href="https://hacker-house-goa-2026.devfolio.co/?ref=5d3bdd58f6"
             target="_blank"
             rel="noopener noreferrer"
             className="font-mono text-[10.5px] font-bold tracking-[0.2em] text-electric transition-colors hover:text-bone"

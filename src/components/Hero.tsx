@@ -247,7 +247,7 @@ export function Hero() {
           Create Your ID
         </MagneticButton>
         <a
-          href="https://hhgoa.com/"
+          href="https://hacker-house-goa-2026.devfolio.co/?ref=5d3bdd58f6"
           target="_blank"
           rel="noopener noreferrer"
           data-cursor="view"
