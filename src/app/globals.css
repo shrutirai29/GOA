@@ -1,0 +1,205 @@
+@import "tailwindcss";
+
+/* Tailwind only scans source files — binary assets (and any stray db files) can never poison the class scanner. */
+@source "../";
+
+@theme {
+  /* Base palette — deep tropical night, near-black with green undertone */
+  --color-void: #030f08;
+  --color-abyss: #06130b;
+  --color-panel: #081a10;
+  --color-deep: #0b2114;
+
+  /* Lines & text */
+  --color-line: rgba(255, 255, 255, 0.08);
+  --color-line-strong: rgba(255, 255, 255, 0.16);
+  --color-bone: #f2fdf6;
+  --color-mist: #c3dccd;
+  --color-dim: #a9c4b4;
+
+  /* Accents — tropical green dominant, gold + teal secondary, warm sunset sparingly */
+  --color-electric: #34d399;
+  --color-violet: #86efac;
+  --color-neon: #f5c542;
+  --color-sunset: #ff9a3d;
+  --color-cyan: #2dd4bf;
+  --color-tropic: #4ade80;
+
+  --font-display: var(--font-anton), "Arial Narrow", sans-serif;
+  --font-sans: var(--font-space), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+
+  --animate-marquee: marquee 28s linear infinite;
+  --animate-pulse-slow: pulse 5s ease-in-out infinite;
+  --animate-spin-slow: spin 14s linear infinite;
+  --animate-float: float 7s ease-in-out infinite;
+  --animate-float-delay: float 9s ease-in-out 1.2s infinite;
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes sparkFly {
+  0% { transform: translate(0, 0) scale(1); opacity: 1; }
+  100% { transform: translate(var(--spark-x), var(--spark-y)) scale(0.2); opacity: 0; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-14px); }
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 96px;
+}
+
+body {
+  background: var(--color-void);
+  color: var(--color-bone);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: rgba(52, 211, 153, 0.4);
+  color: #fff;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: #04110a; }
+::-webkit-scrollbar-thumb {
+  background: #123825;
+  border-radius: 8px;
+  border: 2px solid #04110a;
+}
+::-webkit-scrollbar-thumb:hover { background: #1c5c39; }
+
+/* Focus visibility */
+:focus-visible {
+  outline: 2px solid var(--color-electric);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Hide native cursor when custom cursor is active */
+@media (pointer: fine) {
+  body.custom-cursor,
+  body.custom-cursor * {
+    cursor: none !important;
+  }
+}
+
+/* ---------- Utility classes ---------- */
+
+.font-display { font-family: var(--font-display); }
+.font-mono { font-family: var(--font-mono); }
+
+/* Glassy panel */
+.glass {
+  background: rgba(14, 11, 28, 0.55);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Outlined display text */
+.text-outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(244, 241, 255, 0.55);
+}
+.text-outline-faint {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(244, 241, 255, 0.16);
+}
+
+/* Gradient text */
+.text-gradient-brand {
+  background: linear-gradient(100deg, #effbf2 5%, #86efac 40%, #f5c542 90%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Subtle grain overlay (UI only — kept out of the exported card node) */
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Thin hairline dividers */
+.hairline { height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent); }
+
+/* Card surface shadow used in preview only */
+.card-glow {
+  box-shadow:
+    0 40px 80px -20px rgba(0, 0, 0, 0.75),
+    0 0 60px -18px var(--glow-color, rgba(124, 92, 255, 0.55)),
+    0 0 140px -40px var(--glow-color, rgba(124, 92, 255, 0.6));
+}
+
+/* Range inputs */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  outline-offset: 6px;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  border: 4px solid var(--color-electric);
+  box-shadow: 0 2px 10px rgba(124, 92, 255, 0.6);
+  transition: transform 0.15s ease;
+}
+input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.15); }
+input[type="range"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  border: 4px solid var(--color-electric);
+  box-shadow: 0 2px 10px rgba(124, 92, 255, 0.6);
+}
+
+/* Custom scrollbar inside panels */
+.thin-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+.thin-scroll::-webkit-scrollbar-thumb { background: #2c2350; border: none; }
+
+/* Hide horizontal overflow anywhere */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Marquee */
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: var(--animate-marquee);
+}
+.marquee-track:hover { animation-play-state: paused; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
