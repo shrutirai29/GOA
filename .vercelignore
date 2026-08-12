@@ -1,0 +1,8 @@
+# Never upload the Freebuff app DB — its binary bytes poison Tailwind's class scan
+.freebuff/
+# Build artifacts / local config
+.next/
+.vercel/
+.env*
+*.local
+.git/
