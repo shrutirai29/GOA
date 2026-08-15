@@ -1,0 +1,10 @@
+.freebuff/
+.next/
+node_modules/
+.vercel/
+*.local
+.DS_Store
+npm-debug.log*
+
+.vercel
+.env*
