@@ -2,19 +2,19 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { config as fetchConfig, health as fetchHealth, query, voice } from "./api.js";
 
 const SAMPLES = [
-  { label: "🎤 Voice Query", text: "स्टबहब टोल फ्री नंबर", color: "cyan" },
-  { label: "🔍 Entity Search", text: "फ्रैंक गिफोर्ड ने कितनी महिलाओं से शादी की", color: "green" },
-  { label: "👋 Off-Topic", text: "नमस्ते", color: "amber" },
-  { label: "⚠️ Unsafe", text: "बम कैसे बनाएं", color: "red" },
+  { label: "🎤 Voice Query", text: "स्टबहब टोल फ्री नंबर", color: "cyan", emoji: "🎤" },
+  { label: "🔍 Entity", text: "फ्रैंक गिफोर्ड ने कितनी महिलाओं से शादी की", color: "green", emoji: "🔍" },
+  { label: "👋 Greeting", text: "नमस्ते", color: "amber", emoji: "👋" },
+  { label: "⚠️ Unsafe", text: "बम कैसे बनाएं", color: "red", emoji: "⚠️" },
 ];
 
 const FEATURES = [
-  { icon: "🎯", title: "4 Chunking Strategies", desc: "Fixed, Sentence, Semantic, and Hierarchical chunking for optimal retrieval", color: "#6366f1" },
-  { icon: "⚡", title: "Sub-200ms Latency", desc: "P50 = 85ms with parallel dense + BM25 retrieval and RRF fusion", color: "#06b6d4" },
-  { icon: "🛡️", title: "Built-in Guardrails", desc: "Blocks unsafe, injection, and off-topic queries before retrieval", color: "#ef4444" },
-  { icon: "✅", title: "Grounded Answers", desc: "Every claim verified against source evidence — refuses rather than hallucinates", color: "#22c55e" },
-  { icon: "📊", title: "Per-Stage Timing", desc: "Full observability: router, guardrails, retrieval, context, generation, grounding", color: "#f59e0b" },
-  { icon: "🔬", title: "62 Tests Passing", desc: "Comprehensive test suite covering chunking, retrieval, routing, guardrails, API", color: "#8b5cf6" },
+  { icon: "🎯", title: "4 Chunking Strategies", desc: "Fixed, Sentence, Semantic, Hierarchical", color: "#6366f1" },
+  { icon: "⚡", title: "Sub-200ms Latency", desc: "P50 = 85ms with parallel retrieval", color: "#06b6d4" },
+  { icon: "🛡️", title: "Built-in Guardrails", desc: "Blocks unsafe & injection attempts", color: "#ef4444" },
+  { icon: "✅", title: "Grounded Answers", desc: "Claims verified against sources", color: "#22c55e" },
+  { icon: "📊", title: "Per-Stage Timing", desc: "Full observability at every step", color: "#f59e0b" },
+  { icon: "🔬", title: "62 Tests Passing", desc: "Comprehensive test coverage", color: "#8b5cf6" },
 ];
 
 const STAGE_LABELS = {
@@ -23,10 +23,10 @@ const STAGE_LABELS = {
 };
 
 const STATUS_META = {
-  ok: { cls: "ok", label: "✅ ANSWERED", icon: "✅" },
-  abstained: { cls: "abstain", label: "⏸ ABSTAINED", icon: "⏸" },
-  blocked: { cls: "blocked", label: "🚫 BLOCKED", icon: "🚫" },
-  error: { cls: "error", label: "❌ ERROR", icon: "❌" },
+  ok: { cls: "ok", label: "✅ ANSWERED" },
+  abstained: { cls: "abstain", label: "⏸ ABSTAINED" },
+  blocked: { cls: "blocked", label: "🚫 BLOCKED" },
+  error: { cls: "error", label: "❌ ERROR" },
 };
 
 function fmt(ms) {
@@ -34,6 +34,7 @@ function fmt(ms) {
   return ms < 10 ? `${ms.toFixed(1)}ms` : `${Math.round(ms)}ms`;
 }
 
+/* ── Animated particle background ─────────────────────────────── */
 function Particles() {
   const canvasRef = useRef(null);
   useEffect(() => {
@@ -45,14 +46,14 @@ function Particles() {
     const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
     resize();
     window.addEventListener("resize", resize);
-    for (let i = 0; i < 60; i++) {
+    for (let i = 0; i < 50; i++) {
       particles.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.3,
-        vy: (Math.random() - 0.5) * 0.3,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: (Math.random() - 0.5) * 0.4,
         r: Math.random() * 1.5 + 0.5,
-        o: Math.random() * 0.4 + 0.1,
+        o: Math.random() * 0.3 + 0.1,
       });
     }
     const draw = () => {
@@ -68,17 +69,16 @@ function Particles() {
         ctx.fillStyle = `rgba(99,102,241,${p.o})`;
         ctx.fill();
       });
-      // Draw lines between nearby particles
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
           const dx = particles[i].x - particles[j].x;
           const dy = particles[i].y - particles[j].y;
           const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 150) {
+          if (dist < 120) {
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(99,102,241,${0.08 * (1 - dist / 150)})`;
+            ctx.strokeStyle = `rgba(99,102,241,${0.06 * (1 - dist / 120)})`;
             ctx.lineWidth = 0.5;
             ctx.stroke();
           }
@@ -92,6 +92,18 @@ function Particles() {
   return <canvas ref={canvasRef} className="particles-canvas" />;
 }
 
+/* ── Animated waveform for recording ──────────────────────────── */
+function Waveform() {
+  const [bars] = useState(() => Array.from({ length: 20 }, () => Math.random() * 0.7 + 0.3));
+  return (
+    <div className="waveform">
+      {bars.map((h, i) => (
+        <div key={i} className="wave-bar" style={{ height: `${h * 100}%`, animationDelay: `${i * 0.05}s` }} />
+      ))}
+    </div>
+  );
+}
+
 export default function App() {
   const [health, setHealth] = useState(null);
   const [cfg, setCfg] = useState(null);
@@ -103,6 +115,7 @@ export default function App() {
   const [error, setError] = useState("");
   const [hint, setHint] = useState("");
   const [showResult, setShowResult] = useState(false);
+  const [activeDemo, setActiveDemo] = useState(null);
   const mediaRef = useRef(null);
   const chunksRef = useRef([]);
   const timerRef = useRef(null);
@@ -141,9 +154,10 @@ export default function App() {
     } catch (e) { setError(`Microphone unavailable: ${e.message}`); }
   };
 
-  const submitText = async (text) => {
+  const submitText = async (text, demoIdx) => {
     if (!text.trim() || busy) return;
     setError(""); setResult(null); setShowResult(false); setBusy(true);
+    setActiveDemo(demoIdx);
     try {
       const res = await query(text.trim());
       setResult(res); setShowResult(true);
@@ -165,22 +179,15 @@ export default function App() {
       {/* ── Topbar ── */}
       <header className="topbar">
         <div className="brand">
-          <div className="logo-wrap">
-            <span className="logo">◉</span>
-          </div>
+          <div className="logo-wrap"><span className="logo">◉</span></div>
           <div>
-            <h1>Voice RAG Console</h1>
-            <p>HH Goa 2026 · Task 2 · MSMARCO-XI (हिन्दी)</p>
+            <h1>Voice RAG</h1>
+            <p>HH Goa 2026 · MSMARCO-XI</p>
           </div>
         </div>
         <div className="health">
           <span className={`dot ${health?.status === "ok" ? "up" : "down"}`} />
           <span>{health?.status === "ok" ? "Online" : "Offline"}</span>
-          {cfg && (
-            <span className="chip">
-              {cfg.generation.provider} LLM · {cfg.stt.provider} STT
-            </span>
-          )}
         </div>
       </header>
 
@@ -192,29 +199,20 @@ export default function App() {
         </h2>
         <p className="hero-sub">
           Ask questions in Hindi — spoken or typed — and get grounded answers
-          from a 10,000-passage knowledge base. Every claim is verified against sources.
+          from a 10,000-passage knowledge base.
         </p>
         <div className="hero-stats">
-          <div className="stat">
-            <span className="stat-val">85ms</span>
-            <span className="stat-label">P50 Latency</span>
-          </div>
+          <div className="stat"><span className="stat-val">85ms</span><span className="stat-label">P50</span></div>
           <div className="stat-divider" />
-          <div className="stat">
-            <span className="stat-val">4</span>
-            <span className="stat-label">Chunking Strategies</span>
-          </div>
+          <div className="stat"><span className="stat-val">4</span><span className="stat-label">Strategies</span></div>
           <div className="stat-divider" />
-          <div className="stat">
-            <span className="stat-val">62</span>
-            <span className="stat-label">Tests Passing</span>
-          </div>
+          <div className="stat"><span className="stat-val">62</span><span className="stat-label">Tests</span></div>
           <div className="stat-divider" />
-          <div className="stat">
-            <span className="stat-val">100%</span>
-            <span className="stat-label">Guarded</span>
-          </div>
+          <div className="stat"><span className="stat-val">100%</span><span className="stat-label">Guarded</span></div>
         </div>
+        <button className="hero-cta" onClick={() => document.getElementById("console")?.scrollIntoView({ behavior: "smooth" })}>
+          Try It Now ↓
+        </button>
       </section>
 
       {/* ── Features Grid ── */}
@@ -228,11 +226,11 @@ export default function App() {
         ))}
       </section>
 
-      {/* ── Main Console ── */}
+      {/* ── Console Section ── */}
       <section className="console-section" id="console">
         <div className="section-header">
           <h2>Try It Now</h2>
-          <p>Speak or type a question in Hindi — see the full pipeline in action</p>
+          <p>Speak or type a question in Hindi</p>
         </div>
 
         <div className="console-grid">
@@ -255,16 +253,17 @@ export default function App() {
               <div className="mic-state">
                 {recording ? (
                   <span className="rec-label">
-                    <span className="rec-dot" /> RECORDING {recSeconds}s — speak now
+                    <span className="rec-dot" /> RECORDING {recSeconds}s
                   </span>
                 ) : busy ? (
                   <span className="busy-label">
-                    <span className="busy-dot" /> Processing through pipeline…
+                    <span className="busy-dot" /> Processing…
                   </span>
                 ) : (
-                  <span className="idle-label">Click the mic or type below</span>
+                  <span className="idle-label">Click mic or type below</span>
                 )}
               </div>
+              {recording && <Waveform />}
             </div>
 
             <div className="text-row">
@@ -282,18 +281,18 @@ export default function App() {
             </div>
 
             <label className="hint-row">
-              <input
-                className="hint-input"
-                value={hint}
-                onChange={(e) => setHint(e.target.value)}
-                placeholder="(dev) mock-STT transcript override"
-              />
+              <input className="hint-input" value={hint} onChange={(e) => setHint(e.target.value)} placeholder="(dev) mock-STT override" />
             </label>
 
             <div className="samples">
               <div className="samples-label">Quick demos:</div>
-              {SAMPLES.map((s) => (
-                <button key={s.label} className={`sample ${s.color}`} onClick={() => submitText(s.text)} disabled={busy}>
+              {SAMPLES.map((s, i) => (
+                <button
+                  key={s.label}
+                  className={`sample ${s.color} ${activeDemo === i ? "active" : ""}`}
+                  onClick={() => submitText(s.text, i)}
+                  disabled={busy}
+                >
                   {s.label}
                 </button>
               ))}
@@ -310,20 +309,13 @@ export default function App() {
                 <span className="reqid">#{result.request_id}</span>
               </div>
 
-              {result.transcript && (
-                <div className="block">
-                  <h3>📝 TRANSCRIPT</h3>
-                  <p className="mono">{result.transcript}</p>
-                </div>
-              )}
-
               {result.query_info && (
                 <div className="block">
                   <h3>🧠 QUERY ANALYSIS</h3>
                   <div className="badges">
                     <span className="badge accent">{result.query_info.query_type}</span>
                     <span className="badge dim">{result.query_info.chunk_strategy} view</span>
-                    <span className="badge dim">{result.query_info.retrieval_mode} retrieval</span>
+                    <span className="badge dim">{result.query_info.retrieval_mode}</span>
                   </div>
                 </div>
               )}
@@ -363,7 +355,6 @@ export default function App() {
                           <div className="grounding-fill" style={{ width: `${result.grounding.score * 100}%` }} />
                         </div>
                         <span className="grounding-val">{result.grounding.score.toFixed(2)}</span>
-                        <span className="grounding-method">{result.grounding.method}</span>
                       </div>
                     </div>
                   )}
@@ -373,7 +364,7 @@ export default function App() {
                   <h3>🔒 SYSTEM RESPONSE</h3>
                   <div className={`response-badge ${result.status}`}>
                     {result.status === "blocked" && "🚫 Request blocked by guardrails"}
-                    {result.status === "abstained" && "⏸ Abstained — no reliable answer found"}
+                    {result.status === "abstained" && "⏸ Abstained — no reliable answer"}
                     {result.status === "error" && "❌ Pipeline error — please retry"}
                   </div>
                   {result.status_message && <p className="reason">{result.status_message}</p>}
@@ -392,7 +383,7 @@ export default function App() {
               )}
 
               <div className="block latency-block">
-                <h3>⏱️ LATENCY BREAKDOWN</h3>
+                <h3>⏱️ LATENCY</h3>
                 <div className="latency">
                   {Object.keys(STAGE_LABELS)
                     .filter((k) => timings[k] != null)
@@ -406,7 +397,7 @@ export default function App() {
                       </div>
                     ))}
                   <div className="lat-row total">
-                    <span className="lat-name">RAG TOTAL</span>
+                    <span className="lat-name">TOTAL</span>
                     <div className="lat-track"><div className="lat-bar total" style={{ width: "100%" }} /></div>
                     <span className="lat-val">{fmt(result.total_ms)}</span>
                   </div>
@@ -426,7 +417,6 @@ export default function App() {
           </div>
           <div className="footer-links">
             <a href="/docs" target="_blank" rel="noreferrer">API Docs</a>
-            <a href="/api/health" target="_blank" rel="noreferrer">Health</a>
             <a href="https://github.com/shrutirai29/GOA" target="_blank" rel="noreferrer">GitHub</a>
           </div>
           <div className="footer-tag">#RAGInGoa</div>
