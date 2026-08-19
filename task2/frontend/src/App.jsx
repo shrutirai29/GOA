@@ -109,6 +109,9 @@ export default function App() {
 
   return (
     <div className="app">
+      <div className="orb orb-1" />
+      <div className="orb orb-2" />
+      <div className="orb orb-3" />
       <header className="topbar">
         <div className="brand">
           <span className="logo">◉</span>
@@ -129,7 +132,7 @@ export default function App() {
       </header>
 
       <main className="console">
-        <section className="input-panel">
+        <section className="input-panel glass-card">
           <div className="mic-row">
             <button
               className={`mic ${recording ? "recording" : ""} ${busy ? "busy" : ""}`}
@@ -184,7 +187,7 @@ export default function App() {
         </section>
 
         {result && (
-          <section className="result-panel">
+          <section className="result-panel glass-card">
             <div className="result-head">
               <span className={`status ${meta.cls}`}>{meta.label}</span>
               <span className="reqid">#{result.request_id}</span>
