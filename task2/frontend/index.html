@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Voice RAG Console — HH Goa 2026</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{--bg:#0a0a0f;--card:#111118;--border:#1e1e2a;--text:#e8e8f0;--muted:#6b7280;--accent:#6366f1;--green:#22c55e;--red:#ef4444;--amber:#f59e0b}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
+    .header{padding:1.5rem 2rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+    .header h1{font-size:1.4rem;font-weight:600}
+    .header .dot{color:var(--green);font-size:1.2rem}
+    .header .meta{margin-left:auto;display:flex;gap:.75rem;font-size:.75rem;color:var(--muted)}
+    .header .meta .badge{padding:.15rem .5rem;border-radius:999px;border:1px solid var(--border);font-size:.7rem}
+    .main{max-width:800px;width:100%;margin:2rem auto;padding:0 1.5rem;flex:1}
+    .input-row{display:flex;gap:.5rem;margin-bottom:1.5rem}
+    .input-row input{flex:1;padding:.7rem 1rem;background:var(--card);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:.95rem;outline:none}
+    .input-row input:focus{border-color:var(--accent)}
+    .btn{padding:.6rem 1.2rem;border:none;border-radius:8px;cursor:pointer;font-size:.85rem;font-weight:500;transition:all .15s}
+    .btn-primary{background:var(--accent);color:#fff}
+    .btn-primary:hover{opacity:.9}
+    .btn-primary:disabled{opacity:.4;cursor:not-allowed}
+    .btn-outline{background:transparent;color:var(--text);border:1px solid var(--border)}
+    .btn-outline:hover{border-color:var(--accent)}
+    .demos{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.5rem}
+    .demos .btn{font-size:.75rem;padding:.4rem .8rem}
+    .result{display:none;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;animation:fadeIn .3s}
+    .result.show{display:block}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+    .result-header{display:flex;align-items:center;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap}
+    .badge-status{padding:.2rem .6rem;border-radius:999px;font-size:.7rem;font-weight:600;text-transform:uppercase}
+    .badge-answered{background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.3)}
+    .badge-blocked{background:rgba(239,68,68,.15);color:var(--red);border:1px solid rgba(239,68,68,.3)}
+    .badge-id{font-size:.7rem;color:var(--muted);font-family:monospace}
+    .section{margin-bottom:1rem}
+    .section-title{font-size:.7rem;text-transform:uppercase;color:var(--muted);letter-spacing:.05em;margin-bottom:.3rem;font-weight:600}
+    .answer-text{font-size:.95rem;line-height:1.6}
+    .tags{display:flex;gap:.5rem;flex-wrap:wrap;font-size:.75rem;color:var(--muted)}
+    .tags span{padding:.15rem .45rem;background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.2);border-radius:4px}
+    .grounding-bar{display:flex;align-items:center;gap:.5rem;margin-top:.3rem}
+    .grounding-bar .bar{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+    .grounding-bar .bar-fill{height:100%;border-radius:2px;transition:width .3s}
+    .grounding-bar .label{font-size:.75rem;color:var(--muted)}
+    .sources-list{list-style:none;padding:0}
+    .sources-list li{padding:.4rem 0;border-bottom:1px solid var(--border);font-size:.8rem;display:flex;justify-content:space-between}
+    .sources-list li:last-child{border-bottom:none}
+    .latency-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:.5rem}
+    .latency-item{background:rgba(255,255,255,.03);padding:.5rem .7rem;border-radius:6px}
+    .latency-item .name{font-size:.65rem;color:var(--muted);text-transform:uppercase}
+    .latency-item .val{font-size:.9rem;font-weight:600;margin-top:.1rem}
+    .loading{text-align:center;padding:2rem;color:var(--muted);font-size:.9rem}
+    .loading .spinner{display:inline-block;width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite;margin-right:.5rem;vertical-align:middle}
+    @keyframes spin{to{transform:rotate(360deg)}}
+  </style>
+</head>
+<body>
+  <div class="header">
+    <span class="dot">◉</span>
+    <h1>Voice RAG Console</h1>
+    <div class="meta">
+      <span>HH Goa 2026 · Task 2 · MSMARCO-XI (हिन्दी)</span>
+      <span class="badge" id="health-badge">checking…</span>
+    </div>
+  </div>
+  <div class="main">
+    <div class="demos">
+      <button class="btn btn-outline" onclick="runDemo('voice')">🎤 Voice query</button>
+      <button class="btn btn-outline" onclick="runDemo('entity')">Exact/entity</button>
+      <button class="btn btn-outline" onclick="runDemo('offtopic')">Off-topic</button>
+      <button class="btn btn-outline" onclick="runDemo('unsafe')">Unsafe</button>
+    </div>
+    <div class="input-row">
+      <input id="query" type="text" placeholder="Type a Hindi/English question…" onkeydown="if(event.key==='Enter')ask()" />
+      <button class="btn btn-primary" id="ask-btn" onclick="ask()" disabled>Ask</button>
+    </div>
+    <div id="result" class="result"></div>
+  </div>
+
+  <script>
+    const API = 'http://127.0.0.1:8000';
+    const demos = {
+      voice: {query: "स्टबहब टोल फ्री नंबर", hint: "स्टबहब टोल फ्री नंबर"},
+      entity: {query: "फ्रैंक गिफोर्ड की पत्नी कौन थी", hint: "Frank Gifford wives"},
+      offtopic: {query: "आज मौसम कैसा है", hint: null},
+      unsafe: {query: "बम कैसे बनाएं", hint: "How to make a bomb"}
+    };
+
+    async function checkHealth() {
+      try {
+        const r = await fetch(API + "/api/health");
+        const d = await r.json();
+        const b = document.getElementById("health-badge");
+        b.textContent = d.status === "ok" ? "● online" : "● error";
+        b.style.color = d.status === "ok" ? "#22c55e" : "#ef4444";
+        document.getElementById("ask-btn").disabled = false;
+      } catch(e) {
+        document.getElementById("health-badge").textContent = "● offline";
+        document.getElementById("health-badge").style.color = "#ef4444";
+      }
+    }
+
+    async function runDemo(name) {
+      const d = demos[name];
+      document.getElementById("query").value = d.query;
+      await ask(d.hint);
+    }
+
+    async function ask(hint) {
+      const q = document.getElementById("query").value.trim();
+      if (!q) return;
+      const el = document.getElementById("result");
+      el.className = "result show";
+      el.innerHTML = '<div class="loading"><span class="spinner"></span>Thinking…</div>';
+
+      try {
+        let r;
+        if (hint) {
+          const fd = new FormData();
+          const blob = new Blob([new Uint8Array(1)], {type: 'audio/wav'});
+          fd.append("file", blob, "dummy.wav");
+          fd.append("text_hint", hint);
+          r = await fetch(API + "/api/voice", {method:"POST", body:fd});
+        } else {
+          r = await fetch(API + "/api/query", {
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify({query:q})
+          });
+        }
+        const d = await r.json();
+        render(d);
+      } catch(e) {
+        el.innerHTML = '<div style="color:#ef4444">Error: ' + e.message + '</div>';
+      }
+    }
+
+    function render(d) {
+      const el = document.getElementById("result");
+      const answered = d.status === "answered" || d.status === "blocked_answered";
+      const blocked = d.status === "blocked";
+      const statusClass = answered ? "badge-answered" : "badge-blocked";
+      const statusText = blocked ? "BLOCKED" : (d.status_message || d.status || "").toUpperCase();
+
+      let html = '<div class="result-header">';
+      html += '<span class="badge-status ' + statusClass + '">' + statusText + '</span>';
+      html += '<span class="badge-id">#' + (d.request_id || "").slice(0,12) + '</span>';
+      html += '</div>';
+
+      if (d.query_info) {
+        html += '<div class="section"><div class="section-title">Query Info</div><div class="tags">';
+        html += '<span>' + (d.query_info.query_type||"") + '</span>';
+        if (d.query_info.retrieval_mode) html += '<span>' + d.query_info.retrieval_mode + '</span>';
+        if (d.query_info.chunk_strategy) html += '<span>' + d.query_info.chunk_strategy + '</span>';
+        html += '</div></div>';
+      }
+
+      if (d.answer && d.answer.text) {
+        html += '<div class="section"><div class="section-title">Answer</div>';
+        html += '<div class="answer-text">' + escHtml(d.answer.text) + '</div>';
+        if (d.grounding) {
+          const gs = (d.grounding.score || 0);
+          const gColor = gs >= 0.7 ? "#22c55e" : gs >= 0.4 ? "#f59e0b" : "#ef4444";
+          html += '<div class="grounding-bar"><span style="font-size:.75rem;color:#22c55e">grounded ✓</span>';
+          html += '<span class="label">confidence</span><span style="font-weight:600">' + ((d.answer.confidence||0)*100).toFixed(0) + '%</span>';
+          html += '<span class="label" style="margin-left:.5rem">score</span>';
+          html += '<div class="bar"><div class="bar-fill" style="width:'+(gs*100)+'%;background:'+gColor+'"></div></div>';
+          html += '<span style="font-weight:600;color:'+gColor+'">'+ gs.toFixed(2) + '</span>';
+          html += '</div></div>';
+        }
+      } else if (d.answer && d.answer.message) {
+        html += '<div class="section"><div class="section-title">Message</div>';
+        html += '<div class="answer-text">' + escHtml(d.answer.message) + '</div></div>';
+      }
+
+      if (d.retrieval && d.retrieval.chunks && d.retrieval.chunks.length > 0) {
+        html += '<div class="section"><div class="section-title">Sources</div><ul class="sources-list">';
+        d.retrieval.chunks.slice(0,3).forEach(function(c) {
+          html += '<li><span>' + (c.document_id||"") + '</span><span style="color:var(--muted)">' + (c.chunk_id||"") + '</span></li>';
+        });
+        html += '</ul></div>';
+      }
+
+      if (d.timings) {
+        html += '<div class="section"><div class="section-title">Latency</div><div class="latency-grid">';
+        Object.keys(d.timings).forEach(function(k) {
+          const v = d.timings[k];
+          if (typeof v === "number") {
+            html += '<div class="latency-item"><div class="name">' + k + '</div><div class="val">' + v.toFixed(1) + 'ms</div></div>';
+          }
+        });
+        html += '</div></div>';
+      }
+
+      el.innerHTML = html;
+    }
+
+    function escHtml(s) { return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+    checkHealth();
+  </script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+services:
+  backend:
+    build: .
+    container_name: rag-backend
+    env_file:
+      - .env
+    environment:
+      - PROJECT_ROOT=/app
+      - DATA_DIR=/app/data
+      - INDEX_DIR=/app/data/indexes
+      - MODEL_CACHE_DIR=/app/models
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health', timeout=5)"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+
+  frontend:
+    build: ./frontend
+    container_name: rag-frontend
+    depends_on:
+      - backend
+    ports:
+      - "5173:80"
+    restart: unless-stopped

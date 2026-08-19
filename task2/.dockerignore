@@ -1,0 +1,12 @@
+.venv
+__pycache__
+*.pyc
+.env
+data/dataset
+data/*.parquet
+benchmarks
+frontend/node_modules
+.pytest_cache
+tmp_*.py
+tmp_*.json
+tmp_*.txt

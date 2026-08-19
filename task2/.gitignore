@@ -1,0 +1,32 @@
+# Runtime / local artifacts — never commit
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Dataset + built indexes (large, reproducible via scripts)
+data/*.jsonl
+data/*.parquet
+data/dataset/
+data/indexes/
+data/cache/
+
+# Models downloaded at build time
+models/
+
+# Build artifacts
+*.exe
+*.log
+tmp_*
+create_ppt.py
+~$*
+
+# Secrets
+.env
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+
+# Test artifacts
+.pytest_cache/
