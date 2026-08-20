@@ -34,6 +34,7 @@ from backend.models import (
     UNSUPPORTED,
     QueryInfo,
 )
+from backend.pipeline.language import detect_language
 from backend.pipeline.patterns import (
     ATTACK,
     CMP,
@@ -58,42 +59,45 @@ class QueryRouter:
         if not q:
             return QueryInfo(query=query, query_type=UNSUPPORTED)
 
+        # 0. detect query language (for multilingual retrieval)
+        lang = detect_language(q)
+
         # 1. safety + injection take absolute priority
         if ATTACK.search(q) or SAFETY.search(q):
-            return QueryInfo(query=query, query_type=UNSUPPORTED)
+            return QueryInfo(query=query, query_type=UNSUPPORTED, language=lang)
 
         # 2. pure chit-chat / greetings → off-topic
         if OFFTOPIC.search(q) and len(q.split()) <= 4:
-            return QueryInfo(query=query, query_type=UNSUPPORTED)
+            return QueryInfo(query=query, query_type=UNSUPPORTED, language=lang)
 
         # 3. type detection (most specific first)
         if WHO.search(q):
-            return self._route(query, PERSON)
+            return self._route(query, PERSON, lang)
         if WHERE.search(q):
-            return self._route(query, LOCATION)
+            return self._route(query, LOCATION, lang)
         if CMP.search(q):
-            return self._route(query, COMPARISON)
+            return self._route(query, COMPARISON, lang)
         if COMPLEX_HINT.search(q) and len(q.split()) > 14:
-            return self._route(query, COMPLEX)
+            return self._route(query, COMPLEX, lang)
         if WHEN.search(q) or NUM.search(q) or NUMERIC_TOKEN.search(q):
-            return self._route(query, NUMERIC)
+            return self._route(query, NUMERIC, lang)
         if CONCEPT.search(q) and EXPLAIN.search(q):
-            return self._route(query, CONCEPTUAL)
+            return self._route(query, CONCEPTUAL, lang)
         if EXPLAIN.search(q):
-            return self._route(query, CONCEPTUAL)
+            return self._route(query, CONCEPTUAL, lang)
         if CONCEPT.search(q):
-            return self._route(query, FACTUAL)
+            return self._route(query, FACTUAL, lang)
 
         # 4. bare noun-phrase knowledge queries (e.g. "स्टबहब टोल फ्री नंबर")
         #    usually carry an entity → treat as entity/factual.
         if len(q.split()) >= 2:
-            return self._route(query, ENTITY)
+            return self._route(query, ENTITY, lang)
 
-        return QueryInfo(query=query, query_type=UNSUPPORTED)
+        return QueryInfo(query=query, query_type=UNSUPPORTED, language=lang)
 
     # ---------------------------------------------------------------- routing
     @staticmethod
-    def _route(query: str, query_type: str) -> QueryInfo:
+    def _route(query: str, query_type: str, language: str = "hi") -> QueryInfo:
         assert query_type in QUERY_TYPES
         table = {
             FACTUAL: ("sentence", "bm25", False),
@@ -110,6 +114,7 @@ class QueryRouter:
         return QueryInfo(
             query=query,
             query_type=query_type,
+            language=language,
             chunk_strategy=strategy,
             retrieval_mode=mode,
             needs_metadata_filter=meta_filter,

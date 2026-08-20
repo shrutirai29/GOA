@@ -22,7 +22,7 @@ class Settings(BaseSettings):
     model_cache_dir: Path = Path(__file__).resolve().parent.parent / "models"
 
     # -------------------------------------------------------------- dataset
-    lang: str = "hi"  # target language for corpus + queries (hi = hin_Deva shard)
+    lang: str = "multi"  # multi = multilingual corpus from all shards
     max_passages: int = 25_000  # cap on unique passages in the knowledge base
     max_queries: int = 500  # cap on evaluation queries extracted
 
@@ -91,6 +91,10 @@ class Settings(BaseSettings):
     # ------------------------------------------------------------- properties
     @property
     def corpus_path(self) -> Path:
+        # Prefer multilingual corpus if it exists
+        multi = self.data_dir / "corpus_multilingual.jsonl"
+        if multi.exists():
+            return multi
         return self.data_dir / "corpus.jsonl"
 
     @property

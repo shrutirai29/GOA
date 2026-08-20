@@ -52,10 +52,39 @@ COMPLEX_HINT = _compiled("और", "तथा", "साथ ही", "as well as"
 
 # Off-topic: greetings / chit-chat / self-referential meta queries.
 OFFTOPIC = _compiled(
-    "नमस्ते", "नमस्कार", "हैलो", "hello", "hi", "hey", "good morning", "good evening",
-    "शुभ प्रभात", "how are you", "कैसे हो", "कैसी हो", "thank you", "धन्यवाद", "thanks",
-    "bye", "अलविदा", "what can you do", "तुम क्या कर सकते हो", "who are you", "तुम कौन हो",
-    "what is your name", "तुम्हारा नाम", "are you human", "क्या तुम इंसान हो", "good", "ok",
+    # Hindi
+    "नमस्ते", "नमस्कार", "हैलो", "शुभ प्रभात", "कैसे हो", "कैसी हो",
+    "धन्यवाद", "अलविदा", "तुम क्या कर सकते हो", "तुम कौन हो",
+    "तुम्हारा नाम", "क्या तुम इंसान हो",
+    # English
+    "hello", "hi", "hey", "good morning", "good evening",
+    "how are you", "thank you", "thanks", "bye",
+    "what can you do", "who are you", "what is your name",
+    "are you human", "good", "ok",
+    # Bengali
+    "নমস্কার", "কেমন আছেন", "ধন্যবাদ", "বিদায়",
+    # Gujarati
+    "નમસ્તે", "કેમ છો", "આભાર", "અલવિદા",
+    # Tamil
+    "வணக்கம்", "நன்றி", "பிரியாவிடை",
+    # Telugu
+    "నమస్కారం", "ధన్యవాదాలు", "వీడ్కోలు",
+    # Kannada
+    "ನಮಸ್ಕಾರ", "ಧನ್ಯವಾದ", "ವಿದಾಯ",
+    # Malayalam
+    "നമസ്കാരം", "നന്ദി", "വിടപറയുന്നു",
+    # Punjabi
+    "ਸਤ ਸ੍ਰੀ ਅਕਾਲ", "ਧੰਨਵਾਦ", "ਅਲਵਿਦਾ",
+    # Marathi
+    "नमस्कार", "धन्यवाद", "गोडबाय",
+    # Nepali
+    "नमस्ते", "धन्यवाद", "अलविदा",
+    # Odia
+    "ନମସ୍କାର", "ଧନ୍ୟବାଦ",
+    # Sanskrit
+    "नमस्ते", "धन्यवाद",
+    # Urdu (Roman)
+    "salaam", "shukriya", "khuda hafiz",
 )
 
 NUMERIC_TOKEN = re.compile(
@@ -63,21 +92,55 @@ NUMERIC_TOKEN = re.compile(
 )
 
 ATTACK = re.compile(
+    # English
     r"(ignore (all |the )?(previous|prior|above) instructions|ignore your (system )?prompt|"
     r"reveal (your |the )?(system )?prompt|disregard (the |all )?(retrieved )?context|"
     r"forget (everything|all previous)|jailbreak|you are now|act as (if )?|"
-    r"अपने निर्देश|पिछले निर्देश|system prompt|सिस्टम प्रॉम्प्ट|अपना प्रॉम्प्ट|निर्देशों को अनदेखा)",
+    # Hindi
+    r"अपने निर्देश|पिछले निर्देश|system prompt|सिस्टम प्रॉम्प्ट|अपना प्रॉम्प्ट|निर्देशों को अनदेखा|"
+    # Bengali
+    r"নির্দেশনা উপেক্ষা করো|সিস্টেম প্রম্পট|"
+    # Gujarati
+    r"સૂચનાઓ અવગણો|સિસ્ટમ પ્રોમ્પ્ટ|"
+    # Tamil
+    r"வழிகாட்டிகளை புறக்கணி|சிஸ்டம் ப்ராம்ப்ட்|"
+    # Telugu
+    r"సూచనలను ఉల్లంఘించు|సిస్టమ్ ప్రాంప్ట్|"
+    # Kannada
+    r"ಸೂಚನೆಗಳನ್ನು ನಿರ್ಲಕ್ಷಿಸಿ|ಸಿಸ್ಟಮ್ ಪ್ರಾಂಪ್ಟ್|"
+    # Malayalam
+    r"നിർദ്ദേശങ്ങൾ അവഗണിക്കുക|സിസ്റ്റം പ്രോംപ്റ്റ്|"
+    # Punjabi
+    r"ਹਦਾਇਤਾਂ ਨਜ਼ਰਅੰਦਾਜ਼ ਕਰੋ|ਸਿਸਟਮ ਪ੍ਰਾਂਪਟ|"
+    # Marathi
+    r"सूचना दुर्लक्ष करा|सिस्टम प्रॉम्प्ट|"
+    # Nepali
+    r"निर्देशन बेवास्ता गर|सिस्टम प्रम्प्ट|"
+    # Odia
+    r"ନିର୍ଦ୍ଦେଶ ଅବମାନ କର|ସିଷ୍ଟମ ପ୍ରମ୍ପଟ|"
+    # Urdu (Roman)
+    r"hidayat nazar andaz|system prompt)",
     re.IGNORECASE,
 )
 
 SAFETY = re.compile(
     r"(bomb|explosive|weapon|kill (someone|people)|hate speech|child porn|sexual content|"
+    r"how to commit suicide|drugs (to )?make|meth recipe|identity theft|"
+    r"steal (credit|bank)|how to hack|how to murder|how to kill|"
+    r"make a bomb|build a bomb|poison someone|assault someone|"
+    r"terrorist attack|shoot someone|stab someone|"
     r"bomb बनाने|बम कैसे|बम बनाने|हथियार|मार डालो|मारना सिखाओ|मारना कैसे|"
     r"किसी को मारना|किसी को मार|मार दो|घायल करना|ज़ख्मी करना|नुकसान पहुँचाना|"
-    r"आत्महत्या कैसे करें|how to commit suicide|"
-    r"drugs (to )?make|meth recipe|identity theft|steal (credit|bank)|हैक कैसे करें|"
-    r"how to hack|बनाना सीखाओ|बनाने का तरीका|"
+    r"आत्महत्या कैसे करें|हैक कैसे करें|बनाना सीखाओ|बनाने का तरीका|"
     r"maarna|maar do|maar doon|maar dena|hathiyar|ghayal|zakhmi|"
-    r"kisi ko maar|kisi ko maarna|suicide kaise|atmahatya)",
+    r"kisi ko maar|kisi ko maarna|suicide kaise|atmahatya|"
+    r"বোমা তৈরি|বোমা কিভাবে|হত্যা করো|হত্যা কিভাবে|অস্ত্র|"
+    r"બોમ્બ બનાવો|હત્યા કરો|હત્યા કેવી રીતે|હથિયાર|"
+    r"குண்டு தயாரிக்க|கொல்ல எப்படி|ஆயுதம்|"
+    r"బాంబు తయారు చేయి|చంపడం ఎలా|ఆయుధం|"
+    r"ಬಾಂಬ್ ಮಾಡು|ಕೊಲ್ಲುವುದು ಹೇಗೆ|ಆಯುಧ|"
+    r"ബോംബ് ഉണ്ടാക്കുക|കൊല്ലാൻ എങ്ങനെ|ആയുധം|"
+    r"ਬੰਬ ਬਣਾਓ|ਮਾਰ ਕਿਵੇਂ|ਹਥਿਆਰ|"
+    r"qatal kaise|bandooq|hatyar)",
     re.IGNORECASE,
 )

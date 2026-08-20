@@ -172,7 +172,12 @@ class IndexBuilder:
         for line in settings.corpus_path.read_text(encoding="utf-8").splitlines():
             if line.strip():
                 d = json.loads(line)
-                documents.append(CorpusDocument(**d))
+                # Only pass known fields to CorpusDocument
+                documents.append(CorpusDocument(
+                    document_id=d["document_id"],
+                    text=d["text"],
+                    language=d.get("language", "multi"),
+                ))
         queries: list[EvalQuery] = []
         if settings.queries_path.exists():
             for line in settings.queries_path.read_text(encoding="utf-8").splitlines():
