@@ -72,7 +72,7 @@ class Settings(BaseSettings):
     generation_max_retries: int = 2
 
     # -------------------------------------------------------------- grounding
-    grounding_threshold: float = 0.35
+    grounding_threshold: float = 0.25
 
     # ------------------------------------------------------------------ stt
     stt_provider: str = "mock"  # mock | sarvam | elevenlabs

@@ -16,8 +16,19 @@ _SENTENCE_RE = re.compile(
     re.UNICODE,
 )
 
-# Simple word tokenisation: sequences of letters/digits (incl. Devanagari).
-_TOKEN_RE = re.compile(r"[\w\u0900-\u097F]+", re.UNICODE)
+# Word tokenisation: sequences of letters/digits across all Indian scripts + Latin.
+# Covers: Devanagari (0900-097F), Bengali/Assamese (0980-09FF),
+# Gurmukhi (0A00-0A7F), Gujarati (0A80-0AFF), Oriya (0B00-0B7F),
+# Tamil (0B80-0BFF), Telugu (0C00-0C7F), Kannada (0C80-0CFF),
+# Malayalam (0D00-0D7F), Sinhala (0D80-0DFF), Thai (0E00-0E7F),
+# Tibetan (0F00-0FFF), Myanmar (1000-109F), Khmer (1780-17FF),
+# Lao (0E80-0EFF), and general \w (Latin, digits, underscore).
+_TOKEN_RE = re.compile(
+    r"[\w\u0900-\u09FF\u0A00-\u0AFF\u0B00-\u0BFF\u0C00-\u0CFF"
+    r"\u0D00-\u0DFF\u0E00-\u0EFF\u0F00-\u0FFF\u1000-\u109F"
+    r"\u1780-\u17FF\u19E0-\u19FF]+",
+    re.UNICODE,
+)
 
 
 def sentence_split(text: str) -> list[str]:

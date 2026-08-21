@@ -75,7 +75,10 @@ class Orchestrator:
         self.router = router or QueryRouter()
         self.reranker = reranker or Reranker()
         self.generator = generator or AnswerGenerator()
-        self.grounding = grounding or GroundingChecker()
+        # Pass the retriever's embedder to the grounding checker so it can
+        # use semantic similarity for cross-lingual grounding verification.
+        embedder = self.retriever._lazy_embedder() if self.retriever.views else None
+        self.grounding = grounding or GroundingChecker(embedder=embedder)
         self.guardrails = guardrails or Guardrails()
         self.context_builder = context_builder or ContextBuilder()
         self.stt = stt or SttProvider()

@@ -165,7 +165,22 @@ class Retriever:
                 raw["bm25"] = bm25
 
         tf = time.perf_counter()
-        fused = rrf_fuse(ranked_lists, settings.rrf_k, weights)[: settings.fusion_top_k]
+        # Filter out zero-score BM25 results before fusion — they produce
+        # non-zero RRF scores (rank-based) despite carrying zero retrieval
+        # signal, which drowns out the actual dense matches.
+        filtered_lists: list[list[tuple[str, float]]] = []
+        filtered_weights: list[float] = []
+        for rl, w in zip(ranked_lists, weights):
+            non_zero = [(cid, s) for cid, s in rl if s > 0.0]
+            if non_zero:
+                filtered_lists.append(non_zero)
+                filtered_weights.append(w)
+        if not filtered_lists:
+            # all lists were zero-scored — fall back to unfiltered
+            filtered_lists = ranked_lists
+            filtered_weights = weights
+
+        fused = rrf_fuse(filtered_lists, settings.rrf_k, filtered_weights)[: settings.fusion_top_k]
         timings["fusion"] = (time.perf_counter() - tf) * 1000
 
         # contextual expansion: for hierarchical/complex queries, pull one

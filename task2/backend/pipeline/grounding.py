@@ -22,11 +22,19 @@ from backend.chunking.base import sentence_split, tokenize
 from backend.config import settings
 from backend.models import Context, GroundingResult
 
-# stopwords that carry little evidence weight (Hindi + English)
+# stopwords that carry little evidence weight (Hindi + Bengali + English)
 _STOP = {
+    # Hindi
     "का", "की", "के", "को", "से", "में", "पर", "और", "है", "हैं", "था", "थी", "थे",
     "ने", "कि", "यह", "वह", "ये", "वे", "एक", "अपने", "अपनी", "अपना", "करने", "करता",
-    "के लिए", "मेरे", "मेरा", "तो", "भी", "ही", "जो", "जिस", "जिन", "कीजिए",
+    "के लिए", "मेरे", "मेरा", "तो", "भी", "ही", "जो", "जिस", "जिन", "কী",
+    # Bengali
+    "একটি", "এবং", "এটা", "এই", "সে", "ও", "তার", "যে", "হয়", "করা", "আছে",
+    # Gujarati
+    "ની", "ના", "ને", "થી", "માં", "પર", "અને", "છે", "હતો", "એક",
+    # Odia
+    "ର", "ରେ", "କୁ", "ରୁ", "ଏବଂ", "ଏକ", "ହେଉଛି", "ଅଛି", "ଥିଲା",
+    # English
     "the", "a", "an", "is", "are", "was", "were", "to", "of", "in", "for", "and",
     "on", "with", "by", "at", "from", "as", "that", "this", "it", "its", "be",
 }
