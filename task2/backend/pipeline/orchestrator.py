@@ -96,6 +96,10 @@ class Orchestrator:
                 try:
                     return self.stt.transcribe(audio, text_hint=text_hint)
                 except Exception as exc2:
+                    # If real STT fails and text_hint is available, use it as fallback
+                    if text_hint:
+                        log.warning("[%s] STT failed, using text_hint fallback", request_id)
+                        return text_hint
                     raise RuntimeError(f"speech-to-text failed after retry: {exc2}") from exc2
 
         transcript = clock.run("stt", transcribe)
@@ -191,6 +195,13 @@ class Orchestrator:
         )
         result.grounding = grounding
 
+        if grounding.method == "abstention":
+            # LLM says it can't answer — honor that
+            result.status = "abstained"
+            result.messages.append(answer.text)
+            result.answer = None
+            return
+
         if not grounding.is_grounded:
             # regenerate once with the same evidence; if it still fails → abstain
             retry_answer = clock.run(
@@ -200,6 +211,7 @@ class Orchestrator:
             result.grounding = retry_grounding
             if retry_grounding.is_grounded:
                 result.answer = retry_answer
+                result.answer.grounded = True  # override LLM self-assessment
             else:
                 result.status = "abstained"
                 result.answer = None
@@ -207,6 +219,9 @@ class Orchestrator:
                     "Generated answer could not be verified against the retrieved evidence."
                 )
                 return
+        else:
+            # grounding checker confirms answer is supported by evidence
+            result.answer.grounded = True
 
         result.status = "ok"
 

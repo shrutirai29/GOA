@@ -67,7 +67,7 @@ class Settings(BaseSettings):
     llm_model: str = ""
     gemini_api_key: str = ""
     gemini_model: str = "gemini-2.0-flash"
-    max_context_tokens: int = 1200
+    max_context_tokens: int = 2000
     generation_temperature: float = 0.2
     generation_max_retries: int = 2
 
