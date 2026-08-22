@@ -1,0 +1,10 @@
+{
+  "name": "Voice RAG Console",
+  "short_name": "VoiceRAG",
+  "description": "Voice-enabled multilingual RAG system for Indian languages",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#06060c",
+  "theme_color": "#6366f1",
+  "icons": []
+}

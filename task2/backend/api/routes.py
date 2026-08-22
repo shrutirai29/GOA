@@ -153,6 +153,25 @@ def api_config() -> dict[str, Any]:
 # same origin. /api routes are registered above and always take precedence.
 _FRONTEND_DIST = settings.project_root / "frontend" / "dist"
 if _FRONTEND_DIST.is_dir():
+    from fastapi.responses import FileResponse
     from fastapi.staticfiles import StaticFiles
+
+    _INDEX_HTML = _FRONTEND_DIST / "index.html"
+
+    @app.get("/tos")
+    def tos_page() -> FileResponse:
+        """Serve Terms of Service page (SPA routes to React component)."""
+        return FileResponse(str(_INDEX_HTML), media_type="text/html")
+
+    # llms.txt and sitemap.xml served from public/ before the SPA mount
+    _PUBLIC = settings.project_root / "frontend" / "public"
+    if (_PUBLIC / "llms.txt").exists():
+        @app.get("/llms.txt")
+        def llms_txt() -> FileResponse:
+            return FileResponse(str(_PUBLIC / "llms.txt"), media_type="text/plain")
+    if (_PUBLIC / "sitemap.xml").exists():
+        @app.get("/sitemap.xml")
+        def sitemap() -> FileResponse:
+            return FileResponse(str(_PUBLIC / "sitemap.xml"), media_type="application/xml")
 
     app.mount("/", StaticFiles(directory=str(_FRONTEND_DIST), html=True), name="ui")

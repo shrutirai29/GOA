@@ -1,0 +1,36 @@
+# Voice RAG Console
+
+> A production-quality voice-enabled Retrieval-Augmented Generation (RAG) system
+> supporting 7 Indian languages, built on the AI4Bharat MSMARCO-XI dataset.
+
+## Overview
+
+This system takes voice or text queries in Hindi, Bengali, Gujarati, Marathi,
+Nepali, Odia, and Assamese, and returns grounded answers with source citations.
+
+## Architecture
+
+- **Retrieval**: Hybrid dense (FAISS + multilingual-e5-small) + sparse (BM25)
+  with Reciprocal Rank Fusion
+- **Chunking**: 4 strategies (Fixed, Sentence, Semantic, Hierarchical)
+- **Generation**: Gemini 3.5 Flash Lite with JSON-structured output
+- **STT**: Sarvam AI (saarika:v1)
+- **Guardrails**: Unsafe content, prompt injection, off-topic, grounding verification
+
+## API
+
+- `POST /api/query` — Text query through full RAG pipeline
+- `POST /api/voice` — Audio file → STT → RAG pipeline
+- `GET /api/health` — Service health check
+- `GET /api/metrics` — Latency percentiles (P50/P70/P100)
+- `GET /api/config` — Non-sensitive configuration
+
+## Latency
+
+- Retrieval P50: 19ms, P70: 45ms (under 200ms target)
+- Full pipeline P50: ~2.2s (includes Gemini LLM generation)
+
+## Contact
+
+- GitHub: https://github.com/shrutirai29/GOA
+- Built for HH Goa 2026 Shortlisting Task 2
