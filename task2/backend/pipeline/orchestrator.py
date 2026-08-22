@@ -77,10 +77,7 @@ class Orchestrator:
         self.generator = generator or AnswerGenerator()
         # Pass the retriever's embedder to the grounding checker so it can
         # use semantic similarity for cross-lingual grounding verification.
-        if settings.lightweight_mode or not self.retriever.views:
-            embedder = None
-        else:
-            embedder = self.retriever._lazy_embedder()
+        embedder = self.retriever._lazy_embedder() if self.retriever.views else None
         self.grounding = grounding or GroundingChecker(embedder=embedder)
         self.guardrails = guardrails or Guardrails()
         self.context_builder = context_builder or ContextBuilder()
