@@ -42,10 +42,19 @@ class SttProvider:
     def _sarvam(self, audio: bytes) -> str:
         import httpx
 
+        # Detect content type from magic bytes (browser sends webm/mp4)
+        content_type = "audio/wav"
+        if audio[:4] == b"\x1aE\xdf\xa3":
+            content_type = "audio/webm"
+        elif audio[:4] == b"\x00\x00\x00\x1c" or audio[4:8] == b"ftyp":
+            content_type = "audio/mp4"
+        elif audio[:4] == b"OggS":
+            content_type = "audio/ogg"
+
         resp = httpx.post(
             "https://api.sarvam.ai/speech-to-text",
             headers={"api-subscription-key": settings.sarvam_api_key},
-            files={"file": ("audio.wav", audio, "audio/wav")},
+            files={"file": ("audio.webm", audio, content_type)},
             data={
                 "language_code": settings.sarvam_language_code,
                 "model": settings.sarvam_stt_model,
@@ -54,7 +63,16 @@ class SttProvider:
             timeout=60.0,
         )
         resp.raise_for_status()
-        return resp.json()["transcript"]["transcript"]
+        body = resp.json()
+        # Handle both response shapes
+        if "transcript" in body:
+            t = body["transcript"]
+            text = t["transcript"] if isinstance(t, dict) else t
+        else:
+            text = body.get("text", "")
+        if not text or not text.strip():
+            raise ValueError("Sarvam STT returned empty transcript (no speech detected)")
+        return text
 
     def _elevenlabs(self, audio: bytes) -> str:
         import httpx
