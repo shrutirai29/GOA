@@ -97,7 +97,7 @@ export default function TermsOfService() {
           <p style={{ fontSize: "0.85rem", lineHeight: 1.7, color: "var(--text-dim)" }}>
             For questions about these terms, contact us via
             <a href="https://github.com/shrutirai29/GOA" style={{ color: "var(--accent)" }}> GitHub</a> or
-            <a href="mailto:team@hhgoa2026.com" style={{ color: "var(--accent)" }}> email</a>.
+            <a href="mailto:shruti.rai2901@gmail.com" style={{ color: "var(--accent)" }}> email</a>.
           </p>
         </section>
       </main>

@@ -758,7 +758,7 @@ export default function App() {
               <a href="/docs" target="_blank" rel="noreferrer">API Docs</a>
               <a href="https://github.com/shrutirai29/GOA" target="_blank" rel="noreferrer">GitHub</a>
               <a href="/tos">Terms of Service</a>
-              <a href="mailto:team@hhgoa2026.com">Contact</a>
+              <a href="mailto:shruti.rai2901@gmail.com">Contact</a>
             </div>
           </div>
           <div className="footer-bottom">
@@ -772,7 +772,6 @@ export default function App() {
 
       <ScrollToTop />
       <CookieConsent />
-      <FloatingContact />
 
       {/* Welcome Modal */}
       <Modal open={showWelcome} onClose={() => setShowWelcome(false)} title="Welcome to Voice RAG 🎉">
