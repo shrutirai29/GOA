@@ -26,17 +26,17 @@ class SttProvider:
         return self.provider
 
     # ------------------------------------------------------------- interface
-    def transcribe(self, audio: bytes, *, text_hint: str = "") -> str:
-        """Return the transcript for ``audio`` bytes.
+    def transcribe(self, audio: bytes, *, text_hint: str = "") -> tuple[str, str]:
+        """Return (transcript, detected_language) for ``audio`` bytes.
 
         ``text_hint`` lets tests/mock mode inject the expected transcript
         without a real audio file (and is never used by real providers).
         """
         if self.provider == "mock":
-            return text_hint or settings.mock_stt_transcript
+            return (text_hint or settings.mock_stt_transcript), ""
         if self.provider == "sarvam":
             return self._sarvam(audio)
-        return self._elevenlabs(audio)
+        return self._elevenlabs(audio), ""
 
     # ------------------------------------------------------------- providers
     def _sarvam(self, audio: bytes) -> str:
@@ -56,7 +56,6 @@ class SttProvider:
             headers={"api-subscription-key": settings.sarvam_api_key},
             files={"file": ("audio.webm", audio, content_type)},
             data={
-                "language_code": settings.sarvam_language_code,
                 "model": settings.sarvam_stt_model,
                 "with_timestamps": "false",
             },
@@ -72,7 +71,17 @@ class SttProvider:
             text = body.get("text", "")
         if not text or not text.strip():
             raise ValueError("Sarvam STT returned empty transcript (no speech detected)")
-        return text
+        # Return transcript + detected language_code so caller can use it
+        raw_lang = body.get("language_code", "")
+        # Convert Sarvam format ("hi-IN") to our format ("hi")
+        lang_map = {
+            "hi-IN": "hi", "en-IN": "eng", "bn-IN": "ben", "gu-IN": "guj",
+            "mr-IN": "mar", "ne-IN": "nep", "or-IN": "ori", "as-IN": "asm",
+            "ta-IN": "tam", "te-IN": "tel", "kn-IN": "kan", "ml-IN": "mal",
+            "pa-IN": "pan", "ur-IN": "urd",
+        }
+        detected_lang = lang_map.get(raw_lang, raw_lang.split("-")[0] if raw_lang else "")
+        return text, detected_lang
 
     def _elevenlabs(self, audio: bytes) -> str:
         import httpx

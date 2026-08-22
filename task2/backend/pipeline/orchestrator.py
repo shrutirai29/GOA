@@ -90,7 +90,7 @@ class Orchestrator:
         clock = _Timed()
         result = PipelineResult(request_id=request_id)
 
-        def transcribe() -> str:
+        def transcribe() -> tuple[str, str]:
             try:
                 return self.stt.transcribe(audio, text_hint=text_hint)
             except Exception as exc:
@@ -102,29 +102,29 @@ class Orchestrator:
                     # If real STT fails and text_hint is available, use it as fallback
                     if text_hint:
                         log.warning("[%s] STT failed, using text_hint fallback", request_id)
-                        return text_hint
+                        return text_hint, ""
                     raise RuntimeError(f"speech-to-text failed after retry: {exc2}") from exc2
 
-        transcript = clock.run("stt", transcribe)
+        transcript, stt_language = clock.run("stt", transcribe)
         result.transcript = transcript
         result.timings["stt"] = clock.timings["stt"]
         result.voice_total_ms = (time.perf_counter() - t0) * 1000
 
-        out = self.run_query(transcript, request_id=request_id, _clock=clock)
+        out = self.run_query(transcript, request_id=request_id, _clock=clock, _stt_language=stt_language)
         out.request_id = request_id
         out.transcript = transcript
         out.voice_total_ms = (time.perf_counter() - t0) * 1000
         out.timings.update({"stt": clock.timings["stt"]})
         return out
 
-    def run_query(self, query: str, *, request_id: str | None = None, _clock: _Timed | None = None) -> PipelineResult:
+    def run_query(self, query: str, *, request_id: str | None = None, _clock: _Timed | None = None, _stt_language: str = "") -> PipelineResult:
         request_id = request_id or uuid.uuid4().hex[:12]
         t0 = time.perf_counter()
         clock = _clock or _Timed()
         result = PipelineResult(request_id=request_id, query=query)
 
         try:
-            self._run(query, result, clock)
+            self._run(query, result, clock, _stt_language=_stt_language)
         except Exception as exc:  # last-resort: no silent failures
             log.exception("[%s] pipeline error: %s", request_id, exc)
             result.status = "error"
@@ -140,7 +140,7 @@ class Orchestrator:
         return result
 
     # ------------------------------------------------------------- pipeline
-    def _run(self, query: str, result: PipelineResult, clock: _Timed) -> None:
+    def _run(self, query: str, result: PipelineResult, clock: _Timed, *, _stt_language: str = "") -> None:
         # ---- query understanding + guardrails
         query_info = clock.run("router", lambda: self.router.classify(query))
         result.query_info = query_info
@@ -189,7 +189,8 @@ class Orchestrator:
             return
 
         # ---- answer generation with bounded retries inside the generator
-        detected_lang = query_info.language if query_info else ""
+        # Prefer STT-detected language (from audio) over script-based detection
+        detected_lang = _stt_language or (query_info.language if query_info else "")
         answer = clock.run("generation", lambda: self.generator.generate(query, context, language=detected_lang))
         result.answer = answer
 
