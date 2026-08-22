@@ -4,12 +4,15 @@ __pycache__/
 *.pyc
 *.pyo
 
-# Dataset + built indexes (large, reproducible via scripts)
-data/*.jsonl
+# Dataset raw files (large)
 data/*.parquet
 data/dataset/
-data/indexes/
 data/cache/
+
+# Committed for Docker builds:
+# data/indexes/
+# data/corpus_multilingual.jsonl
+# data/queries.jsonl
 
 # Models downloaded at build time
 models/

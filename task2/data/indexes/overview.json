@@ -1,0 +1,16 @@
+{
+  "views": [
+    "hierarchical"
+  ],
+  "documents": 10000,
+  "queries": 500,
+  "chunkers": {
+    "hierarchical": {
+      "class": "HierarchicalChunker",
+      "params": {
+        "window": 3,
+        "_leaf": "<backend.chunking.sentence.SentenceChunker object at 0x0000018557B4CB10>"
+      }
+    }
+  }
+}
