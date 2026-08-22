@@ -30,7 +30,7 @@ COPY scripts ./scripts
 # knowledge base — indexes are built offline by scripts/build_index.py
 # (see data/README); baking them in keeps startup fast
 COPY data/indexes ./data/indexes
-COPY data/corpus.jsonl ./data/corpus.jsonl
+COPY data/corpus_multilingual.jsonl ./data/corpus_multilingual.jsonl
 COPY data/queries.jsonl ./data/queries.jsonl
 
 # pre-bake the embedding model so the container never downloads at boot
