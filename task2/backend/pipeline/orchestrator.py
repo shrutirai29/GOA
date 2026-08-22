@@ -189,7 +189,8 @@ class Orchestrator:
             return
 
         # ---- answer generation with bounded retries inside the generator
-        answer = clock.run("generation", lambda: self.generator.generate(query, context))
+        detected_lang = query_info.language if query_info else ""
+        answer = clock.run("generation", lambda: self.generator.generate(query, context, language=detected_lang))
         result.answer = answer
 
         # ---- grounding verification
@@ -208,7 +209,7 @@ class Orchestrator:
         if not grounding.is_grounded:
             # regenerate once with the same evidence; if it still fails → abstain
             retry_answer = clock.run(
-                "generation_retry", lambda: self.generator.generate(query, context)
+                "generation_retry", lambda: self.generator.generate(query, context, language=detected_lang)
             )
             retry_grounding = self.grounding.verify(retry_answer.text, context)
             result.grounding = retry_grounding

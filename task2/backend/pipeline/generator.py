@@ -52,6 +52,17 @@ _ABSTENTION_EN = (
     "I don't have enough reliable information in the knowledge base to answer this question."
 )
 
+_ABSTENTION_BY_LANG = {
+    "hi": _ABSTENTION,
+    "eng": _ABSTENTION_EN,
+    "ben": "আমার কাছে এই প্রশ্নের উত্তর দেওয়ার জন্য পর्यাপ্ত নির্ভরযোগ্য তথ্য নেই।",
+    "guj": "મારી પાસે આ પ્રશ્નનો જવાબ આપવા માટે પૂરતી વિશ્વસનીય માહિતી નથી।",
+    "mar": "माझ्याकडे या प्रश्नाचे उत्तर देण्यासाठी पुरेशी विश्वसनीय माहिती नाही।",
+    "nep": "मसँग यो प्रश्नको जवाफ दिन पर्याप्त विश्वसनीय जानकारी छैन।",
+    "ori": "ମୋ ପାଖରେ ଏହି ପ୍ରଶ୍ନର ଉତ୍ତର ଦେବା ପାଇଁ ପର୍ଯ୍ୟାପ୍ତ ବିଶ୍ୱସନୀୟ ସୂଚନା ନାହିଁ।",
+    "asm": "মোৰ ওত এই প্ৰশ্নৰ উত্তৰ দিয়াৰ বাবে পৰ্যাপ্ত বিশ্বসনীয় তথ্য নাই।",
+}
+
 
 class AnswerParseError(ValueError):
     pass
@@ -184,7 +195,7 @@ class AnswerGenerator:
             raise ValueError(f"unknown llm_provider: {self.provider}")
 
     # ------------------------------------------------------------- interface
-    def generate(self, query: str, context: Context) -> Answer:
+    def generate(self, query: str, context: Context, *, language: str = "") -> Answer:
         if self.provider == "mock":
             return mock_generate(query, context)
 
@@ -192,7 +203,7 @@ class AnswerGenerator:
         last_error = ""
         for attempt in range(attempts):
             try:
-                raw = self._chat_once(query, context, strict=(attempt > 0))
+                raw = self._chat_once(query, context, strict=(attempt > 0), language=language)
                 obj = parse_answer_json(raw)
                 return self._validate(query, context, obj)
             except Exception as exc:  # network / parse / schema
@@ -203,11 +214,18 @@ class AnswerGenerator:
         return fallback
 
     # ------------------------------------------------------------------ misc
-    def _chat_once(self, query: str, context: Context, strict: bool) -> str:
+    def _chat_once(self, query: str, context: Context, strict: bool, language: str = "") -> str:
         context_text = _build_context_text(context)
+        lang_hint = ""
+        if language:
+            lang_names = {"hi": "Hindi", "ben": "Bengali", "guj": "Gujarati", "mar": "Marathi",
+                         "nep": "Nepali", "ori": "Odia", "asm": "Assamese", "eng": "English"}
+            lang_name = lang_names.get(language, language)
+            lang_hint = f"\n\nIMPORTANT: The query is in {lang_name}. You MUST answer in {lang_name} only."
         user = (
             f"Query: {query}\n\nRetrieved evidence:\n{context_text}\n\n"
-            "Answer the query with a JSON object as specified."
+            f"Answer the query with a JSON object as specified."
+            f"{lang_hint}"
         )
         if strict:
             user += (

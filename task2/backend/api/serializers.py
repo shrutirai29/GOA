@@ -55,6 +55,7 @@ def _query_info(qi: QueryInfo | None) -> dict[str, Any] | None:
         "chunk_strategy": qi.chunk_strategy,
         "retrieval_mode": qi.retrieval_mode,
         "needs_metadata_filter": qi.needs_metadata_filter,
+        "language": qi.language,
     }
 
 
