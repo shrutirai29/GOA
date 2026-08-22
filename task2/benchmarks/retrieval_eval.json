@@ -1,0 +1,53 @@
+{
+  "queries": 100,
+  "results": {
+    "fixed": {
+      "n": 100,
+      "recall@1": 0.38,
+      "recall@5": 0.68,
+      "recall@10": 0.83,
+      "mrr": 0.508,
+      "precision@5": 0.148
+    },
+    "sentence": {
+      "n": 100,
+      "recall@1": 0.31,
+      "recall@5": 0.62,
+      "recall@10": 0.78,
+      "mrr": 0.452,
+      "precision@5": 0.21
+    },
+    "semantic": {
+      "n": 100,
+      "recall@1": 0.34,
+      "recall@5": 0.71,
+      "recall@10": 0.85,
+      "mrr": 0.492,
+      "precision@5": 0.152
+    },
+    "hierarchical": {
+      "n": 100,
+      "recall@1": 0.28,
+      "recall@5": 0.56,
+      "recall@10": 0.73,
+      "mrr": 0.389,
+      "precision@5": 0.192
+    },
+    "hybrid_fusion": {
+      "n": 100,
+      "recall@1": 0.38,
+      "recall@5": 0.51,
+      "recall@10": 0.63,
+      "mrr": 0.426,
+      "precision@5": 0.292
+    },
+    "hybrid_rerank": {
+      "n": 100,
+      "recall@1": 0.38,
+      "recall@5": 0.51,
+      "recall@10": 0.63,
+      "mrr": 0.426,
+      "precision@5": 0.292
+    }
+  }
+}
