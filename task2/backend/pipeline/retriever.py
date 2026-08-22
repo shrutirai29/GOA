@@ -68,20 +68,34 @@ class Retriever:
     ) -> None:
         self.embedder = embedder
         self.index_dir = index_dir or settings.index_dir
+        self.lightweight = settings.lightweight_mode
         self.views: dict[str, _View] = {}
         candidates = view_names or ["fixed", "sentence", "semantic", "hierarchical"]
         for name in candidates:
             d = self.index_dir / name
-            if not (d / "faiss.index").exists():
-                continue
-            meta = MetadataIndex.load(d)
-            self.views[name] = _View(
-                name=name,
-                vector=VectorIndex.load(d),
-                bm25=Bm25Index.load(d),
-                metadata=meta,
-                chunk_order=[c.chunk_id for c in meta.chunks.values()],
-            )
+            if self.lightweight:
+                # Lightweight mode: skip FAISS indexes, only load BM25 + metadata
+                if not (d / "bm25.pkl").exists():
+                    continue
+                meta = MetadataIndex.load(d)
+                self.views[name] = _View(
+                    name=name,
+                    vector=None,  # type: ignore[arg-type]
+                    bm25=Bm25Index.load(d),
+                    metadata=meta,
+                    chunk_order=[c.chunk_id for c in meta.chunks.values()],
+                )
+            else:
+                if not (d / "faiss.index").exists():
+                    continue
+                meta = MetadataIndex.load(d)
+                self.views[name] = _View(
+                    name=name,
+                    vector=VectorIndex.load(d),
+                    bm25=Bm25Index.load(d),
+                    metadata=meta,
+                    chunk_order=[c.chunk_id for c in meta.chunks.values()],
+                )
 
     # ------------------------------------------------------------------ misc
     @property
@@ -95,6 +109,8 @@ class Retriever:
 
     # ---------------------------------------------------------------- dense
     def _dense_search(self, view: _View, query: str, k: int) -> list[tuple[str, float]]:
+        if self.lightweight or view.vector is None:
+            return []
         vec = self._lazy_embedder().encode_query(query)
         ids, scores = view.vector.search(vec, k)
         return list(zip(ids, scores))
@@ -117,8 +133,13 @@ class Retriever:
         # blow up BM25 cost and carry no retrieval signal → truncate for search.
         search_text = query[: settings.query_max_chars]
 
-        dense_top = query_info.retrieval_mode in ("dense", "hybrid")
-        bm25_top = query_info.retrieval_mode in ("bm25", "hybrid")
+        if self.lightweight:
+            # Lightweight mode: BM25 only, skip all dense/embedding work
+            dense_top = False
+            bm25_top = True
+        else:
+            dense_top = query_info.retrieval_mode in ("dense", "hybrid")
+            bm25_top = query_info.retrieval_mode in ("bm25", "hybrid")
 
         ranked_lists: list[list[tuple[str, float]]] = []
         weights: list[float] = []

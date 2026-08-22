@@ -83,6 +83,11 @@ class Settings(BaseSettings):
     elevenlabs_api_key: str = ""
     elevenlabs_stt_model: str = "scribe_v1"
 
+    # ---------------------------------------------------- lightweight mode
+    # When True, skip dense retrieval (no embedding model loaded).
+    # Saves ~500MB RAM — essential for free-tier deployments (Render 512MB).
+    lightweight_mode: bool = False
+
     # ---------------------------------------------------------------- serving
     host: str = "0.0.0.0"
     port: int = 8000

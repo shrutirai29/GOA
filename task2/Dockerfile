@@ -1,6 +1,5 @@
 # Multi-stage build: Node builds the React frontend, Python serves everything.
-# Build:   docker build -t rag-backend .
-# Run:     docker run -p 8000:8000 -e GEMINI_API_KEY=... rag-backend
+# Lightweight mode: BM25-only retrieval (no embedding model), fits in 512MB RAM.
 
 # ── Stage 1: Build React frontend ──
 FROM node:20-slim AS frontend-builder
@@ -15,8 +14,8 @@ FROM python:3.11-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    HF_HUB_DISABLE_SYMLINKS_WARNING=1 \
-    PIP_NO_CACHE_DIR=1
+    PIP_NO_CACHE_DIR=1 \
+    LIGHTWEIGHT_MODE=true
 
 WORKDIR /app
 
@@ -30,13 +29,12 @@ RUN pip install -r requirements.txt
 COPY backend ./backend
 COPY scripts ./scripts
 
-# knowledge base
+# knowledge base — only BM25 + metadata needed (no FAISS in lightweight mode)
 COPY data/indexes ./data/indexes
 COPY data/corpus_multilingual.jsonl ./data/corpus_multilingual.jsonl
 COPY data/queries.jsonl ./data/queries.jsonl
 
-# pre-bake the embedding model
-RUN python -c "from huggingface_hub import snapshot_download; snapshot_download('intfloat/multilingual-e5-small', cache_dir='/app/models')"
+# NO snapshot_download — embedding model not needed in lightweight mode
 
 # Copy built frontend from stage 1
 COPY --from=frontend-builder /app/frontend/dist ./frontend/dist

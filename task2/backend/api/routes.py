@@ -44,10 +44,12 @@ class _Shared:
 async def lifespan(app: FastAPI):
     log.info("starting up: loading orchestrator (views + models) ...")
     orch = Orchestrator()
-    # force the embedder to touch its weights + index pages now, not on the
-    # first user request
-    if orch.retriever.views:
-        orch.retriever._lazy_embedder().encode_query("वार्मअप")
+    if settings.lightweight_mode:
+        log.info("lightweight mode: skipping embedding model (BM25 only)")
+    elif orch.retriever.views:
+        # force the embedder to touch its weights + index pages now, not on the
+        # first user request
+        orch.retriever._lazy_embedder().encode_query("warmup")
     _Shared.orchestrator = orch
     log.info("startup complete: %d views", len(orch.retriever.views))
     yield
