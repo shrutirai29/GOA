@@ -1,13 +1,16 @@
-# Backend: FastAPI RAG service.
+# Multi-stage build: Node builds the React frontend, Python serves everything.
 # Build:   docker build -t rag-backend .
-# Run:     see docker-compose.yml (`docker compose up --build`)
-#
-# Self-contained image: the knowledge base (indexes) and the embedding model
-# are baked in so boot is instant and no volumes are required — this is what
-# makes one-shot deploys (Railway `up`, HF Spaces) work. Locally,
-# docker-compose still mounts ./data and ./models over the baked files.
-# The container binds $PORT (HF Spaces/Railway convention), falling back to
-# 8000 locally.
+# Run:     docker run -p 8000:8000 -e GEMINI_API_KEY=... rag-backend
+
+# ── Stage 1: Build React frontend ──
+FROM node:20-slim AS frontend-builder
+WORKDIR /app/frontend
+COPY frontend/package.json frontend/package-lock.json* ./
+RUN npm ci --prefer-offline
+COPY frontend/ ./
+RUN npm run build
+
+# ── Stage 2: Python backend + built frontend ──
 FROM python:3.11-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -17,9 +20,9 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
-# system deps for faiss-cpu wheels / soundfile
+# system deps: faiss-cpu, soundfile, ffmpeg (for pydub webm→wav)
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libgomp1 libsndfile1 && rm -rf /var/lib/apt/lists/*
+    libgomp1 libsndfile1 ffmpeg && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
 RUN pip install -r requirements.txt
@@ -27,17 +30,16 @@ RUN pip install -r requirements.txt
 COPY backend ./backend
 COPY scripts ./scripts
 
-# knowledge base — indexes are built offline by scripts/build_index.py
-# (see data/README); baking them in keeps startup fast
+# knowledge base
 COPY data/indexes ./data/indexes
 COPY data/corpus_multilingual.jsonl ./data/corpus_multilingual.jsonl
 COPY data/queries.jsonl ./data/queries.jsonl
 
-# pre-bake the embedding model so the container never downloads at boot
+# pre-bake the embedding model
 RUN python -c "from huggingface_hub import snapshot_download; snapshot_download('intfloat/multilingual-e5-small', cache_dir='/app/models')"
 
-# built React frontend (the API serves it at / when present)
-COPY frontend/dist ./frontend/dist
+# Copy built frontend from stage 1
+COPY --from=frontend-builder /app/frontend/dist ./frontend/dist
 
 EXPOSE 8000
 CMD uvicorn backend.main:app --host 0.0.0.0 --port ${PORT:-8000}
