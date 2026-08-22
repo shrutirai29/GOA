@@ -42,19 +42,13 @@ class SttProvider:
     def _sarvam(self, audio: bytes) -> str:
         import httpx
 
-        # Detect content type from magic bytes (browser sends webm/mp4)
-        content_type = "audio/wav"
-        if audio[:4] == b"\x1aE\xdf\xa3":
-            content_type = "audio/webm"
-        elif audio[:4] == b"\x00\x00\x00\x1c" or audio[4:8] == b"ftyp":
-            content_type = "audio/mp4"
-        elif audio[:4] == b"OggS":
-            content_type = "audio/ogg"
+        # Sarvam only supports WAV. Convert browser formats (webm/mp4/ogg) to WAV.
+        audio, content_type = self._ensure_wav(audio)
 
         resp = httpx.post(
             "https://api.sarvam.ai/speech-to-text",
             headers={"api-subscription-key": settings.sarvam_api_key},
-            files={"file": ("audio.webm", audio, content_type)},
+            files={"file": ("audio.wav", audio, content_type)},
             data={
                 "model": settings.sarvam_stt_model,
                 "with_timestamps": "false",
@@ -71,6 +65,25 @@ class SttProvider:
             text = body.get("text", "")
         if not text or not text.strip():
             raise ValueError("Sarvam STT returned empty transcript (no speech detected)")
+    @staticmethod
+    def _ensure_wav(audio: bytes) -> tuple[bytes, str]:
+        """Convert browser audio (webm/mp4/ogg) to WAV for Sarvam."""
+        # Check if already WAV
+        if audio[:4] == b"RIFF":
+            return audio, "audio/wav"
+        # Convert using pydub
+        try:
+            from pydub import AudioSegment
+            import io
+            seg = AudioSegment.from_file(io.BytesIO(audio))
+            seg = seg.set_frame_rate(16000).set_channels(1).set_sample_width(2)
+            buf = io.BytesIO()
+            seg.export(buf, format="wav")
+            return buf.getvalue(), "audio/wav"
+        except Exception:
+            # If conversion fails, send as-is and hope for the best
+            return audio, "audio/wav"
+
         # Return transcript + detected language_code so caller can use it
         raw_lang = body.get("language_code", "")
         # Convert Sarvam format ("hi-IN") to our format ("hi")
