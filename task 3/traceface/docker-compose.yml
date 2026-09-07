@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8501:8501"
+    environment:
+      - SEARCH_PROVIDER=${SEARCH_PROVIDER:-demo}
+      - SEARCH_API_KEY=${SEARCH_API_KEY:-}
+      - BLOCKCHAIN_MODE=${BLOCKCHAIN_MODE:-local}
+      - RPC_URL=${RPC_URL:-http://hardhat:8545}
+      - LOCAL_RPC_URL=http://hardhat:8545
+      - PRIVATE_KEY=${PRIVATE_KEY:-}
+      - CONTRACT_ADDRESS=${CONTRACT_ADDRESS:-}
+      - FACE_MATCH_THRESHOLD=${FACE_MATCH_THRESHOLD:-0.80}
+    depends_on:
+      - hardhat
+    volumes:
+      - ./assets:/app/assets
+    networks:
+      - traceface
+
+  hardhat:
+    image: node:18-slim
+    working_dir: /app
+    command: >
+      sh -c "npm init -y &&
+             npm install hardhat @nomicfoundation/hardhat-toolbox dotenv &&
+             npx hardhat node --hostname 0.0.0.0"
+    ports:
+      - "8545:8545"
+    volumes:
+      - ./contracts:/app/contracts
+      - ./scripts:/app/scripts
+      - ./hardhat.config.js:/app/hardhat.config.js
+      - ./package.json:/app/package.json
+    networks:
+      - traceface
+
+networks:
+  traceface:
+    driver: bridge

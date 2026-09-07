@@ -1,0 +1,13 @@
+# environment — local secrets only (keep .env.example tracked)
+.env
+.env.*
+!.env.example
+
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# misc
+.DS_Store

@@ -1,0 +1,18 @@
+{
+  "name": "traceface",
+  "version": "1.0.0",
+  "description": "TraceFace — Face Identification & Blockchain Verification",
+  "scripts": {
+    "compile": "npx hardhat compile",
+    "test": "npx hardhat test",
+    "node": "npx hardhat node",
+    "deploy:local": "npx hardhat run scripts/deploy_contract.js --network localhost",
+    "deploy:base-sepolia": "npx hardhat run scripts/deploy_contract.js --network baseSepolia",
+    "deploy:polygon-amoy": "npx hardhat run scripts/deploy_contract.js --network polygonAmoy"
+  },
+  "devDependencies": {
+    "hardhat": "^2.19.0",
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "dotenv": "^16.3.0"
+  }
+}
