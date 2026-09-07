@@ -208,15 +208,20 @@ export function Pipeline() {
   /* ─── STEP 1: Web Search ───────────────────────────────────── */
 
   const handleSearch = async () => {
-    if (!imageBase64) return;
+    // Search the CROPPED FACE REGION — submitting the full photo makes Google
+    // Lens match clothing/background instead of the face.
+    if (!faceCropUrl) {
+      log("⚠ Encode the selected face first — the web search uses the cropped face region, not the whole photo");
+      return;
+    }
     setLoading(true);
     setStep(1);
-    log("[1/4] Preparing image for visual search...");
+    log("[1/4] Cropping face region for visual search...");
 
     try {
       // Downscale/compress so the upload fits provider limits (SerpAPI: 500 KB)
-      const searchImage = await compressImageForSearch(imageBase64);
-      log("[2/4] Submitting image to search provider...");
+      const searchImage = await compressImageForSearch(faceCropUrl);
+      log("[2/4] Submitting face region to visual search provider...");
       const resp = await fetch("/api/search", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -638,8 +643,11 @@ export function Pipeline() {
                     <button onClick={handleSearch} disabled={loading}
                       className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-electric to-neon px-6 py-3 font-mono text-[12px] font-bold tracking-[0.1em] text-white shadow-[0_8px_24px_-6px_rgba(52,211,153,0.5)] transition-all hover:shadow-[0_12px_32px_-6px_rgba(52,211,153,0.7)] disabled:opacity-50">
                       {loading ? <Loader2 size={14} className="animate-spin" /> : <Search size={14} />}
-                      {loading ? "SEARCHING..." : "SEARCH THE WEB"}
+                      {loading ? "SEARCHING..." : "SEARCH FACE ON THE WEB"}
                     </button>
+                    <p className="mt-2 font-mono text-[9px] text-dim/70">
+                      Searches the cropped face region via Google Lens — not the full photo
+                    </p>
                     {searchMode && (
                       <div className={`mt-2 inline-flex items-center gap-2 rounded-full px-3 py-1 font-mono text-[10px] ${
                         searchMode === "live" ? "bg-electric/10 text-electric" : "bg-amber/10 text-amber"
@@ -669,11 +677,27 @@ export function Pipeline() {
                         }`}>
                         <div className="flex items-start justify-between gap-4">
                           <div className="flex-1 min-w-0">
-                            <p className="font-mono text-[11px] font-medium text-bone truncate">{res.title}</p>
-                            <p className="font-mono text-[10px] text-dim mt-1">
-                              <Globe size={9} className="inline mr-1" />
-                              {res.domain}
-                            </p>
+                            <div className="flex items-start gap-3">
+                              {res.imageUrl && (
+                                <img
+                                  src={res.imageUrl}
+                                  alt=""
+                                  className="h-12 w-12 shrink-0 rounded-lg border border-white/10 bg-white/5 object-cover"
+                                  onError={(e) => { e.currentTarget.style.display = "none"; }}
+                                  loading="lazy"
+                                />
+                              )}
+                              <div className="min-w-0 flex-1">
+                                <a href={res.url} target="_blank" rel="noopener noreferrer"
+                                  className="block truncate font-mono text-[11px] font-medium text-bone transition-colors hover:text-electric">
+                                  {res.title}
+                                </a>
+                                <p className="mt-1 font-mono text-[10px] text-dim">
+                                  <Globe size={9} className="mr-1 inline" />
+                                  {res.domain}
+                                </p>
+                              </div>
+                            </div>
                             {res.snippet && (
                               <p className="font-mono text-[9px] text-dim/70 mt-1 line-clamp-2">{res.snippet}</p>
                             )}
