@@ -223,3 +223,102 @@ export function cropFace(
   ctx.drawImage(img, sx, sy, sw, sh, 0, 0, sw, sh);
   return canvas.toDataURL("image/png");
 }
+
+/**
+ * L2-normalize a descriptor. FaceNet outputs are unit-norm by design, but
+ * normalizing explicitly keeps cosine similarity and Euclidean distance
+ * mathematically consistent so the dual-metric gate in faceMatchScore() is
+ * meaningful.
+ */
+export function l2Normalize(v: number[]): number[] {
+  const norm = Math.sqrt(v.reduce((s, x) => s + x * x, 0));
+  if (norm === 0) return v;
+  return v.map((x) => x / norm);
+}
+
+export interface FaceMatchScore {
+  cosine: number; // 0..1
+  distance: number; // Euclidean (native FaceNet metric)
+  pct: number; // 0..100 display score (derived from distance)
+  label: string;
+  color: string;
+}
+
+/**
+ * Compare two 128-d descriptors using BOTH metrics on L2-normalized vectors.
+ *
+ * WHY THE DUAL GATE: FaceNet embeddings are trained for Euclidean distance,
+ * and plain cosine similarity inflates cross-person scores (unrelated faces
+ * routinely reach 0.85–0.95). Requiring both metrics to clear their
+ * thresholds eliminates those inflated "matches":
+ *
+ *   d ≤ 0.40  (c ≥ 0.92) → VERY HIGH MATCH (same-person claim)
+ *   d ≤ 0.49  (c ≥ 0.88) → HIGH VISUAL MATCH
+ *   d ≤ 0.64  (c ≥ 0.80) → POSSIBLE VISUAL MATCH
+ *   otherwise           → NO VERIFIED MATCH
+ */
+export function faceMatchScore(a: number[], b: number[]): FaceMatchScore | null {
+  if (!a || !b || a.length === 0 || a.length !== b.length) return null;
+  const na = l2Normalize(a);
+  const nb = l2Normalize(b);
+  const cosine = cosineSimilarity(na, nb);
+  const distance = euclideanDistance(na, nb);
+  const pct = Math.round(Math.max(0, Math.min(100, 127 - 80 * distance)));
+
+  let label = "NO VERIFIED MATCH";
+  let color = "#ef4444";
+  if (cosine >= 0.92 && distance <= 0.4) {
+    label = "VERY HIGH MATCH";
+    color = "#34d399";
+  } else if (cosine >= 0.88 && distance <= 0.49) {
+    label = "HIGH VISUAL MATCH";
+    color = "#2dd4bf";
+  } else if (cosine >= 0.8 && distance <= 0.64) {
+    label = "POSSIBLE VISUAL MATCH";
+    color = "#f59e0b";
+  }
+  return { cosine, distance, pct, label, color };
+}
+
+/**
+ * Re-encode a face from an UPSCALED crop of the source image.
+ *
+ * Small faces (screenshots, thumbnails) produce noisy descriptors that
+ * collapse toward an "average face" and score high against many different
+ * people — the main cause of the false positives seen in demos. Upscaling
+ * the crop before re-detecting recovers identity signal and makes the
+ * comparison fair for both the input face and candidate thumbnails.
+ */
+export async function encodeFaceUpscaled(
+  img: HTMLImageElement,
+  box: { x: number; y: number; width: number; height: number },
+  targetSize = 224,
+  padding = 0.35
+): Promise<number[] | null> {
+  if (!faceApi) throw new Error("face-api not loaded. Call loadFaceModels() first.");
+
+  const padX = box.width * padding;
+  const padY = box.height * padding;
+  const sx = Math.max(0, box.x - padX);
+  const sy = Math.max(0, box.y - padY);
+  const sw = Math.min(img.naturalWidth - sx, box.width + padX * 2);
+  const sh = Math.min(img.naturalHeight - sy, box.height + padY * 2);
+  if (!sw || !sh || sw < 8 || sh < 8) return null;
+
+  const scale = Math.min(6, Math.max(1, targetSize / Math.min(sw, sh)));
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.round(sw * scale);
+  canvas.height = Math.round(sh * scale);
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return null;
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = "high";
+  ctx.drawImage(img, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+
+  const det = await faceApi
+    .detectSingleFace(canvas, new faceApi.SsdMobilenetv1Options({ minConfidence: 0.5 }))
+    .withFaceLandmarks()
+    .withFaceDescriptors();
+  if (!det || !det.descriptor) return null;
+  return Array.from(det.descriptor);
+}

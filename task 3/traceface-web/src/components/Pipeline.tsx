@@ -11,8 +11,8 @@ import { Reveal } from "@/components/ui/Reveal";
 import {
   loadFaceModels,
   detectFaces,
-  compareCandidateFaces,
-  matchCategory,
+  encodeFaceUpscaled,
+  faceMatchScore,
   descriptorHash,
   cropFace,
   type DetectedFace,
@@ -29,7 +29,8 @@ interface SearchRes {
 interface ProcessedRes extends SearchRes {
   imageDownloaded: boolean;
   faceInResult: boolean;
-  similarity: number | null;
+  similarity: number | null; // 0..1 display score (distance-derived)
+  distance: number | null; // Euclidean distance (native FaceNet metric)
   matchLabel: string;
   resultImageHash: string;
 }
@@ -57,12 +58,15 @@ const STEPS = [
   { id: 5, icon: CheckCircle, title: "VERIFICATION", short: "Verify", color: "#34d399" },
 ];
 
-/* Honest similarity bands (calibrated for FaceNet / face-api.js 128-d
- * descriptors — unrelated faces routinely score 0.80–0.88):
- *   ≥ 0.92 → VERY HIGH   |   0.88–0.92 → HIGH   |   0.80–0.88 → POSSIBLE
- *   < 0.80 → NO VERIFIED MATCH */
-const VERIFIED_FLOOR = 0.8;
-const HIGH_FLOOR = 0.88;
+/* Honest similarity bands. The displayed score is derived from Euclidean
+ * distance (the native FaceNet metric) and gated by BOTH cosine and
+ * distance inside faceMatchScore():
+ *   pct ≥ 95 (d ≤ 0.40) → VERY HIGH MATCH  (same-person claim)
+ *   pct ≥ 88 (d ≤ 0.49) → HIGH VISUAL MATCH
+ *   pct ≥ 76 (d ≤ 0.64) → POSSIBLE VISUAL MATCH
+ *   below               → NO VERIFIED MATCH */
+const VERIFIED_FLOOR = 0.88;
+const HIGH_FLOOR = 0.95;
 
 /* ─── Helpers ──────────────────────────────────────────────────── */
 
@@ -71,6 +75,18 @@ async function hashBytes(data: ArrayBuffer): Promise<string> {
   const hashBuffer = await crypto.subtle.digest("SHA-256", data);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
   return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+/** Load an image with CORS + timeout, as a Promise. */
+function loadImage(src: string): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error("load failed"));
+    img.src = src;
+    setTimeout(() => reject(new Error("load timeout")), 5000);
+  });
 }
 
 /* ─── Component ──────────────────────────────────────────────────── */
@@ -117,6 +133,7 @@ export function Pipeline() {
   } | null>(null);
 
   const fileRef = useRef<HTMLInputElement>(null);
+  const [lowQualityInput, setLowQualityInput] = useState(false);
 
   const log = useCallback((msg: string) => {
     const ts = new Date().toLocaleTimeString("en-US", { hour12: false });
@@ -187,12 +204,21 @@ export function Pipeline() {
     img.src = imageUrl;
     img.onload = async () => {
       const face = faces[selectedFace];
-      const desc = face.descriptor;
+      const faceSize = Math.min(face.box.width, face.box.height);
+      if (faceSize < 64) {
+        setLowQualityInput(true);
+        log("⚠ Input face is small (" + Math.round(faceSize) + "px) — re-encoding from an upscaled crop to avoid inflated similarity");
+      }
+
+      // Re-encode from an upscaled crop: small/screenshot faces produce
+      // noisy descriptors that score high against many different people.
+      const improved = await encodeFaceUpscaled(img, face.box);
+      const desc = improved ?? face.descriptor;
       setDescriptor(desc);
 
       const hash = await descriptorHash(desc);
       setDescHash(hash);
-      log("Face embedding generated (128-d descriptor)");
+      log("Face embedding generated (128-d descriptor)" + (improved ? " — upscaled crop" : ""));
       log("Descriptor hash: " + hash.slice(0, 16) + "...");
 
       // Crop face for thumbnail
@@ -285,21 +311,14 @@ export function Pipeline() {
         imageDownloaded: false,
         faceInResult: false,
         similarity: null,
+        distance: null,
         matchLabel: "",
         resultImageHash: "",
       };
 
       if (res.imageUrl) {
         try {
-          const img = new Image();
-          img.crossOrigin = "anonymous";
-          await new Promise<void>((resolve, reject) => {
-            img.onload = () => resolve();
-            img.onerror = () => reject(new Error("load failed"));
-            img.src = res.imageUrl;
-            setTimeout(reject, 5000);
-          });
-
+          const img = await loadImage(res.imageUrl);
           pr.imageDownloaded = true;
 
           // Compute result image hash via canvas
@@ -313,16 +332,29 @@ export function Pipeline() {
           const buf = await blob.arrayBuffer();
           pr.resultImageHash = await hashBytes(buf);
 
-          // Detect faces and compare against the encoded query face.
-          // compareCandidateFaces filters out tiny/low-confidence detections
-          // and keeps the BEST score across all faces in the image — this
-          // eliminates the false positives from noisy product thumbnails.
+          // PASS 1 — cheap scoring: detect faces at native resolution and
+          // score each qualifying face with the dual cosine+Euclidean gate.
+          // Tiny/low-confidence detections are excluded — noisy thumbnails
+          // are the classic source of inflated (false positive) scores.
           const detected = await detectFaces(img);
           if (detected.length > 0 && descriptor.length > 0) {
             pr.faceInResult = true;
-            const sim = compareCandidateFaces(descriptor, detected);
-            pr.similarity = sim;
-            pr.matchLabel = sim !== null ? matchCategory(sim).label : "NO FACE QUALIFIES";
+            let best: { pct: number; distance: number; label: string } | null = null;
+            for (const f of detected) {
+              if (f.confidence < 0.6) continue;
+              if (Math.min(f.box.width, f.box.height) < 48) continue;
+              const score = faceMatchScore(descriptor, f.descriptor);
+              if (score && (!best || score.pct > best.pct)) {
+                best = { pct: score.pct, distance: score.distance, label: score.label };
+              }
+            }
+            if (best) {
+              pr.similarity = best.pct / 100;
+              pr.distance = best.distance;
+              pr.matchLabel = best.label;
+            } else {
+              pr.matchLabel = "NO FACE QUALIFIES";
+            }
           }
         } catch {
           // Image not loadable (CORS, network, etc) — skip face comparison
@@ -332,7 +364,41 @@ export function Pipeline() {
       processed.push(pr);
     }
 
-    // Sort by similarity (highest first), nulls last
+    // PASS 2 — refinement: candidate thumbnails are usually small, so their
+    // native-resolution descriptors are still noisy. Re-encode the TOP
+    // candidates from upscaled face crops (same treatment as the input
+    // face) and re-score with the dual metric. This is where the remaining
+    // false positives get filtered out.
+    const topCandidates = processed
+      .filter((r) => r.similarity !== null)
+      .sort((a, b) => (b.similarity as number) - (a.similarity as number))
+      .slice(0, 6);
+
+    for (const res of topCandidates) {
+      try {
+        const img = await loadImage(res.imageUrl);
+        const detected = await detectFaces(img);
+        let best: { pct: number; distance: number; label: string } | null = null;
+        for (const f of detected) {
+          if (f.confidence < 0.6) continue;
+          if (Math.min(f.box.width, f.box.height) < 48) continue;
+          const candDesc = await encodeFaceUpscaled(img, f.box);
+          const score = faceMatchScore(descriptor, candDesc ?? f.descriptor);
+          if (score && (!best || score.pct > best.pct)) {
+            best = { pct: score.pct, distance: score.distance, label: score.label };
+          }
+        }
+        if (best) {
+          res.similarity = best.pct / 100;
+          res.distance = best.distance;
+          res.matchLabel = best.label;
+        }
+      } catch {
+        // Keep the PASS 1 score if refinement fails
+      }
+    }
+
+    // Final sort by similarity (highest first), nulls last
     processed.sort((a, b) => {
       if (a.similarity === null && b.similarity === null) return 0;
       if (a.similarity === null) return 1;
@@ -637,6 +703,14 @@ export function Pipeline() {
                   </div>
                 </div>
 
+                {/* Low-quality input warning */}
+                {lowQualityInput && (
+                  <div className="mb-4 rounded-lg border border-amber/20 bg-amber/5 p-2.5 font-mono text-[9px] leading-relaxed text-amber">
+                    ⚠ Input face is small / low-resolution — similarity scores are computed conservatively.
+                    A clear, front-facing photo gives the most reliable matches.
+                  </div>
+                )}
+
                 {/* STEP 1: Search button */}
                 {step === 1 && (
                   <div className="mb-4">
@@ -714,14 +788,17 @@ export function Pipeline() {
                             {res.similarity !== null ? (
                               <>
                                 <p className="font-mono text-lg font-bold" style={{
-                                  color: res.similarity >= 0.92 ? "#34d399"
+                                  color: res.similarity >= 0.95 ? "#34d399"
                                     : res.similarity >= 0.88 ? "#2dd4bf"
-                                    : res.similarity >= 0.8 ? "#f59e0b"
+                                    : res.similarity >= 0.76 ? "#f59e0b"
                                     : "#ef4444"
                                 }}>
                                   {(res.similarity * 100).toFixed(1)}%
                                 </p>
                                 <p className="font-mono text-[8px] text-dim uppercase">{res.matchLabel}</p>
+                                {res.distance !== null && (
+                                  <p className="font-mono text-[8px] text-dim">d={res.distance.toFixed(2)}</p>
+                                )}
                               </>
                             ) : (
                               <p className="font-mono text-[10px] text-dim">N/A</p>
@@ -739,10 +816,11 @@ export function Pipeline() {
                     ))}
 
                     <p className="pt-1 font-mono text-[9px] leading-relaxed text-dim/60">
-                      Similarity compares 128-d face descriptors (face-api.js). Scores below 88% are
-                      visual/possible matches only — they do not confirm the person is the same. A visual
-                      match should not be treated as proof of a person&apos;s real-world identity unless the
-                      public source itself provides identifying context.
+                      Similarity compares 128-d face descriptors (face-api.js) using a dual gate — cosine
+                      similarity AND Euclidean distance — on upscaled face crops. Only ≥95% is treated as a
+                      same-person visual match; 88–95% is a high visual match; below that is a possible match,
+                      not identity confirmation. A visual match should never be treated as proof of a
+                      person&apos;s real-world identity unless the public source itself provides identifying context.
                     </p>
                   </div>
                 )}
