@@ -203,31 +203,47 @@ export function Pipeline() {
     const img = new Image();
     img.src = imageUrl;
     img.onload = async () => {
-      const face = faces[selectedFace];
-      const faceSize = Math.min(face.box.width, face.box.height);
-      if (faceSize < 64) {
-        setLowQualityInput(true);
-        log("⚠ Input face is small (" + Math.round(faceSize) + "px) — re-encoding from an upscaled crop to avoid inflated similarity");
+      try {
+        const face = faces[selectedFace];
+        const faceSize = Math.min(face.box.width, face.box.height);
+        if (faceSize < 64) {
+          setLowQualityInput(true);
+          log("⚠ Input face is small (" + Math.round(faceSize) + "px) — re-encoding from an upscaled crop to avoid inflated similarity");
+        }
+
+        // Re-encode from an upscaled crop: small/screenshot faces produce
+        // noisy descriptors that score high against many different people.
+        // If upscaled re-encoding fails/times out, fall back to the original
+        // detection embedding rather than hanging forever.
+        let improved: number[] | null = null;
+        try {
+          improved = await encodeFaceUpscaled(img, face.box);
+        } catch {
+          improved = null;
+        }
+        const desc = improved ?? face.descriptor;
+        setDescriptor(desc);
+
+        const hash = await descriptorHash(desc);
+        setDescHash(hash);
+        log("Face embedding generated (128-d descriptor)" + (improved ? " — upscaled crop" : ""));
+        log("Descriptor hash: " + hash.slice(0, 16) + "...");
+
+        // Crop face for thumbnail
+        const crop = cropFace(img, face.box);
+        setFaceCropUrl(crop);
+
+        setStep(1);
+        log("✓ Ready for web search — click SEARCH THE WEB");
+      } catch (err) {
+        log("✗ Face encoding error: " + (err as Error).message);
+      } finally {
+        setLoading(false);
       }
-
-      // Re-encode from an upscaled crop: small/screenshot faces produce
-      // noisy descriptors that score high against many different people.
-      const improved = await encodeFaceUpscaled(img, face.box);
-      const desc = improved ?? face.descriptor;
-      setDescriptor(desc);
-
-      const hash = await descriptorHash(desc);
-      setDescHash(hash);
-      log("Face embedding generated (128-d descriptor)" + (improved ? " — upscaled crop" : ""));
-      log("Descriptor hash: " + hash.slice(0, 16) + "...");
-
-      // Crop face for thumbnail
-      const crop = cropFace(img, face.box);
-      setFaceCropUrl(crop);
-
-      setStep(1);
+    };
+    img.onerror = () => {
+      log("✗ Could not load the uploaded image for encoding");
       setLoading(false);
-      log("✓ Ready for web search — click SEARCH THE WEB");
     };
   };
 
