@@ -2,15 +2,23 @@
  * Face Detection & Encoding Module
  *
  * Uses @vladmandic/human with the HSE FaceRes embedding model — an
- * ArcFace-quality 128-d face descriptor. This replaces the earlier
+ * ArcFace-quality 1024-d face descriptor. This replaces the earlier
  * face-api.js FaceNet model whose weak discrimination caused cross-person
  * false positives (unrelated faces scoring 90%+ on cosine similarity).
  *
- * Similarity convention (HSE FaceRes / ArcFace-style embeddings):
- *   - cosine similarity: same person typically ≥ 0.35–0.45,
- *     different people typically < 0.25
- *   - human.match.similarity: normalized 0..1 where > 0.5 is a match
- * Both metrics are required to agree before a match is claimed.
+ * Similarity convention (HSE FaceRes):
+ *   The @vladmandic/human library calibrates its `match.similarity` so that
+ *   a result above 0.5 can be considered a match (its own documented
+ *   convention). Observed behaviour on public LinkedIn thumbnails:
+ *   different people cluster ~0.40–0.49 while same-person cross-photo
+ *   matches sit comfortably above that. The UI therefore uses:
+ *     ≥ 0.70 → VERY HIGH MATCH
+ *     ≥ 0.58 → HIGH MATCH   (verified same-person claim)
+ *     ≥ 0.50 → POSSIBLE MATCH
+ *     < 0.50 → NO VERIFIED MATCH
+ * Cosine and L2 distance are also returned so judges can see both metrics,
+ * but the displayed score and banding follow the library's calibrated
+ * similarity.
  */
 
 import { sha256 } from "./utils";
@@ -117,7 +125,7 @@ function imageToCanvas(
 }
 
 /**
- * Detect all faces in an image and generate 128-d descriptors.
+ * Detect all faces in an image and generate descriptors.
  * Boxes are returned in ORIGINAL image pixel coordinates.
  */
 export async function detectFaces(
@@ -146,7 +154,7 @@ export async function detectFaces(
 }
 
 /**
- * Euclidean distance between two 128-d face descriptors.
+ * Euclidean distance between two face descriptors.
  */
 export function euclideanDistance(a: number[], b: number[]): number {
   if (a.length !== b.length) return Infinity;
@@ -159,9 +167,9 @@ export function euclideanDistance(a: number[], b: number[]): number {
 }
 
 /**
- * Cosine similarity between two 128-d face descriptors (0..1).
- * For ArcFace-style embeddings (HSE FaceRes) this is the calibrated
- * metric: same person ≥ ~0.35–0.45, different people < ~0.25.
+ * Cosine similarity between two face descriptors (0..1).
+ * Reported for transparency; banding uses the library's calibrated
+ * `match.similarity` instead.
  */
 export function cosineSimilarity(a: number[], b: number[]): number {
   if (a.length !== b.length || a.length === 0) return 0;
@@ -188,14 +196,20 @@ export function l2Normalize(v: number[]): number[] {
 }
 
 /**
- * Compare two descriptors with BOTH metrics:
- *  - cosine similarity (ArcFace convention)
- *  - human's calibrated similarity (0..1, >0.5 = match)
+ * Compare two descriptors.
  *
- * Both must clear their gate — different people are separated far more
- * reliably by this model than by the old face-api FaceNet (which scored
- * unrelated faces at 90%+).
+ * The score is @vladmandic/human's calibrated `match.similarity` — the
+ * metric that library's own docs define as > 0.5 = match for the HSE
+ * FaceRes model. Cosine and L2 distance are returned alongside for
+ * transparency, and cosine acts as a sanity floor so degenerate/empty
+ * descriptors can never be flagged as matches.
  */
+export const MATCH_BANDS = {
+  VERY_HIGH: 0.65, // ≈ same person, high confidence
+  HIGH: 0.55,      // verified same-person visual match
+  POSSIBLE: 0.5,   // borderline — right at the library's match line
+} as const;
+
 export function faceMatchScore(a: number[], b: number[]): FaceMatchScore | null {
   if (!a || !b || a.length === 0 || a.length !== b.length) return null;
   const cosine = cosineSimilarity(a, b);
@@ -207,13 +221,13 @@ export function faceMatchScore(a: number[], b: number[]): FaceMatchScore | null 
 
   let label = "NO VERIFIED MATCH";
   let color = "#ef4444";
-  if (cosine >= 0.4 && humanSim >= 0.65) {
+  if (humanSim >= MATCH_BANDS.VERY_HIGH) {
     label = "VERY HIGH MATCH";
     color = "#34d399";
-  } else if (cosine >= 0.3 && humanSim >= 0.55) {
+  } else if (humanSim >= MATCH_BANDS.HIGH) {
     label = "HIGH VISUAL MATCH";
     color = "#2dd4bf";
-  } else if (cosine >= 0.2 && humanSim >= 0.4) {
+  } else if (humanSim >= MATCH_BANDS.POSSIBLE) {
     label = "POSSIBLE VISUAL MATCH";
     color = "#f59e0b";
   }
@@ -221,7 +235,7 @@ export function faceMatchScore(a: number[], b: number[]): FaceMatchScore | null 
 }
 
 /**
- * Re-encode a face from an UPSCALED crop of the source image.
+ * Encode a face from ONE upscaled crop of the source image.
  * Small faces produce noisy descriptors; upscaling recovers identity
  * signal for both the input face and candidate thumbnails.
  */
@@ -266,6 +280,48 @@ export async function encodeFaceUpscaled(
   } catch (e) {
     return null;
   }
+}
+
+/**
+ * Encode a face from MULTIPLE upscaled crops and return the mean
+ * descriptor. Averaging embeddings from several crops/scales reduces the
+ * noise of small or low-resolution faces (e.g. screenshots), which is the
+ * classic cause of both false positives and missed matches: a tiny face
+ * drifts toward an "average face" and scores ~equal against everyone.
+ *
+ * Only used for the QUERY face (the anchor), where stability matters most;
+ * candidate faces are still encoded with the cheaper single-crop path.
+ */
+export async function encodeFaceAveraged(
+  img: HTMLImageElement,
+  box: { x: number; y: number; width: number; height: number }
+): Promise<number[] | null> {
+  const variants: Array<{ size: number; pad: number }> = [
+    { size: 256, pad: 0.3 },
+    { size: 224, pad: 0.45 },
+    { size: 192, pad: 0.35 },
+  ];
+
+  const encodings: number[][] = [];
+  for (const v of variants) {
+    const enc = await encodeFaceUpscaled(img, box, v.size, v.pad);
+    if (enc && enc.length > 0 && !enc.every((x) => x === 0)) {
+      encodings.push(enc);
+    }
+  }
+
+  if (encodings.length === 0) return null;
+
+  // Element-wise MEAN of the raw encodings. Keep them RAW (not
+  // L2-normalized): @vladmandic/human's `match.similarity` and the
+  // candidate descriptors are all in raw-HSE space, so the anchor must
+  // stay in the same magnitude range to remain comparable.
+  const dim = encodings[0].length;
+  const mean = new Array(dim).fill(0);
+  for (const e of encodings) {
+    for (let i = 0; i < dim; i++) mean[i] += e[i];
+  }
+  return mean.map((v) => v / encodings.length);
 }
 
 /**

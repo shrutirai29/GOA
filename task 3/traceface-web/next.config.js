@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
+const path = require("path");
+
 const nextConfig = {
   reactStrictMode: true,
   images: {
@@ -6,7 +8,6 @@ const nextConfig = {
       { protocol: "https", hostname: "**" },
     ],
   },
-  // Allow face-api.js CDN
   async headers() {
     return [
       {
@@ -17,9 +18,18 @@ const nextConfig = {
       },
     ];
   },
-  // Optimize large model files
   experimental: {
     optimizePackageImports: ["lucide-react"],
+  },
+  webpack(config) {
+    // The @vladmandic/human package's default "main"/"require" export is the
+    // Node build, which needs the native tfjs-node dependency at bundle time.
+    // Always resolve to the browser ESM bundle (tfjs is embedded) instead.
+    config.resolve.alias["@vladmandic/human"] = path.resolve(
+      __dirname,
+      "node_modules/@vladmandic/human/dist/human.esm.js"
+    );
+    return config;
   },
 };
 

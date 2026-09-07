@@ -8,7 +8,7 @@ const STEPS = [
     n: "01",
     icon: Eye,
     title: "UPLOAD & DETECT",
-    body: "Upload a face image. Face detection (SSD MobileNet) detects all faces, generates 128-d embeddings, and computes the image fingerprint.",
+    body: "Upload a face image. Face detection (HSE FaceRes model) finds all faces, generates 1024-d face descriptors, and computes the image fingerprint.",
   },
   {
     n: "02",

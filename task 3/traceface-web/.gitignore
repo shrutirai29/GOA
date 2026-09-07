@@ -11,8 +11,9 @@
 # environment — local secrets only (keep .env.example tracked)
 .env
 .env.*
-!.env.example
-
-# misc
+!.env.example# misc
 .DS_Store
-*.log
+*.log
+*.tsbuildinfo
+public/samples
+

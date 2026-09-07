@@ -12,9 +12,11 @@ import {
   loadFaceModels,
   detectFaces,
   encodeFaceUpscaled,
+  encodeFaceAveraged,
   faceMatchScore,
   descriptorHash,
   cropFace,
+  MATCH_BANDS,
   type DetectedFace,
 } from "@/lib/face-detect";
 import { sha256, canonicalJson, compressImageForSearch } from "@/lib/utils";
@@ -58,15 +60,16 @@ const STEPS = [
   { id: 5, icon: CheckCircle, title: "VERIFICATION", short: "Verify", color: "#34d399" },
 ];
 
-/* Honest similarity bands. The displayed score is derived from Euclidean
- * distance (the native FaceNet metric) and gated by BOTH cosine and
- * distance inside faceMatchScore():
- *   pct ≥ 95 (d ≤ 0.40) → VERY HIGH MATCH  (same-person claim)
- *   pct ≥ 88 (d ≤ 0.49) → HIGH VISUAL MATCH
- *   pct ≥ 76 (d ≤ 0.64) → POSSIBLE VISUAL MATCH
- *   below               → NO VERIFIED MATCH */
-const VERIFIED_FLOOR = 0.88;
-const HIGH_FLOOR = 0.95;
+/* Honest similarity bands, calibrated for the @vladmandic/human HSE
+ * FaceRes model (library convention: similarity > 0.5 = a match):
+ *   pct ≥ 65 → VERY HIGH MATCH   (same-person, near-certain)
+ *   pct ≥ 55 → HIGH VISUAL MATCH (verified same-person floor)
+ *   pct ≥ 50 → POSSIBLE VISUAL MATCH
+ *   below    → NO VERIFIED MATCH
+ * These replace the old face-api.js FaceNet thresholds (88/95%) that no
+ * real cross-photo match on the HSE scale could ever reach. */
+const VERIFIED_FLOOR = MATCH_BANDS.HIGH; // 0.55
+const HIGH_FLOOR = MATCH_BANDS.VERY_HIGH; // 0.65
 
 /* ─── Helpers ──────────────────────────────────────────────────── */
 
@@ -211,13 +214,13 @@ export function Pipeline() {
           log("⚠ Input face is small (" + Math.round(faceSize) + "px) — re-encoding from an upscaled crop to avoid inflated similarity");
         }
 
-        // Re-encode from an upscaled crop: small/screenshot faces produce
-        // noisy descriptors that score high against many different people.
-        // If upscaled re-encoding fails/times out, fall back to the original
-        // detection embedding rather than hanging forever.
+        // Re-encode from MULTIPLE upscaled crops and average the result:
+        // small/screenshot faces produce noisy single-crop descriptors that
+        // drift toward an "average face" and score ~equal against everyone.
+        // Multi-crop averaging stabilizes the anchor descriptor.
         let improved: number[] | null = null;
         try {
-          improved = await encodeFaceUpscaled(img, face.box);
+          improved = await encodeFaceAveraged(img, face.box);
         } catch {
           improved = null;
         }
@@ -226,7 +229,7 @@ export function Pipeline() {
 
         const hash = await descriptorHash(desc);
         setDescHash(hash);
-        log("Face embedding generated (128-d descriptor)" + (improved ? " — upscaled crop" : ""));
+        log("Face embedding generated (1024-d HSE descriptor)" + (improved ? " — multi-crop averaged" : ""));
         log("Descriptor hash: " + hash.slice(0, 16) + "...");
 
         // Crop face for thumbnail
@@ -302,13 +305,21 @@ export function Pipeline() {
       const strong = matches.filter((r) => r.similarity! >= HIGH_FLOOR);
       log("✓ " + withSim.length + " candidates scored by face similarity");
       if (matches.length > 0) {
-        log("✓ " + matches.length + " candidate(s) at/above " + Math.round(VERIFIED_FLOOR * 100) + "% match floor");
+        log("✓ " + matches.length + " candidate(s) at/above " + Math.round(VERIFIED_FLOOR * 100) + "% verified-match floor");
         if (strong.length > 0) {
           log("✓ " + strong.length + " high-confidence face match(es) (≥" + Math.round(HIGH_FLOOR * 100) + "%)");
         }
       } else {
-        log("⚠ No candidate reached the " + Math.round(VERIFIED_FLOOR * 100) + "% verified-match floor");
-        log("  → Google Lens found visually similar images, but no face above threshold (not a confirmed same-person match)");
+        // No face cleared the verified floor — but surface the strongest
+        // candidate so the investigation can still proceed honestly.
+        const top = [...withSim].sort((a, b) => (b.similarity as number) - (a.similarity as number))[0];
+        if (top) {
+          log("⚠ No candidate reached the " + Math.round(VERIFIED_FLOOR * 100) + "% verified-match floor");
+          log("  Top visual candidate: " + (top.similarity! * 100).toFixed(1) + "% — " + top.title.slice(0, 40));
+          log("  → Same-person match NOT confirmed. You can still select it as the best available visual candidate.");
+        } else {
+          log("⚠ No candidate image contained a detectable face to compare");
+        }
       }
 
       setStep(2);
@@ -348,18 +359,21 @@ export function Pipeline() {
           const buf = await blob.arrayBuffer();
           pr.resultImageHash = await hashBytes(buf);
 
-          // PASS 1 — cheap scoring: detect faces at native resolution and
-          // score each qualifying face with the dual cosine+Euclidean gate.
-          // Tiny/low-confidence detections are excluded — noisy thumbnails
-          // are the classic source of inflated (false positive) scores.
+          // Detect faces in the candidate image. Small/soft thumbs are
+          // expected (Lens/LinkedIn thumbnails), so keep a LOW size floor
+          // here and re-encode every qualifying face from an upscaled crop
+          // below — upscaling is what recovers identity signal.
           const detected = await detectFaces(img);
           if (detected.length > 0 && descriptor.length > 0) {
             pr.faceInResult = true;
             let best: { pct: number; distance: number; label: string } | null = null;
             for (const f of detected) {
-              if (f.confidence < 0.6) continue;
-              if (Math.min(f.box.width, f.box.height) < 48) continue;
-              const score = faceMatchScore(descriptor, f.descriptor);
+              if (f.confidence < 0.5) continue;
+              if (Math.min(f.box.width, f.box.height) < 28) continue;
+              // PASS — upscaled re-encode for EVERY candidate face so a
+              // genuine match is never missed because its thumbnail was small.
+              const candDesc = (await encodeFaceUpscaled(img, f.box)) ?? f.descriptor;
+              const score = faceMatchScore(descriptor, candDesc);
               if (score && (!best || score.pct > best.pct)) {
                 best = { pct: score.pct, distance: score.distance, label: score.label };
               }
@@ -378,40 +392,6 @@ export function Pipeline() {
       }
 
       processed.push(pr);
-    }
-
-    // PASS 2 — refinement: candidate thumbnails are usually small, so their
-    // native-resolution descriptors are still noisy. Re-encode the TOP
-    // candidates from upscaled face crops (same treatment as the input
-    // face) and re-score with the dual metric. This is where the remaining
-    // false positives get filtered out.
-    const topCandidates = processed
-      .filter((r) => r.similarity !== null)
-      .sort((a, b) => (b.similarity as number) - (a.similarity as number))
-      .slice(0, 6);
-
-    for (const res of topCandidates) {
-      try {
-        const img = await loadImage(res.imageUrl);
-        const detected = await detectFaces(img);
-        let best: { pct: number; distance: number; label: string } | null = null;
-        for (const f of detected) {
-          if (f.confidence < 0.6) continue;
-          if (Math.min(f.box.width, f.box.height) < 48) continue;
-          const candDesc = await encodeFaceUpscaled(img, f.box);
-          const score = faceMatchScore(descriptor, candDesc ?? f.descriptor);
-          if (score && (!best || score.pct > best.pct)) {
-            best = { pct: score.pct, distance: score.distance, label: score.label };
-          }
-        }
-        if (best) {
-          res.similarity = best.pct / 100;
-          res.distance = best.distance;
-          res.matchLabel = best.label;
-        }
-      } catch {
-        // Keep the PASS 1 score if refinement fails
-      }
     }
 
     // Final sort by similarity (highest first), nulls last
@@ -710,7 +690,7 @@ export function Pipeline() {
                     <div className="flex-1">
                       <p className="font-mono text-[11px] tracking-[0.1em] text-electric">FACE ENCODED</p>
                       <p className="font-mono text-[10px] text-dim mt-1">
-                        128-d descriptor &bull; Image hash: {imageHash.slice(0, 12)}...
+                        1024-d HSE descriptor &bull; Image hash: {imageHash.slice(0, 12)}...
                       </p>
                       <p className="font-mono text-[10px] text-dim">
                         Desc hash: {descHash.slice(0, 12)}...
@@ -804,9 +784,9 @@ export function Pipeline() {
                             {res.similarity !== null ? (
                               <>
                                 <p className="font-mono text-lg font-bold" style={{
-                                  color: res.similarity >= 0.95 ? "#34d399"
-                                    : res.similarity >= 0.88 ? "#2dd4bf"
-                                    : res.similarity >= 0.76 ? "#f59e0b"
+                                  color: res.similarity >= MATCH_BANDS.VERY_HIGH ? "#34d399"
+                                    : res.similarity >= MATCH_BANDS.HIGH ? "#2dd4bf"
+                                    : res.similarity >= MATCH_BANDS.POSSIBLE ? "#f59e0b"
                                     : "#ef4444"
                                 }}>
                                   {(res.similarity * 100).toFixed(1)}%
@@ -832,11 +812,12 @@ export function Pipeline() {
                     ))}
 
                     <p className="pt-1 font-mono text-[9px] leading-relaxed text-dim/60">
-                      Similarity compares 128-d face descriptors (face-api.js) using a dual gate — cosine
-                      similarity AND Euclidean distance — on upscaled face crops. Only ≥95% is treated as a
-                      same-person visual match; 88–95% is a high visual match; below that is a possible match,
-                      not identity confirmation. A visual match should never be treated as proof of a
-                      person&apos;s real-world identity unless the public source itself provides identifying context.
+                      Similarity compares 1024-d HSE face descriptors (upscaled crops) using @vladmandic/human&apos;s
+                      calibrated metric, where &gt;0.5 indicates a match. Only ≥{Math.round(MATCH_BANDS.VERY_HIGH * 100)}% is
+                      treated as a near-certain same-person match; ≥{Math.round(MATCH_BANDS.HIGH * 100)}% is a high visual
+                      match; 50–{Math.round(MATCH_BANDS.HIGH * 100) - 1}% is a possible match and must not be treated as
+                      identity confirmation. A visual match should never be treated as proof of a person&apos;s
+                      real-world identity unless the public source itself provides identifying context.
                     </p>
                   </div>
                 )}
