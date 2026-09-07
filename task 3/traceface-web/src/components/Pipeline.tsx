@@ -45,6 +45,10 @@ interface EvidencePkg {
   metadata: Record<string, unknown>;
 }
 
+interface WebCtxRes {
+  title: string; url: string; domain: string; snippet: string; position: number;
+}
+
 interface BCReceipt {
   txHash: string; blockNumber: number; timestamp: string;
   from: string; contractAddress: string; networkName: string;
@@ -70,6 +74,24 @@ const STEPS = [
  * real cross-photo match on the HSE scale could ever reach. */
 const VERIFIED_FLOOR = MATCH_BANDS.HIGH; // 0.55
 const HIGH_FLOOR = MATCH_BANDS.VERY_HIGH; // 0.65
+
+/**
+ * Pull a plausible person-name prefix out of a public search-result title
+ * (e.g. "Shruti Rai - B.Tech CSE @ ... | Full Stack Developer" → "Shruti Rai").
+ * Returns null unless the leading segment looks like a proper name, so posts,
+ * headlines and shopping titles never become a search query by accident.
+ */
+function personNameFromTitle(title: string): string | null {
+  const seg = title.split(/\s+[-–—|·:]\s+/)[0].replace(/^[\s"'\[]+/, "").trim();
+  if (!seg || seg.length < 3 || seg.length > 40) return null;
+  if (/[0-9,/#@(){}<>=+]/.test(seg)) return null;
+  const words = seg.split(/\s+/).filter(Boolean);
+  if (words.length < 2 || words.length > 5) return null;
+  // Require a proper-noun feel: most words start uppercase.
+  const caps = words.filter((w) => /^[A-Z]/.test(w)).length;
+  if (caps < Math.max(2, words.length - 1)) return null;
+  return seg;
+}
 
 /* ─── Helpers ──────────────────────────────────────────────────── */
 
@@ -119,6 +141,10 @@ export function Pipeline() {
   // Step 3: Match
   const [processed, setProcessed] = useState<ProcessedRes[]>([]);
   const [selectedResult, setSelectedResult] = useState<ProcessedRes | null>(null);
+
+  // Second-stage live full-web discovery (genuine SerpAPI Google search)
+  const [webCtx, setWebCtx] = useState<WebCtxRes[]>([]);
+  const [webCtxName, setWebCtxName] = useState("");
 
   // Step 4: Evidence
   const [evidence, setEvidence] = useState<EvidencePkg | null>(null);
@@ -322,11 +348,56 @@ export function Pipeline() {
         }
       }
 
+      // Broaden the investigation: anchor on the best candidate that is at
+      // least a POSSIBLE visual match and run the live full-web discovery.
+      const ctxPool = processedResults
+        .filter((r) => r.similarity !== null && r.similarity! >= MATCH_BANDS.POSSIBLE)
+        .sort((a, b) => (b.similarity as number) - (a.similarity as number));
+      const ctxAnchor = ctxPool[0];
+      if (ctxAnchor) {
+        const ctxName = personNameFromTitle(ctxAnchor.title);
+        if (ctxName) {
+          runWebContext(ctxName);
+        }
+      }
+
       setStep(2);
     } catch (err) {
       log("✗ Search error: " + (err as Error).message);
     }
     setLoading(false);
+  };
+
+  /* Second stage: genuine full-web discovery of additional public pages.
+   * Once a face match anchors a discovered source (>= POSSIBLE), we run a
+   * REAL web search for the name stated on that public source so the
+   * pipeline surfaces more of the person's public footprint. The results
+   * are real search-engine hits — never fabricated — and are clearly
+   * labeled as "same-name context", not identity confirmation. */
+  const runWebContext = async (name: string) => {
+    try {
+      log("→ Live full-web discovery for public pages referencing \"" + name + "\"...");
+      const resp = await fetch("/api/websearch", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ q: `"${name}"` }),
+      });
+      const data = await resp.json();
+      if (data.mode === "live") {
+        setWebCtxName(name);
+        setWebCtx(data.results || []);
+        log("✓ " + (data.totalResults || 0) + " additional public web pages found referencing \"" + name + "\"");
+        if ((data.totalResults || 0) === 0) {
+          log("  → Same-name pages are context only — they do NOT confirm identity.");
+        }
+      } else if (data.mode === "demo") {
+        log("⚠ Full-web discovery skipped — no search key configured (demo mode)");
+      } else {
+        log("✗ Full-web discovery error: " + (data.message || "Unknown error"));
+      }
+    } catch (err) {
+      log("✗ Full-web discovery failed: " + (err as Error).message);
+    }
   };
 
   const processSearchResults = async (results: SearchRes[]): Promise<ProcessedRes[]> => {
@@ -819,6 +890,43 @@ export function Pipeline() {
                       identity confirmation. A visual match should never be treated as proof of a person&apos;s
                       real-world identity unless the public source itself provides identifying context.
                     </p>
+
+                    {/* Second-stage live full-web discovery results */}
+                    {webCtxName && webCtx.length > 0 && (
+                      <div className="mt-4 rounded-xl border border-teal/20 bg-teal/[0.04] p-4">
+                        <div className="flex items-center gap-2 mb-3">
+                          <Globe size={12} className="text-teal" />
+                          <p className="font-mono text-[10px] tracking-[0.14em] text-teal">
+                            PUBLIC WEB CONTEXT — LIVE SEARCH FOR &ldquo;{webCtxName.toUpperCase()}&rdquo;
+                          </p>
+                        </div>
+                        <div className="space-y-2.5">
+                          {webCtx.slice(0, 8).map((w, i) => (
+                            <div key={i} className="rounded-lg border border-white/5 bg-white/[0.02] p-2.5">
+                              <div className="flex items-start gap-2">
+                                <span className="font-mono text-[9px] text-teal/70 pt-0.5">{String(i + 1).padStart(2, "0")}</span>
+                                <div className="min-w-0 flex-1">
+                                  <a href={w.url} target="_blank" rel="noopener noreferrer"
+                                    className="block truncate font-mono text-[10px] font-medium text-bone transition-colors hover:text-teal">
+                                    {w.title}
+                                  </a>
+                                  <p className="mt-0.5 font-mono text-[9px] text-dim">{w.domain}</p>
+                                  {w.snippet && (
+                                    <p className="mt-1 font-mono text-[9px] leading-relaxed text-dim/70 line-clamp-2">{w.snippet}</p>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                        <p className="mt-3 font-mono text-[8.5px] leading-relaxed text-dim/60">
+                          These are additional live search-engine results for the name stated on the
+                          visually matched public source. Same-name pages are context only — they do
+                          NOT confirm identity by themselves; only the face-descriptor comparison above
+                          measures visual similarity.
+                        </p>
+                      </div>
+                    )}
                   </div>
                 )}
 
