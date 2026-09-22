@@ -1,0 +1,78 @@
+// ============================================================================
+// TigerGraph GSQL Loading Jobs
+// Hacker House Goa 2026 - Task 4
+// ============================================================================
+
+USE GRAPH FraudInvestigatorGraph
+
+CREATE LOADING JOB load_fraud_data FOR GRAPH FraudInvestigatorGraph {
+    DEFINE FILENAME txn_file;
+    DEFINE FILENAME id_file;
+    DEFINE FILENAME closed_file;
+
+    // Load Transactions & core edges
+    LOAD txn_file TO VERTEX Transaction VALUES(
+        $"TransactionID",
+        $"TransactionAmt",
+        $"ts",
+        $"ProductCD",
+        $"channel",
+        $"risk_score",
+        $"addr1",
+        $"addr2"
+    ) USING header="true", separator=",";
+
+    LOAD txn_file TO VERTEX Customer VALUES($"customer_id") USING header="true", separator=",";
+    LOAD txn_file TO VERTEX Card VALUES(
+        gsql_concat($"customer_id", "-K1"),
+        $"card1",
+        $"card4",
+        $"card6"
+    ) USING header="true", separator=",";
+
+    LOAD txn_file TO EDGE OWNS VALUES($"customer_id", gsql_concat($"customer_id", "-K1")) USING header="true", separator=",";
+    LOAD txn_file TO EDGE MADE VALUES(gsql_concat($"customer_id", "-K1"), $"TransactionID") USING header="true", separator=",";
+
+    LOAD txn_file TO VERTEX BillingRegion VALUES($"addr1", $"addr1", $"addr2") 
+        WHERE $"addr1" IS NOT EMPTY USING header="true", separator=",";
+    LOAD txn_file TO EDGE BILLED_IN VALUES($"TransactionID", $"addr1") 
+        WHERE $"addr1" IS NOT EMPTY USING header="true", separator=",";
+
+    LOAD txn_file TO VERTEX EmailDomain VALUES($"P_emaildomain", $"P_emaildomain") 
+        WHERE $"P_emaildomain" IS NOT EMPTY USING header="true", separator=",";
+    LOAD txn_file TO EDGE PURCHASER_EMAIL VALUES($"TransactionID", $"P_emaildomain") 
+        WHERE $"P_emaildomain" IS NOT EMPTY USING header="true", separator=",";
+
+    // Load Identity & Device Profiles
+    LOAD id_file TO VERTEX DeviceProfile VALUES(
+        gsql_concat($"DeviceInfo", " | ", $"id_30", " | ", $"id_31", " | ", $"id_33"),
+        $"DeviceInfo",
+        $"id_30",
+        $"id_31",
+        $"id_33",
+        $"id_23"
+    ) WHERE $"DeviceInfo" IS NOT EMPTY USING header="true", separator=",";
+
+    LOAD id_file TO EDGE FROM_DEVICE VALUES(
+        $"TransactionID",
+        gsql_concat($"DeviceInfo", " | ", $"id_30", " | ", $"id_31", " | ", $"id_33")
+    ) WHERE $"DeviceInfo" IS NOT EMPTY USING header="true", separator=",";
+
+    // Load Historical Closed Cases
+    LOAD closed_file TO VERTEX ClosedCase VALUES(
+        $"case_id",
+        $"customer_id",
+        $"card_id",
+        $"opened_at",
+        $"closed_at",
+        $"outcome",
+        $"pattern",
+        $"exposure_usd",
+        $"n_txns",
+        $"actions_taken",
+        $"report_filed",
+        $"analyst_notes"
+    ) USING header="true", separator=",";
+
+    LOAD closed_file TO EDGE CLOSED_ON_CARD VALUES($"case_id", $"card_id") USING header="true", separator=",";
+}

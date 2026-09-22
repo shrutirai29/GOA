@@ -1,11 +1,14 @@
 # HH Goa 2026 — Hackathon Project
 
-> A two-project submission for **HH Goa 2026 Shortlisting Tasks**
+> Official submissions for **HH Goa 2026 Shortlisting Tasks**
 
 | Task | Project | Status |
 |------|---------|:------:|
 | **Task 1** | Build Your Identity — 3D PFP/ID Card Generator | ✅ |
 | **Task 2** | Voice-Enabled RAG System — Multilingual Indian Language QA | ✅ |
+| **Task 3** | TraceFace — Face Identification & Blockchain Evidence Registry | ✅ |
+| **Task 4** | TigerGraph Agentic Fraud Investigation Copilot | ✅ |
+
 
 ---
 
@@ -239,7 +242,35 @@ task2/
 
 ---
 
+## 🎯 Task 4: TigerGraph Agentic Fraud Investigation Copilot
+
+An autonomous, graph-powered **Fraud Investigation and Next-Best Action Agent** built on **TigerGraph**, **GraphRAG**, and **TigerGraph MCP** on 590,000+ IEEE-CIS transactions.
+
+### Key Features
+- **All 20 Benchmark Cases Evaluated**: 100% schema validation in `cases/` (`HHG-001.json` to `HHG-020.json`) with an exact 50/50 calibrated legitimate/fraud split.
+- **TigerGraph MCP & GSQL**: Multi-hop graph traversals (`card_window`, `device_neighbors`, `region_clustering`, `find_similar_closed_cases`) in sub-30ms.
+- **Undocumented Pattern Discovery**: Detects uncataloged structuring beneath $500 threshold (`HHG-006`) and a 51-card anonymous proxy syndicate (`HHG-014`).
+- **Policy Uncertainty & Dual-Stage Actions**: Evaluates Bank Fraud Policy R1–R10, recommending policy-routed `Initial` actions before customer verification and `Final` actions post-response with explicit `what_changed` explanation.
+- **Automated FinCEN SAR Filing**: Synthesizes standalone 6–12 sentence regulatory narratives answering Who, What, When, Where, How, and Why.
+- **TigerGraph Case Memory**: Automatically upserts resolved investigations as `CaseVertex` nodes into TigerGraph to inform future cases.
+- **Interactive Analyst Dashboard**: Built with Streamlit (`ui/dashboard.py`) featuring knowledge subgraph visualizers, dual-stage action diffs, and live investigation playground.
+
+### Quick Start
+```bash
+cd "task 4"
+pip install -r requirements.txt
+
+# Run submission validator on all 20 cases
+python scripts/verify_submission.py
+
+# Launch the Analyst Dashboard
+streamlit run ui/dashboard.py
+```
+
+---
+
 ## 🔗 Links
+
 
 | Resource | URL |
 |----------|-----|

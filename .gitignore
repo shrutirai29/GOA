@@ -1,2 +1,14 @@
 # Freebuff desktop app data (local only, never commit)
 .freebuff/
+
+# Python virtual env & cache
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Large datasets (>100MB blocked by GitHub)
+task 4/data/transactions.csv
+task 4/data/identity.csv
+task 4/data/closed_cases_history.csv
+*.parquet

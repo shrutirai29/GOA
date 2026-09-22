@@ -1,0 +1,98 @@
+// ============================================================================
+// TigerGraph GSQL Investigation Queries & Case Memory Upsert
+// Hacker House Goa 2026 - Task 4
+// ============================================================================
+
+USE GRAPH FraudInvestigatorGraph
+
+// 1. Retrieve all transactions on a card within a time window
+CREATE QUERY card_window(VERTEX<Card> target_card, DATETIME start_ts, DATETIME end_ts) 
+    FOR GRAPH FraudInvestigatorGraph RETURNS (ListAccum<VERTEX<Transaction>>) {
+    
+    ListAccum<VERTEX<Transaction>> @@txn_list;
+
+    Start = { target_card };
+    Txns = SELECT t FROM Start:s -(MADE:e)-> Transaction:t
+           WHERE t.ts >= start_ts AND t.ts <= end_ts
+           ACCUM @@txn_list += t
+           ORDER BY t.ts ASC;
+
+    PRINT @@txn_list;
+}
+
+// 2. Discover multi-hop neighbors sharing the same device profile
+CREATE QUERY device_neighbors(VERTEX<DeviceProfile> target_device) 
+    FOR GRAPH FraudInvestigatorGraph RETURNS (SetAccum<VERTEX<Card>>, SetAccum<VERTEX<ClosedCase>>) {
+    
+    SetAccum<VERTEX<Card>> @@connected_cards;
+    SetAccum<VERTEX<ClosedCase>> @@connected_cases;
+
+    Start = { target_device };
+    
+    // 1-hop: Transactions using this device
+    Txns = SELECT t FROM Start:s -(USED_IN_TXN:e)-> Transaction:t;
+
+    // 2-hop: Cards that made those transactions
+    Cards = SELECT c FROM Txns:t -(CHARGED_ON:e)-> Card:c
+            ACCUM @@connected_cards += c;
+
+    // Cases connected to this device profile
+    Cases = SELECT cs FROM Start:s -(DEVICE_ACTIVE_CASES:e)-> CaseVertex:cs;
+
+    PRINT @@connected_cards, @@connected_cases;
+}
+
+// 3. Billing Region anomaly detection
+CREATE QUERY region_clustering(VERTEX<BillingRegion> target_region, DATETIME start_ts, DATETIME end_ts) 
+    FOR GRAPH FraudInvestigatorGraph RETURNS (INT) {
+    
+    SumAccum<INT> @@txn_count;
+
+    Start = { target_region };
+    Txns = SELECT t FROM Start:s -(REGION_TXNS:e)-> Transaction:t
+           WHERE t.ts >= start_ts AND t.ts <= end_ts
+           ACCUM @@txn_count += 1;
+
+    PRINT @@txn_count;
+}
+
+// 4. Retrieve similar past closed cases for agent memory
+CREATE QUERY find_similar_closed_cases(STRING target_pattern, STRING target_card_id) 
+    FOR GRAPH FraudInvestigatorGraph RETURNS (ListAccum<VERTEX<ClosedCase>>) {
+    
+    ListAccum<VERTEX<ClosedCase>> @@similar_cases;
+
+    AllCases = { ClosedCase.* };
+    Matched = SELECT c FROM AllCases:c
+              WHERE c.pattern == target_pattern OR c.card_id == target_card_id
+              ACCUM @@similar_cases += c
+              LIMIT 10;
+
+    PRINT @@similar_cases;
+}
+
+// 5. Upsert investigated case vertex into TigerGraph for Case Memory
+CREATE QUERY upsert_case_memory(
+    STRING case_id, 
+    STRING verdict, 
+    STRING pattern, 
+    STRING pattern_desc, 
+    DOUBLE fraud_prob, 
+    DOUBLE exposure, 
+    BOOL sar_filed, 
+    STRING stop_reason, 
+    STRING summary,
+    STRING card_id
+) FOR GRAPH FraudInvestigatorGraph {
+    
+    INSERT INTO CaseVertex (
+        PRIMARY_ID, case_id, status, verdict, pattern, pattern_description, 
+        fraud_probability, exposure_usd, sar_filed, stop_reason, summary
+    ) VALUES (
+        case_id, case_id, "closed", verdict, pattern, pattern_desc,
+        fraud_prob, exposure, sar_filed, stop_reason, summary
+    );
+
+    INSERT INTO CASE_ON_CARD (FROM, TO) VALUES (case_id, card_id);
+    PRINT "Successfully upserted case memory into TigerGraph" AS result;
+}
