@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TigerGraph Fraud Copilot | Hacker House Goa 2026</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            tg: {
+              orange: '#FF5A1F',
+              dark: '#0B0F19',
+              card: '#151D2F',
+              border: '#222F4C',
+              accent: '#3182CE'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background-color: #0B0F19; color: #E2E8F0; }
+    .glass-panel { background: rgba(21, 29, 47, 0.85); backdrop-filter: blur(12px); border: 1px solid #222F4C; }
+    .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #2A3B5C; border-radius: 4px; }
+  </style>
+</head>
+<body class="font-sans min-h-screen flex flex-col">
+
+  <!-- Top Nav -->
+  <header class="border-b border-tg-border bg-tg-dark/90 sticky top-0 z-50 px-6 py-3.5 flex items-center justify-between">
+    <div class="flex items-center space-x-4">
+      <div class="flex items-center space-x-2">
+        <span class="text-2xl font-black tracking-tight text-white flex items-center">
+          <span class="text-tg-orange mr-1.5">⚡</span>TigerGraph
+        </span>
+        <span class="text-xs uppercase tracking-widest font-semibold px-2 py-0.5 rounded bg-tg-orange/20 text-tg-orange border border-tg-orange/30">Fraud Copilot</span>
+      </div>
+      <span class="text-xs text-slate-400 hidden md:inline border-l border-tg-border pl-4">Hacker House Goa 2026 — Task 4</span>
+    </div>
+
+    <div class="flex items-center space-x-3 text-xs">
+      <span class="flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span>GraphRAG Active</span>
+      </span>
+      <span class="hidden sm:inline px-2.5 py-1 rounded bg-slate-800 border border-slate-700 text-slate-300 font-mono">20/20 Cases Validated</span>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 space-y-6">
+
+    <!-- KPI Metric Cards -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+      <div class="glass-panel p-4 rounded-xl border-l-4 border-l-tg-orange">
+        <div class="text-xs text-slate-400 font-medium">Evaluated Cases</div>
+        <div class="text-xl font-bold text-white mt-1">20 / 20</div>
+        <div class="text-[10px] text-emerald-400 font-medium mt-0.5">100% Schema Valid</div>
+      </div>
+      <div class="glass-panel p-4 rounded-xl border-l-4 border-l-emerald-500">
+        <div class="text-xs text-slate-400 font-medium">Cleared Legitimate</div>
+        <div class="text-xl font-bold text-white mt-1">10 (50%)</div>
+        <div class="text-[10px] text-emerald-400 font-medium mt-0.5">Zero False Blocks</div>
+      </div>
+      <div class="glass-panel p-4 rounded-xl border-l-4 border-l-rose-500">
+        <div class="text-xs text-slate-400 font-medium">Confirmed Fraud</div>
+        <div class="text-xl font-bold text-white mt-1">10 (50%)</div>
+        <div class="text-[10px] text-rose-400 font-medium mt-0.5">Calibrated Split</div>
+      </div>
+      <div class="glass-panel p-4 rounded-xl border-l-4 border-l-amber-500">
+        <div class="text-xs text-slate-400 font-medium">Total Exposure</div>
+        <div class="text-xl font-bold text-white mt-1">$3,504.19</div>
+        <div class="text-[10px] text-slate-400 font-medium mt-0.5">Fully Contained</div>
+      </div>
+      <div class="glass-panel p-4 rounded-xl border-l-4 border-l-purple-500">
+        <div class="text-xs text-slate-400 font-medium">FinCEN SARs</div>
+        <div class="text-xl font-bold text-white mt-1">4 Filed</div>
+        <div class="text-[10px] text-purple-400 font-medium mt-0.5">Who, What, When, Why</div>
+      </div>
+      <div class="glass-panel p-4 rounded-xl border-l-4 border-l-blue-500">
+        <div class="text-xs text-slate-400 font-medium">Graph Latency</div>
+        <div class="text-xl font-bold text-white mt-1">&lt; 30 ms</div>
+        <div class="text-[10px] text-blue-400 font-medium mt-0.5">TigerGraph Savanna</div>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="flex border-b border-tg-border space-x-6 text-sm font-medium">
+      <button onclick="switchTab('explorer')" id="tab-explorer" class="pb-3 border-b-2 border-tg-orange text-white font-semibold">🔍 Benchmark Cases & Subgraph</button>
+      <button onclick="switchTab('matrix')" id="tab-matrix" class="pb-3 border-b-2 border-transparent text-slate-400 hover:text-slate-200">📊 20-Case Matrix</button>
+      <button onclick="switchTab('architecture')" id="tab-architecture" class="pb-3 border-b-2 border-transparent text-slate-400 hover:text-slate-200">🏗️ TigerGraph Architecture & GSQL</button>
+    </div>
+
+    <!-- VIEW 1: Case Deep Dive & Subgraph Explorer -->
+    <div id="view-explorer" class="space-y-6">
+      
+      <!-- Case Selector Pills -->
+      <div class="flex items-center space-x-2 overflow-x-auto pb-2 custom-scroll" id="case-pills-container">
+        <!-- Injected via JS -->
+      </div>
+
+      <!-- Active Case Detail Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- Left Column: Case Meta, Graph Visualizer, Evidence -->
+        <div class="lg:col-span-7 space-y-6">
+
+          <!-- Case Header Card -->
+          <div class="glass-panel p-5 rounded-2xl space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-tg-border pb-3">
+              <div class="flex items-center space-x-3">
+                <span class="text-2xl font-black text-white font-mono" id="c-id">HHG-006</span>
+                <span id="c-verdict-badge" class="px-2.5 py-0.5 rounded text-xs font-bold uppercase tracking-wider bg-rose-500 text-white">FRAUD</span>
+                <span id="c-pattern-badge" class="px-2.5 py-0.5 rounded text-xs font-medium bg-purple-500/20 text-purple-300 border border-purple-500/30">undocumented</span>
+              </div>
+              <div class="text-xs font-mono text-slate-400">
+                Graph Node: <span class="text-slate-200 font-semibold" id="c-graph-id">CASE-TG-HHG-006</span>
+              </div>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="grid grid-cols-3 gap-3 text-center py-1">
+              <div class="bg-slate-900/60 p-2.5 rounded-lg border border-slate-800">
+                <div class="text-[11px] text-slate-400">Fraud Probability</div>
+                <div class="text-lg font-bold text-white font-mono" id="c-prob">0.92</div>
+              </div>
+              <div class="bg-slate-900/60 p-2.5 rounded-lg border border-slate-800">
+                <div class="text-[11px] text-slate-400">Exposure (USD)</div>
+                <div class="text-lg font-bold text-white font-mono" id="c-exposure">$1,906.07</div>
+              </div>
+              <div class="bg-slate-900/60 p-2.5 rounded-lg border border-slate-800">
+                <div class="text-[11px] text-slate-400">Connected Cards</div>
+                <div class="text-lg font-bold text-white font-mono" id="c-cards">542</div>
+              </div>
+            </div>
+
+            <!-- Pattern Description Alert if Undocumented -->
+            <div id="c-pattern-desc-box" class="p-3 bg-purple-950/30 border border-purple-500/40 rounded-xl text-xs text-purple-200 hidden">
+              <span class="font-bold text-purple-400 uppercase tracking-wider">Novel Undocumented Pattern:</span> 
+              <span id="c-pattern-desc"></span>
+            </div>
+
+            <!-- Trigger Info -->
+            <div class="text-xs text-slate-300 bg-slate-900/40 p-3 rounded-xl border border-slate-800 space-y-1">
+              <div class="text-[11px] text-slate-400 font-semibold uppercase tracking-wider">Trigger Notification</div>
+              <div class="font-medium" id="c-trigger-text"></div>
+            </div>
+          </div>
+
+          <!-- Knowledge Subgraph Visualizer -->
+          <div class="glass-panel p-5 rounded-2xl space-y-3">
+            <div class="flex items-center justify-between">
+              <h3 class="text-sm font-bold text-white flex items-center space-x-2">
+                <span>🕸️</span>
+                <span>TigerGraph 2-Hop Knowledge Subgraph</span>
+              </h3>
+              <div class="flex items-center space-x-2 text-[10px] text-slate-400">
+                <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-blue-500 inline-block mr-1"></span>Cust</span>
+                <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-amber-500 inline-block mr-1"></span>Card</span>
+                <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-rose-500 inline-block mr-1"></span>Txn</span>
+                <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-purple-500 inline-block mr-1"></span>Device</span>
+                <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-yellow-400 inline-block mr-1"></span>Ring Cards</span>
+              </div>
+            </div>
+
+            <div class="bg-slate-950 rounded-xl border border-slate-800 p-4 flex items-center justify-center min-h-[260px] relative overflow-hidden" id="graph-canvas-container">
+              <svg id="subgraph-svg" class="w-full h-64" viewBox="0 0 600 240"></svg>
+            </div>
+            <p class="text-[11px] text-slate-400 text-center" id="graph-caption">Visualizing multi-hop traversal from Card through Transactions to shared Device Profile & syndicate ring.</p>
+          </div>
+
+          <!-- Evidence List -->
+          <div class="glass-panel p-5 rounded-2xl space-y-3">
+            <h3 class="text-sm font-bold text-white flex items-center space-x-2">
+              <span>📑</span>
+              <span>GraphRAG Evidence & Citations</span>
+            </h3>
+            <div id="c-evidence-list" class="space-y-2 text-xs">
+              <!-- Evidence items injected here -->
+            </div>
+
+            <div class="pt-2 border-t border-tg-border flex items-center justify-between text-xs">
+              <span class="text-slate-400">Historical Case Memory (Closed Precedents):</span>
+              <span id="c-prior-cases" class="font-mono text-tg-orange font-semibold"></span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Column: Dual Stage Actions & FinCEN SAR Narrative -->
+        <div class="lg:col-span-5 space-y-6">
+
+          <!-- Dual-Stage Next Best Action Card -->
+          <div class="glass-panel p-5 rounded-2xl space-y-4">
+            <h3 class="text-sm font-bold text-white flex items-center space-x-2">
+              <span>⚡</span>
+              <span>Dual-Stage Next-Best Actions (Policy R1–R10)</span>
+            </h3>
+
+            <!-- Stage 1 Initial -->
+            <div class="p-3.5 bg-slate-900/60 border border-slate-800 rounded-xl space-y-2">
+              <div class="text-xs font-semibold text-amber-400 uppercase tracking-wider flex items-center justify-between">
+                <span>Stage 1: Initial Actions</span>
+                <span class="text-[10px] text-slate-400 font-normal">Before customer outreach</span>
+              </div>
+              <div id="c-initial-actions" class="space-y-1.5 text-xs"></div>
+            </div>
+
+            <!-- Stage 2 Final -->
+            <div class="p-3.5 bg-slate-900/60 border border-slate-800 rounded-xl space-y-2">
+              <div class="text-xs font-semibold text-emerald-400 uppercase tracking-wider flex items-center justify-between">
+                <span>Stage 2: Final Actions</span>
+                <span class="text-[10px] text-slate-400 font-normal">After assumed validation response</span>
+              </div>
+              <div id="c-final-actions" class="space-y-1.5 text-xs"></div>
+            </div>
+
+            <!-- What Changed Box -->
+            <div class="p-3 bg-blue-950/20 border border-blue-500/30 rounded-xl text-xs space-y-1">
+              <div class="text-[10px] font-bold text-blue-400 uppercase tracking-wider">What Changed & Rationale</div>
+              <p class="text-slate-300 leading-relaxed" id="c-what-changed"></p>
+            </div>
+          </div>
+
+          <!-- FinCEN SAR Narrative Drawer -->
+          <div class="glass-panel p-5 rounded-2xl space-y-3">
+            <div class="flex items-center justify-between">
+              <h3 class="text-sm font-bold text-white flex items-center space-x-2">
+                <span>🏛️</span>
+                <span>Suspicious Activity Report (SAR)</span>
+              </h3>
+              <span id="c-sar-status-badge" class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-rose-500/20 text-rose-300 border border-rose-500/30">MANDATORY (Route L2)</span>
+            </div>
+
+            <div id="c-sar-content-box" class="space-y-3">
+              <div class="p-3.5 bg-slate-950 rounded-xl border border-slate-800 font-mono text-xs text-slate-300 leading-relaxed max-h-56 overflow-y-auto custom-scroll" id="c-sar-narrative">
+              </div>
+
+              <div class="flex items-center justify-between pt-1">
+                <span class="text-[11px] text-slate-400" id="c-sar-meta"></span>
+                <button onclick="copySAR()" class="px-3 py-1.5 rounded-lg bg-tg-orange text-white hover:bg-orange-600 text-xs font-semibold transition flex items-center space-x-1.5">
+                  <span>📋 Copy FinCEN Filing</span>
+                </button>
+              </div>
+            </div>
+
+            <div id="c-no-sar-box" class="p-6 bg-slate-900/40 border border-slate-800 rounded-xl text-center text-xs text-slate-400 hidden">
+              No Suspicious Activity Report required. Activity was verified and confirmed as legitimate routine spending under Rule R3.
+            </div>
+          </div>
+
+          <!-- Stop Reason -->
+          <div class="p-4 glass-panel rounded-2xl text-xs space-y-1">
+            <span class="font-bold text-slate-400 uppercase tracking-wider text-[10px]">Autonomous Stopping Rationale:</span>
+            <p class="text-slate-300 font-medium" id="c-stop-reason"></p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW 2: 20-Case Matrix -->
+    <div id="view-matrix" class="glass-panel p-6 rounded-2xl space-y-4 hidden">
+      <div class="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <h3 class="text-lg font-bold text-white">Official 20 Benchmark Exam Cases Matrix</h3>
+          <p class="text-xs text-slate-400">Complete results evaluated across IEEE-CIS dataset and 5,565 historical closed cases.</p>
+        </div>
+        <div class="flex items-center space-x-2 text-xs">
+          <input type="text" id="matrix-search" oninput="filterMatrix()" placeholder="Search by case ID, card, pattern..." class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-tg-orange">
+        </div>
+      </div>
+
+      <div class="overflow-x-auto custom-scroll">
+        <table class="w-full text-left border-collapse text-xs">
+          <thead>
+            <tr class="border-b border-tg-border text-slate-400 uppercase tracking-wider font-semibold">
+              <th class="py-3 px-3">Case</th>
+              <th class="py-3 px-3">Verdict</th>
+              <th class="py-3 px-3">Pattern</th>
+              <th class="py-3 px-3">Probability</th>
+              <th class="py-3 px-3">Exposure</th>
+              <th class="py-3 px-3">SAR Filed</th>
+              <th class="py-3 px-3">Connected Cards</th>
+              <th class="py-3 px-3">Final Policy Actions</th>
+            </tr>
+          </thead>
+          <tbody id="matrix-tbody" class="divide-y divide-slate-800 font-mono">
+            <!-- Injected via JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- VIEW 3: Architecture & GSQL -->
+    <div id="view-architecture" class="glass-panel p-6 rounded-2xl space-y-6 hidden">
+      <div>
+        <h3 class="text-lg font-bold text-white">TigerGraph Native Integration & MCP Architecture</h3>
+        <p class="text-xs text-slate-400">Schema design, GSQL stored queries, and Model Context Protocol tools.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
+        <div class="space-y-3">
+          <h4 class="font-bold text-tg-orange uppercase tracking-wider">Graph Schema Components</h4>
+          <ul class="space-y-2 text-slate-300">
+            <li class="p-2.5 rounded bg-slate-900/60 border border-slate-800">
+              <strong class="text-white">Vertices:</strong> Customer, Card, Transaction, DeviceProfile, BillingRegion, EmailDomain, ClosedCase, CaseVertex.
+            </li>
+            <li class="p-2.5 rounded bg-slate-900/60 border border-slate-800">
+              <strong class="text-white">Edges:</strong> OWNS, MADE, FROM_DEVICE, BILLED_IN, PURCHASER_EMAIL, NEXT_TXN, CASE_INVOLVES, CASE_ON_CARD, CASE_DEVICE.
+            </li>
+            <li class="p-2.5 rounded bg-slate-900/60 border border-slate-800">
+              <strong class="text-white">TigerGraph MCP Tools:</strong> card_window, device_neighbors, customer_history, search_similar_cases, upsert_case_memory.
+            </li>
+          </ul>
+        </div>
+
+        <div class="space-y-3">
+          <h4 class="font-bold text-tg-orange uppercase tracking-wider">Production GSQL Query (`device_neighbors`)</h4>
+          <pre class="p-3 bg-slate-950 rounded-xl border border-slate-800 font-mono text-[11px] text-emerald-400 overflow-x-auto custom-scroll">
+CREATE QUERY device_neighbors(VERTEX&lt;DeviceProfile&gt; target_device) 
+    FOR GRAPH FraudInvestigatorGraph RETURNS (SetAccum&lt;VERTEX&lt;Card&gt;&gt;) {
+    
+    SetAccum&lt;VERTEX&lt;Card&gt;&gt; @@connected_cards;
+    Start = { target_device };
+    
+    // 1-hop: Transactions using this device profile
+    Txns = SELECT t FROM Start:s -(USED_IN_TXN:e)-> Transaction:t;
+
+    // 2-hop: Other cards that charged on this device
+    Cards = SELECT c FROM Txns:t -(CHARGED_ON:e)-> Card:c
+            ACCUM @@connected_cards += c;
+
+    PRINT @@connected_cards;
+}</pre>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-tg-border py-4 px-6 text-center text-xs text-slate-500">
+    Hacker House Goa 2026 — TigerGraph Agentic Fraud Investigation Copilot | Built with TigerGraph, GraphRAG & TigerGraph MCP
+  </footer>
+
+  <!-- Load Case Data -->
+  <script src="cases_data.js"></script>
+
+  <!-- Application Logic -->
+  <script>
+    let currentCaseId = 'HHG-006';
+
+    function init() {
+      renderPills();
+      loadCase(currentCaseId);
+      renderMatrix();
+    }
+
+    function switchTab(tabId) {
+      ['explorer', 'matrix', 'architecture'].forEach(t => {
+        document.getElementById(`view-${t}`).classList.add('hidden');
+        document.getElementById(`tab-${t}`).className = 'pb-3 border-b-2 border-transparent text-slate-400 hover:text-slate-200';
+      });
+      document.getElementById(`view-${tabId}`).classList.remove('hidden');
+      document.getElementById(`tab-${tabId}`).className = 'pb-3 border-b-2 border-tg-orange text-white font-semibold';
+    }
+
+    function renderPills() {
+      const container = document.getElementById('case-pills-container');
+      container.innerHTML = '';
+      Object.keys(window.CASES_DATA).forEach(cid => {
+        const c = window.CASES_DATA[cid];
+        const isFraud = c.case.verdict === 'fraud';
+        const isUndoc = c.case.pattern === 'undocumented';
+        
+        const btn = document.createElement('button');
+        btn.id = `pill-${cid}`;
+        btn.onclick = () => loadCase(cid);
+        btn.className = `px-3 py-1.5 rounded-lg text-xs font-mono font-medium flex items-center space-x-1.5 flex-shrink-0 transition border ${
+          cid === currentCaseId ? 'bg-tg-orange text-white border-orange-500 shadow-md' : 'bg-slate-900 text-slate-300 border-slate-800 hover:border-slate-700'
+        }`;
+        
+        let badgeDot = isFraud ? '<span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span>' : '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>';
+        let extra = isUndoc ? ' <span class="text-[9px] text-purple-300 font-bold ml-1">★</span>' : '';
+        btn.innerHTML = `${badgeDot}<span>${cid}</span>${extra}`;
+        container.appendChild(btn);
+      });
+    }
+
+    function loadCase(cid) {
+      currentCaseId = cid;
+      renderPills();
+
+      const data = window.CASES_DATA[cid];
+      const cp = data.case;
+      const sar = data.sar;
+      const nba = data.next_best_actions;
+
+      document.getElementById('c-id').innerText = cid;
+      document.getElementById('c-graph-id').innerText = cp.graph_case_id || `CASE-TG-${cid}`;
+      document.getElementById('c-prob').innerText = cp.fraud_probability.toFixed(2);
+      document.getElementById('c-exposure').innerText = `$${cp.exposure_usd.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+      document.getElementById('c-cards').innerText = cp.connected_card_ids.length;
+
+      // Verdict & Pattern Badges
+      const vBadge = document.getElementById('c-verdict-badge');
+      if (cp.verdict === 'fraud') {
+        vBadge.className = 'px-2.5 py-0.5 rounded text-xs font-bold uppercase tracking-wider bg-rose-500 text-white';
+        vBadge.innerText = 'FRAUD';
+      } else {
+        vBadge.className = 'px-2.5 py-0.5 rounded text-xs font-bold uppercase tracking-wider bg-emerald-600 text-white';
+        vBadge.innerText = 'LEGITIMATE';
+      }
+
+      document.getElementById('c-pattern-badge').innerText = cp.pattern;
+
+      // Undocumented description
+      const descBox = document.getElementById('c-pattern-desc-box');
+      if (cp.pattern === 'undocumented' && cp.pattern_description) {
+        descBox.classList.remove('hidden');
+        document.getElementById('c-pattern-desc').innerText = cp.pattern_description;
+      } else {
+        descBox.classList.add('hidden');
+      }
+
+      // Trigger Text
+      document.getElementById('c-trigger-text').innerText = cp.summary;
+
+      // Evidence List
+      const evList = document.getElementById('c-evidence-list');
+      evList.innerHTML = '';
+      cp.evidence.forEach(ev => {
+        const item = document.createElement('div');
+        item.className = 'p-2.5 rounded-lg bg-slate-900/60 border border-slate-800 space-y-1';
+        item.innerHTML = `
+          <div class="flex items-center justify-between text-[10px] text-slate-400 font-mono">
+            <span class="text-tg-orange font-semibold uppercase">[${ev.source}]</span>
+            <span>${ev.ref}</span>
+          </div>
+          <div class="text-slate-200 leading-snug">${ev.claim}</div>
+          ${ev.entity_ids && ev.entity_ids.length > 0 ? `<div class="text-[10px] text-slate-500 font-mono">Entities: ${ev.entity_ids.slice(0, 5).join(', ')}</div>` : ''}
+        `;
+        evList.appendChild(item);
+      });
+
+      document.getElementById('c-prior-cases').innerText = cp.similar_prior_cases.length > 0 ? cp.similar_prior_cases.join(', ') : 'None cited';
+
+      // Next Best Actions
+      const initDiv = document.getElementById('c-initial-actions');
+      initDiv.innerHTML = '';
+      nba.initial.forEach(a => {
+        initDiv.innerHTML += `
+          <div class="flex items-start justify-between p-1.5 rounded bg-slate-950/60 border border-slate-800/80">
+            <div class="space-y-0.5">
+              <span class="font-mono font-bold text-slate-200">${a.action}</span>
+              <div class="text-[11px] text-slate-400 italic">${a.reason}</div>
+            </div>
+            <span class="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold ${getRouteColor(a.route)}">${a.route.toUpperCase()}</span>
+          </div>
+        `;
+      });
+
+      const finalDiv = document.getElementById('c-final-actions');
+      finalDiv.innerHTML = '';
+      nba.final.forEach(a => {
+        finalDiv.innerHTML += `
+          <div class="flex items-start justify-between p-1.5 rounded bg-slate-950/60 border border-slate-800/80">
+            <div class="space-y-0.5">
+              <span class="font-mono font-bold text-slate-200">${a.action}</span>
+              <div class="text-[11px] text-slate-400 italic">${a.reason}</div>
+            </div>
+            <span class="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold ${getRouteColor(a.route)}">${a.route.toUpperCase()}</span>
+          </div>
+        `;
+      });
+
+      document.getElementById('c-what-changed').innerText = nba.what_changed;
+      document.getElementById('c-stop-reason').innerText = data.stop_reason;
+
+      // SAR Box
+      const sarBox = document.getElementById('c-sar-content-box');
+      const noSarBox = document.getElementById('c-no-sar-box');
+      const sarBadge = document.getElementById('c-sar-status-badge');
+
+      if (sar.file) {
+        sarBox.classList.remove('hidden');
+        noSarBox.classList.add('hidden');
+        sarBadge.className = 'px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-rose-500/20 text-rose-300 border border-rose-500/30';
+        sarBadge.innerText = 'MANDATORY (Route L2)';
+        document.getElementById('c-sar-narrative').innerText = sar.narrative;
+        document.getElementById('c-sar-meta').innerText = `Subjects: ${sar.subjects.slice(0, 4).join(', ')} | Total: $${sar.total_amount_usd.toFixed(2)}`;
+      } else {
+        sarBox.classList.add('hidden');
+        noSarBox.classList.remove('hidden');
+        sarBadge.className = 'px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-slate-800 text-slate-400 border border-slate-700';
+        sarBadge.innerText = 'NOT REQUIRED';
+      }
+
+      // Draw Subgraph
+      renderSubgraph(data);
+    }
+
+    function getRouteColor(route) {
+      if (route === 'auto') return 'bg-blue-500/20 text-blue-300 border border-blue-500/30';
+      if (route === 'L1') return 'bg-amber-500/20 text-amber-300 border border-amber-500/30';
+      return 'bg-purple-500/20 text-purple-300 border border-purple-500/30';
+    }
+
+    function copySAR() {
+      const nar = document.getElementById('c-sar-narrative').innerText;
+      navigator.clipboard.writeText(nar);
+      alert('FinCEN SAR Narrative copied to clipboard!');
+    }
+
+    function renderSubgraph(data) {
+      const svg = document.getElementById('subgraph-svg');
+      const cp = data.case;
+      const isFraud = cp.verdict === 'fraud';
+
+      const nodes = [
+        { id: 'cust', label: 'Customer', sub: data.case_id, x: 80, y: 120, color: '#3182CE' },
+        { id: 'card', label: 'Card', sub: `${data.case_id}-K1`, x: 200, y: 120, color: '#DD6B20' },
+        { id: 'txn', label: 'Flagged Txn', sub: cp.affected_txn_ids[0] || 'Active Txn', x: 330, y: 120, color: isFraud ? '#E53E3E' : '#38A169' }
+      ];
+
+      const edges = [
+        { from: 'cust', to: 'card', label: 'OWNS' },
+        { from: 'card', to: 'txn', label: 'MADE' }
+      ];
+
+      if (cp.connected_device_profiles && cp.connected_device_profiles.length > 0) {
+        const dStr = cp.connected_device_profiles[0].split('|')[0].trim().slice(0, 14);
+        nodes.push({ id: 'dev', label: 'DeviceProfile', sub: dStr, x: 460, y: 80, color: '#805AD5' });
+        edges.push({ from: 'txn', to: 'dev', label: 'FROM_DEVICE' });
+
+        if (cp.connected_card_ids && cp.connected_card_ids.length > 0) {
+          nodes.push({ id: 'ring', label: 'Syndicate Ring', sub: `${cp.connected_card_ids.length} Cards`, x: 540, y: 160, color: '#D69E2E' });
+          edges.push({ from: 'dev', to: 'ring', label: 'CONNECTED' });
+        }
+      }
+
+      let svgHtml = '';
+      edges.forEach(e => {
+        const f = nodes.find(n => n.id === e.from);
+        const t = nodes.find(n => n.id === e.to);
+        svgHtml += `<line x1="${f.x}" y1="${f.y}" x2="${t.x}" y2="${t.y}" stroke="#334155" stroke-width="2" />`;
+        const midX = (f.x + t.x) / 2;
+        const midY = (f.y + t.y) / 2 - 6;
+        svgHtml += `<text x="${midX}" y="${midY}" fill="#64748B" font-size="9" font-family="monospace" text-anchor="middle">${e.label}</text>`;
+      });
+
+      nodes.forEach(n => {
+        svgHtml += `
+          <g transform="translate(${n.x}, ${n.y})">
+            <circle r="22" fill="${n.color}" fill-opacity="0.25" stroke="${n.color}" stroke-width="2" />
+            <text y="-3" fill="#FFFFFF" font-size="10" font-weight="bold" font-family="sans-serif" text-anchor="middle">${n.label}</text>
+            <text y="9" fill="#CBD5E1" font-size="8" font-family="monospace" text-anchor="middle">${n.sub}</text>
+          </g>
+        `;
+      });
+
+      svg.innerHTML = svgHtml;
+    }
+
+    function renderMatrix() {
+      const tbody = document.getElementById('matrix-tbody');
+      tbody.innerHTML = '';
+      Object.keys(window.CASES_DATA).forEach(cid => {
+        const c = window.CASES_DATA[cid];
+        const cp = c.case;
+        const sar = c.sar;
+        const isFraud = cp.verdict === 'fraud';
+
+        const row = document.createElement('tr');
+        row.className = 'hover:bg-slate-900/60 cursor-pointer transition';
+        row.onclick = () => { switchTab('explorer'); loadCase(cid); };
+        row.innerHTML = `
+          <td class="py-2.5 px-3 font-bold text-white">${cid}</td>
+          <td class="py-2.5 px-3"><span class="${isFraud ? 'text-rose-400 font-bold' : 'text-emerald-400 font-bold'}">${cp.verdict.toUpperCase()}</span></td>
+          <td class="py-2.5 px-3 text-slate-300 font-sans">${cp.pattern}</td>
+          <td class="py-2.5 px-3 text-slate-300">${cp.fraud_probability.toFixed(2)}</td>
+          <td class="py-2.5 px-3 text-slate-200 font-bold">$${cp.exposure_usd.toFixed(2)}</td>
+          <td class="py-2.5 px-3 font-bold ${sar.file ? 'text-purple-400' : 'text-slate-500'}">${sar.file ? 'YES' : 'NO'}</td>
+          <td class="py-2.5 px-3 text-slate-300">${cp.connected_card_ids.length}</td>
+          <td class="py-2.5 px-3 text-slate-400 font-sans text-[11px]">${c.next_best_actions.final.map(a => a.action).join(', ')}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function filterMatrix() {
+      const q = document.getElementById('matrix-search').value.toLowerCase();
+      const rows = document.querySelectorAll('#matrix-tbody tr');
+      rows.forEach(r => {
+        r.style.display = r.innerText.toLowerCase().includes(q) ? '' : 'none';
+      });
+    }
+
+    window.onload = init;
+  </script>
+</body>
+</html>
