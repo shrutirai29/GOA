@@ -6,11 +6,5 @@
         { "key": "Access-Control-Allow-Origin", "value": "*" }
       ]
     }
-  ],
-  "rewrites": [
-    { "source": "/cases_data.js", "destination": "/cases_data.js" },
-    { "source": "/cases/(.*)", "destination": "/cases/$1" },
-    { "source": "/task 4/(.*)", "destination": "/task 4/$1" },
-    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
