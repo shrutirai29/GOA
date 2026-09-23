@@ -1,0 +1,8 @@
+{
+  "version": 2,
+  "name": "hhgoa-tigergraph-fraud-investigation",
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/cases/(.*)", "destination": "/cases/$1" }
+  ]
+}

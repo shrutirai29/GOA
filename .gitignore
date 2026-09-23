@@ -12,3 +12,6 @@ task 4/data/transactions.csv
 task 4/data/identity.csv
 task 4/data/closed_cases_history.csv
 *.parquet
+
+# Vendor libraries
+vendor/
