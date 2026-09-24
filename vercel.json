@@ -7,5 +7,9 @@
         { "key": "Access-Control-Allow-Origin", "value": "*" }
       ]
     }
+  ],
+  "rewrites": [
+    { "source": "/cases/(.*)", "destination": "/cases/$1" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
