@@ -3,30 +3,35 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TigerGraph GraphSentinel | Agentic Fraud Investigation & Autonomous NBA</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>TigerGraph GraphSentinel | Agentic Fraud Investigation Copilot</title>
+  
+  <!-- Modern Font Pairing -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       darkMode: 'class',
       theme: {
         extend: {
           fontFamily: {
-            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
             mono: ['"JetBrains Mono"', 'monospace'],
           },
           colors: {
-            brand: {
-              orange: '#FF5A1F',
-              accent: '#FF7A45',
-              glow: '#FF5A1F33',
-              dark: '#030712',
-              card: '#0B1120',
-              cardSub: '#111827',
-              border: '#1F2937',
-              borderLight: '#374151'
+            tg: {
+              orange: '#FF5722',
+              flame: '#F4511E',
+              glow: '#FF572233',
+              dark: '#080D1A',
+              navy: '#0B132B',
+              surface: '#0F172A',
+              surfaceLight: '#1E293B',
+              border: '#1E293B',
+              borderLight: '#334155'
             }
           }
         }
@@ -34,63 +39,53 @@
     }
   </script>
   <style>
+    :root {
+      color-scheme: dark;
+    }
     body {
-      background-color: #030712;
-      color: #F3F4F6;
+      background-color: #070B14;
+      color: #F1F5F9;
       background-image: 
-        radial-gradient(at 0% 0%, rgba(255, 90, 31, 0.08) 0px, transparent 50%),
-        radial-gradient(at 100% 0%, rgba(59, 130, 246, 0.08) 0px, transparent 50%),
-        radial-gradient(at 50% 100%, rgba(139, 92, 246, 0.05) 0px, transparent 50%);
+        radial-gradient(circle at 15% 15%, rgba(255, 87, 34, 0.07) 0%, transparent 40%),
+        radial-gradient(circle at 85% 10%, rgba(99, 102, 241, 0.08) 0%, transparent 45%),
+        radial-gradient(circle at 50% 90%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
       background-attachment: fixed;
     }
-    .glass-card {
-      background: rgba(11, 17, 32, 0.85);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
+    .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+    .custom-scroll::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.6); }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #334155; border-radius: 9999px; }
+    .custom-scroll::-webkit-scrollbar-thumb:hover { background: #FF5722; }
+
+    /* Animated Graph Flow */
+    @keyframes flowDashes {
+      to { stroke-dashoffset: -20; }
     }
-    .glass-card-sub {
-      background: rgba(17, 24, 39, 0.7);
-      border: 1px solid rgba(255, 255, 255, 0.05);
+    .flow-line {
+      stroke-dasharray: 6 4;
+      animation: flowDashes 1.2s linear infinite;
     }
-    .neon-border-orange {
-      border: 1px solid #FF5A1F;
-      box-shadow: 0 0 15px rgba(255, 90, 31, 0.25);
+    @keyframes pulseRing {
+      0% { transform: scale(0.95); opacity: 0.9; }
+      50% { transform: scale(1.15); opacity: 0.4; }
+      100% { transform: scale(0.95); opacity: 0.9; }
     }
-    .neon-border-emerald {
-      border: 1px solid #10B981;
-      box-shadow: 0 0 15px rgba(16, 185, 129, 0.25);
-    }
-    .pulse-beacon {
-      animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-    }
-    @keyframes pulse-ring {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(1.15); }
-    }
-    .custom-scroll::-webkit-scrollbar { width: 5px; height: 5px; }
-    .custom-scroll::-webkit-scrollbar-track { background: rgba(11, 17, 32, 0.5); }
-    .custom-scroll::-webkit-scrollbar-thumb { background: #374151; border-radius: 9999px; }
-    .custom-scroll::-webkit-scrollbar-thumb:hover { background: #FF5A1F; }
-    .flow-dash {
-      stroke-dasharray: 6;
-      animation: dashMove 1.5s linear infinite;
-    }
-    @keyframes dashMove {
-      to { stroke-dashoffset: -24; }
+    .pulse-glow {
+      animation: pulseRing 2.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      transform-origin: center;
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col font-sans antialiased text-slate-100">
+<body class="min-h-screen flex flex-col font-sans antialiased text-slate-100 selection:bg-tg-orange selection:text-white">
 
-  <!-- Top Enterprise Navbar -->
-  <nav class="border-b border-brand-border bg-brand-dark/90 backdrop-blur-md sticky top-0 z-50 px-4 lg:px-8 py-3.5 flex items-center justify-between">
-    <div class="flex items-center space-x-4">
+  <!-- ==================== HEADER NAVBAR ==================== -->
+  <header class="border-b border-tg-border/80 bg-tg-dark/95 backdrop-blur-xl sticky top-0 z-50 px-4 sm:px-6 lg:px-10 py-3 shadow-md">
+    <div class="max-w-[1600px] mx-auto flex items-center justify-between gap-4">
+      
+      <!-- Brand Logo -->
       <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('explorer')">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-orange via-orange-600 to-amber-500 p-0.5 shadow-lg shadow-brand-orange/20 flex items-center justify-center">
-          <div class="w-full h-full bg-brand-dark rounded-[10px] flex items-center justify-center">
-            <svg class="w-5 h-5 text-brand-orange" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-tg-orange via-orange-600 to-amber-500 p-0.5 shadow-lg shadow-tg-orange/20 flex items-center justify-center">
+          <div class="w-full h-full bg-tg-dark rounded-[10px] flex items-center justify-center">
+            <svg class="w-5 h-5 text-tg-orange" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
               <polyline points="2 17 12 22 22 17"></polyline>
               <polyline points="2 12 12 17 22 12"></polyline>
@@ -99,287 +94,308 @@
         </div>
         <div>
           <div class="flex items-center space-x-2">
-            <span class="text-lg font-black tracking-tight text-white font-sans">TigerGraph <span class="text-brand-orange">GraphSentinel</span></span>
-            <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-brand-orange/15 text-brand-orange border border-brand-orange/30">AI Copilot</span>
+            <span class="text-lg font-black tracking-tight text-white">TigerGraph <span class="text-tg-orange">GraphSentinel</span></span>
+            <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-tg-orange/15 text-tg-orange border border-tg-orange/30">AI Copilot</span>
           </div>
-          <p class="text-[11px] text-slate-400 font-mono">Agentic Fraud Investigation & Autonomous NBA • HH Goa 2026</p>
+          <p class="text-[11px] text-slate-400 font-mono">Agentic Fraud Investigation & Autonomous NBA • Hacker House Goa 2026</p>
         </div>
       </div>
-    </div>
 
-    <!-- Right Status Badges -->
-    <div class="flex items-center space-x-3 text-xs">
-      <div class="hidden md:flex items-center space-x-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 font-mono">
-        <span class="relative flex h-2 w-2">
-          <span class="pulse-beacon absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-          <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-        </span>
-        <span class="font-semibold">TigerGraph MCP Online</span>
-        <span class="text-slate-500">|</span>
-        <span class="text-slate-400">GSQL: 18ms</span>
+      <!-- Header Statuses & Actions -->
+      <div class="flex items-center space-x-3 text-xs">
+        <div class="hidden md:flex items-center space-x-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-mono">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span class="font-semibold">TigerGraph MCP Online</span>
+          <span class="text-slate-600">|</span>
+          <span class="text-slate-400">GSQL: 12ms</span>
+        </div>
+
+        <a href="https://github.com/shrutirai29/GOA" target="_blank" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 font-mono transition flex items-center space-x-1.5 shadow-sm">
+          <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+          <span class="hidden sm:inline">GitHub Repository</span>
+        </a>
       </div>
-
-      <a href="https://github.com/shrutirai29/GOA" target="_blank" class="px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 text-slate-300 font-mono hover:text-white transition flex items-center space-x-1.5">
-        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-        <span>GitHub: shrutirai29/GOA</span>
-      </a>
     </div>
-  </nav>
+  </header>
 
-  <!-- Main Content Layout -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 space-y-6">
+  <!-- ==================== MAIN APPLICATION CONTAINER ==================== -->
+  <main class="flex-1 max-w-[1600px] w-full mx-auto px-4 sm:px-6 lg:px-10 pt-6 pb-16 space-y-6">
 
-    <!-- Top KPI Performance Strip -->
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-      <div class="glass-card p-4 rounded-xl border-l-4 border-l-brand-orange hover:border-brand-orange transition">
+    <!-- KPI Metric Cards Strip -->
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+      <div class="bg-tg-surface/90 border border-tg-border hover:border-tg-orange/50 transition-all duration-300 p-4 rounded-2xl shadow-lg relative overflow-hidden group">
+        <div class="absolute -right-4 -bottom-4 w-16 h-16 bg-tg-orange/10 rounded-full blur-xl group-hover:bg-tg-orange/20 transition"></div>
         <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Benchmark Cases</div>
-        <div class="text-2xl font-black text-white mt-1">20 / 20</div>
-        <div class="text-[11px] text-emerald-400 font-medium flex items-center mt-0.5">
-          <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+        <div class="text-2xl font-black text-white font-mono mt-1">20 / 20</div>
+        <div class="text-[11px] text-emerald-400 font-medium flex items-center mt-1">
+          <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
           100% Schema Valid
         </div>
       </div>
 
-      <div class="glass-card p-4 rounded-xl border-l-4 border-l-emerald-500 hover:border-emerald-400 transition">
+      <div class="bg-tg-surface/90 border border-tg-border hover:border-emerald-500/50 transition-all duration-300 p-4 rounded-2xl shadow-lg relative overflow-hidden group">
+        <div class="absolute -right-4 -bottom-4 w-16 h-16 bg-emerald-500/10 rounded-full blur-xl group-hover:bg-emerald-500/20 transition"></div>
         <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Cleared Legitimate</div>
-        <div class="text-2xl font-black text-white mt-1">10 <span class="text-xs text-slate-400 font-normal">(50%)</span></div>
-        <div class="text-[11px] text-emerald-400 font-medium flex items-center mt-0.5">
-          <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+        <div class="text-2xl font-black text-emerald-400 font-mono mt-1">10 <span class="text-xs text-slate-400 font-sans font-normal">(50%)</span></div>
+        <div class="text-[11px] text-emerald-400 font-medium flex items-center mt-1">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5"></span>
           0 False Blocks (R1/R3)
         </div>
       </div>
 
-      <div class="glass-card p-4 rounded-xl border-l-4 border-l-rose-500 hover:border-rose-400 transition">
+      <div class="bg-tg-surface/90 border border-tg-border hover:border-rose-500/50 transition-all duration-300 p-4 rounded-2xl shadow-lg relative overflow-hidden group">
+        <div class="absolute -right-4 -bottom-4 w-16 h-16 bg-rose-500/10 rounded-full blur-xl group-hover:bg-rose-500/20 transition"></div>
         <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Confirmed Fraud</div>
-        <div class="text-2xl font-black text-white mt-1">10 <span class="text-xs text-slate-400 font-normal">(50%)</span></div>
-        <div class="text-[11px] text-rose-400 font-medium flex items-center mt-0.5">
+        <div class="text-2xl font-black text-rose-400 font-mono mt-1">10 <span class="text-xs text-slate-400 font-sans font-normal">(50%)</span></div>
+        <div class="text-[11px] text-rose-400 font-medium flex items-center mt-1">
           <span class="w-1.5 h-1.5 rounded-full bg-rose-400 mr-1.5"></span>
           Calibrated Ground Truth
         </div>
       </div>
 
-      <div class="glass-card p-4 rounded-xl border-l-4 border-l-amber-500 hover:border-amber-400 transition">
+      <div class="bg-tg-surface/90 border border-tg-border hover:border-amber-500/50 transition-all duration-300 p-4 rounded-2xl shadow-lg relative overflow-hidden group">
+        <div class="absolute -right-4 -bottom-4 w-16 h-16 bg-amber-500/10 rounded-full blur-xl group-hover:bg-amber-500/20 transition"></div>
         <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Contained Exposure</div>
         <div class="text-2xl font-black text-white font-mono mt-1">$3,504.19</div>
-        <div class="text-[11px] text-amber-400 font-medium flex items-center mt-0.5">
+        <div class="text-[11px] text-amber-400 font-medium flex items-center mt-1">
           <span>Shielded 100% via NBA</span>
         </div>
       </div>
 
-      <div class="glass-card p-4 rounded-xl border-l-4 border-l-purple-500 hover:border-purple-400 transition">
+      <div class="bg-tg-surface/90 border border-tg-border hover:border-purple-500/50 transition-all duration-300 p-4 rounded-2xl shadow-lg relative overflow-hidden group">
+        <div class="absolute -right-4 -bottom-4 w-16 h-16 bg-purple-500/10 rounded-full blur-xl group-hover:bg-purple-500/20 transition"></div>
         <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">FinCEN SARs Filed</div>
-        <div class="text-2xl font-black text-white mt-1">4 <span class="text-xs text-slate-400 font-normal">Narratives</span></div>
-        <div class="text-[11px] text-purple-400 font-medium flex items-center mt-0.5">
+        <div class="text-2xl font-black text-purple-400 font-mono mt-1">4 <span class="text-xs text-slate-400 font-sans font-normal">Filed</span></div>
+        <div class="text-[11px] text-purple-300 font-medium flex items-center mt-1">
           <span>BSA/AML Part V Full</span>
         </div>
       </div>
 
-      <div class="glass-card p-4 rounded-xl border-l-4 border-l-blue-500 hover:border-blue-400 transition">
+      <div class="bg-tg-surface/90 border border-tg-border hover:border-blue-500/50 transition-all duration-300 p-4 rounded-2xl shadow-lg relative overflow-hidden group">
+        <div class="absolute -right-4 -bottom-4 w-16 h-16 bg-blue-500/10 rounded-full blur-xl group-hover:bg-blue-500/20 transition"></div>
         <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Graph Case Memory</div>
-        <div class="text-2xl font-black text-white font-mono mt-1">5,565</div>
-        <div class="text-[11px] text-blue-400 font-medium flex items-center mt-0.5">
+        <div class="text-2xl font-black text-blue-400 font-mono mt-1">5,565</div>
+        <div class="text-[11px] text-blue-300 font-medium flex items-center mt-1">
           <span>Historical Precedents</span>
         </div>
       </div>
     </div>
 
-    <!-- Navigation Tab Bar -->
-    <div class="flex items-center space-x-1 sm:space-x-3 border-b border-brand-border text-xs sm:text-sm font-semibold overflow-x-auto custom-scroll pb-1">
-      <button onclick="switchTab('explorer')" id="tab-explorer" class="px-4 py-2.5 rounded-t-xl border-b-2 border-brand-orange text-white bg-brand-card/60 flex items-center space-x-2 transition">
-        <svg class="w-4 h-4 text-brand-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+    <!-- Navigation Tabs -->
+    <div class="flex items-center space-x-2 border-b border-tg-border text-sm font-semibold overflow-x-auto custom-scroll pb-1">
+      <button onclick="switchTab('explorer')" id="tab-explorer" class="px-5 py-3 rounded-xl border-b-2 border-tg-orange text-white bg-tg-surface/80 flex items-center space-x-2 transition shadow-sm">
+        <svg class="w-4 h-4 text-tg-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
         <span>Case Deep Dive & Subgraph</span>
       </button>
 
-      <button onclick="switchTab('simulator')" id="tab-simulator" class="px-4 py-2.5 rounded-t-xl border-b-2 border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/40 flex items-center space-x-2 transition">
+      <button onclick="switchTab('simulator')" id="tab-simulator" class="px-5 py-3 rounded-xl border-b-2 border-transparent text-slate-400 hover:text-slate-200 hover:bg-tg-surface/40 flex items-center space-x-2 transition">
         <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
         <span>Live Agent Simulator</span>
       </button>
 
-      <button onclick="switchTab('matrix')" id="tab-matrix" class="px-4 py-2.5 rounded-t-xl border-b-2 border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/40 flex items-center space-x-2 transition">
+      <button onclick="switchTab('matrix')" id="tab-matrix" class="px-5 py-3 rounded-xl border-b-2 border-transparent text-slate-400 hover:text-slate-200 hover:bg-tg-surface/40 flex items-center space-x-2 transition">
         <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
         <span>20-Case Benchmark Matrix</span>
       </button>
 
-      <button onclick="switchTab('architecture')" id="tab-architecture" class="px-4 py-2.5 rounded-t-xl border-b-2 border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/40 flex items-center space-x-2 transition">
+      <button onclick="switchTab('architecture')" id="tab-architecture" class="px-5 py-3 rounded-xl border-b-2 border-transparent text-slate-400 hover:text-slate-200 hover:bg-tg-surface/40 flex items-center space-x-2 transition">
         <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
         <span>TigerGraph & GSQL Engine</span>
       </button>
     </div>
 
-    <!-- ==================== VIEW 1: Case Deep Dive & Subgraph Explorer ==================== -->
+    <!-- ==================== TAB 1: Case Deep Dive & Subgraph ==================== -->
     <div id="view-explorer" class="space-y-6">
 
-      <!-- Case Pill Carousel -->
-      <div class="glass-card p-3 rounded-2xl space-y-2">
-        <div class="flex items-center justify-between px-2 text-xs">
-          <span class="text-slate-400 font-semibold uppercase tracking-wider flex items-center">
-            <span class="w-2 h-2 rounded-full bg-brand-orange mr-2"></span>
-            Select Benchmark Alert to Inspect (20 Benchmark Cases)
+      <!-- Case Selection Pill Carousel -->
+      <div class="bg-tg-surface/90 border border-tg-border p-4 rounded-2xl shadow-lg space-y-3">
+        <div class="flex flex-wrap items-center justify-between text-xs text-slate-400 font-semibold gap-2">
+          <span class="flex items-center space-x-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-tg-orange animate-pulse"></span>
+            <span>CHOOSE AN ALERT TO INSPECT (20 OFFICIAL BENCHMARK CASES):</span>
           </span>
-          <span class="text-slate-500 font-mono text-[11px]">★ Badge = Novel Undocumented Fraud Discovery</span>
+          <span class="text-slate-500 font-mono text-[11px]">★ = Novel Undocumented Topology Discovery (Policy R9)</span>
         </div>
-        <div class="flex items-center space-x-2 overflow-x-auto pb-1 custom-scroll" id="case-pills-container">
+        <div class="flex items-center space-x-2.5 overflow-x-auto pb-1.5 custom-scroll" id="case-pills-container">
           <!-- Dynamically populated -->
         </div>
       </div>
 
-      <!-- Main Case Inspection Grid -->
+      <!-- Main Case Workspace: 2-Column Responsive Grid -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-        <!-- Left Column: Case Meta, Subgraph Visualizer, Precedents (7 cols) -->
+        <!-- Left Column: Case Meta, Subgraph Visualizer, Precedents (7 Cols) -->
         <div class="lg:col-span-7 space-y-6">
 
-          <!-- Header & Trigger Details Card -->
-          <div class="glass-card p-6 rounded-2xl space-y-4">
-            <div class="flex flex-wrap items-center justify-between gap-3 border-b border-brand-border pb-4">
+          <!-- Case Header & Key Parameters Card -->
+          <div class="bg-tg-surface/90 border border-tg-border p-6 rounded-2xl shadow-lg space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-3 border-b border-tg-border pb-4">
               <div class="flex items-center space-x-3">
                 <span class="text-3xl font-black text-white font-mono" id="c-id">HHG-006</span>
-                <span id="c-verdict-badge" class="px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider">FRAUD</span>
-                <span id="c-pattern-badge" class="px-3 py-1 rounded-md text-xs font-medium font-mono">undocumented</span>
+                <span id="c-verdict-badge" class="px-3.5 py-1 rounded-lg text-xs font-bold uppercase tracking-wider">FRAUD</span>
+                <span id="c-pattern-badge" class="px-3 py-1 rounded-lg text-xs font-medium font-mono">undocumented</span>
               </div>
               <div class="flex items-center space-x-2 font-mono text-xs">
                 <span class="text-slate-400">TigerGraph Vertex:</span>
-                <span class="px-2.5 py-1 rounded bg-slate-900 border border-slate-700 font-bold text-brand-orange" id="c-graph-id">CASE-TG-HHG-006</span>
+                <span class="px-2.5 py-1 rounded-md bg-slate-900 border border-slate-700 font-bold text-tg-orange" id="c-graph-id">CASE-TG-HHG-006</span>
               </div>
             </div>
 
-            <!-- Quantitative Metrics Strip -->
-            <div class="grid grid-cols-4 gap-2 text-center">
-              <div class="glass-card-sub p-3 rounded-xl">
-                <div class="text-[10px] text-slate-400 font-semibold uppercase">Risk Score</div>
-                <div class="text-lg font-bold font-mono text-white mt-0.5" id="c-prob">0.92</div>
+            <!-- Stats Bar -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+              <div class="bg-slate-900/70 border border-slate-800 p-3 rounded-xl">
+                <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Model Risk Score</div>
+                <div class="text-xl font-bold font-mono text-white mt-1" id="c-prob">0.92</div>
               </div>
-              <div class="glass-card-sub p-3 rounded-xl">
-                <div class="text-[10px] text-slate-400 font-semibold uppercase">Exposure (USD)</div>
-                <div class="text-lg font-bold font-mono text-emerald-400 mt-0.5" id="c-exposure">$1,906.07</div>
+              <div class="bg-slate-900/70 border border-slate-800 p-3 rounded-xl">
+                <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Calculated Exposure</div>
+                <div class="text-xl font-bold font-mono text-emerald-400 mt-1" id="c-exposure">$1,906.07</div>
               </div>
-              <div class="glass-card-sub p-3 rounded-xl">
-                <div class="text-[10px] text-slate-400 font-semibold uppercase">Ring Cards</div>
-                <div class="text-lg font-bold font-mono text-purple-400 mt-0.5" id="c-cards">542</div>
+              <div class="bg-slate-900/70 border border-slate-800 p-3 rounded-xl">
+                <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Connected Ring Cards</div>
+                <div class="text-xl font-bold font-mono text-purple-400 mt-1" id="c-cards">542</div>
               </div>
-              <div class="glass-card-sub p-3 rounded-xl">
-                <div class="text-[10px] text-slate-400 font-semibold uppercase">FinCEN SAR</div>
-                <div class="text-lg font-bold font-mono mt-0.5" id="c-sar-stat">FILED</div>
+              <div class="bg-slate-900/70 border border-slate-800 p-3 rounded-xl">
+                <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">SAR Part V Status</div>
+                <div class="text-xl font-bold font-mono mt-1" id="c-sar-stat">FILED</div>
               </div>
             </div>
 
             <!-- Novel Undocumented Alert Box -->
-            <div id="c-pattern-desc-box" class="p-4 rounded-xl bg-purple-950/40 border border-purple-500/40 space-y-1 hidden">
+            <div id="c-pattern-desc-box" class="p-4 rounded-xl bg-purple-950/40 border border-purple-500/40 space-y-1.5 hidden">
               <div class="flex items-center space-x-2 text-purple-300 font-bold text-xs uppercase tracking-wider">
                 <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                <span>Undocumented Pattern Discovery (Policy Rule R9)</span>
+                <span>Novel Undocumented Topology Discovered (Policy Rule R9)</span>
               </div>
-              <p class="text-xs text-purple-200" id="c-pattern-desc"></p>
+              <p class="text-xs text-purple-200 leading-relaxed" id="c-pattern-desc"></p>
             </div>
 
-            <!-- Trigger Alert Banner -->
-            <div class="glass-card-sub p-4 rounded-xl space-y-2 text-xs">
-              <div class="flex flex-wrap items-center justify-between text-[11px] text-slate-400 font-mono border-b border-slate-800 pb-2">
+            <!-- Ingested Alert Banner -->
+            <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-xl space-y-2 text-xs">
+              <div class="flex flex-wrap items-center justify-between text-[11px] text-slate-400 font-mono border-b border-slate-800 pb-2 gap-2">
                 <div>Customer: <span class="text-white font-bold" id="c-meta-cust">C07297</span></div>
                 <div>Primary Card: <span class="text-white font-bold" id="c-meta-card">C07297-K1</span></div>
-                <div>Trigger Txn ID: <span class="text-brand-orange font-bold" id="c-meta-txn">3476682</span></div>
+                <div>Trigger Txn ID: <span class="text-tg-orange font-bold" id="c-meta-txn">3476682</span></div>
                 <div>Model Score: <span class="text-white font-bold" id="c-meta-score">0.25</span></div>
               </div>
-              <div class="text-slate-200 leading-relaxed" id="c-trigger-text"></div>
+              <div class="text-slate-200 leading-relaxed font-sans" id="c-trigger-text"></div>
             </div>
           </div>
 
-          <!-- Dynamic SVG Knowledge Subgraph -->
-          <div class="glass-card p-6 rounded-2xl space-y-4">
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <div class="flex items-center space-x-2.5">
-                <div class="p-2 rounded-lg bg-brand-orange/15 border border-brand-orange/30 text-brand-orange">
+          <!-- Interactive Knowledge Subgraph Card -->
+          <div class="bg-tg-surface/90 border border-tg-border p-6 rounded-2xl shadow-lg space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <div class="flex items-center space-x-3">
+                <div class="p-2 rounded-xl bg-tg-orange/15 text-tg-orange border border-tg-orange/30">
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path></svg>
                 </div>
                 <div>
-                  <h3 class="text-sm font-bold text-white tracking-tight">TigerGraph 2-Hop Knowledge Subgraph</h3>
-                  <p class="text-[11px] text-slate-400">Live multi-hop relationship traversal across Card, Txn, Device, and Connected Syndicate Cards</p>
+                  <h3 class="text-base font-bold text-white tracking-tight">TigerGraph 2-Hop Knowledge Subgraph</h3>
+                  <p class="text-xs text-slate-400">Live multi-hop relationship traversal across Card, Txn, Device Profile, and Syndicate</p>
                 </div>
               </div>
 
-              <!-- Node Color Legend -->
-              <div class="flex items-center space-x-3 text-[10px] font-mono text-slate-300">
-                <span class="flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-blue-500 mr-1.5 shadow-[0_0_8px_rgba(59,130,246,0.6)]"></span>Customer</span>
-                <span class="flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-amber-500 mr-1.5 shadow-[0_0_8px_rgba(245,158,11,0.6)]"></span>Card</span>
-                <span class="flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-rose-500 mr-1.5 shadow-[0_0_8px_rgba(244,63,94,0.6)]"></span>Txn</span>
-                <span class="flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-purple-500 mr-1.5 shadow-[0_0_8px_rgba(168,85,247,0.6)]"></span>Device</span>
-                <span class="flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-yellow-400 mr-1.5 shadow-[0_0_8px_rgba(250,204,21,0.6)]"></span>Ring</span>
+              <!-- Legend Chips -->
+              <div class="flex flex-wrap items-center gap-2 text-[10px] font-mono">
+                <span class="px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30">● Customer</span>
+                <span class="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">● Card</span>
+                <span class="px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30">● Txn</span>
+                <span class="px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">● Device</span>
+                <span class="px-2 py-0.5 rounded-full bg-yellow-500/20 text-yellow-300 border border-yellow-500/30">● Ring</span>
               </div>
             </div>
 
-            <!-- Canvas Container -->
-            <div class="w-full bg-[#050914] rounded-xl border border-slate-800 p-2 relative overflow-hidden flex items-center justify-center">
-              <svg id="subgraph-svg" class="w-full h-72" viewBox="0 0 650 280">
+            <!-- SVG Visualizer Canvas Container -->
+            <div class="w-full bg-[#050914] rounded-2xl border border-slate-800 p-4 relative overflow-hidden flex flex-col items-center justify-center min-h-[300px] shadow-inner">
+              <svg id="subgraph-svg" class="w-full h-72 cursor-crosshair" viewBox="0 0 680 290">
                 <defs>
-                  <filter id="glow-orange" x="-20%" y="-20%" width="140%" height="140%">
-                    <feGaussianBlur stdDeviation="3" result="blur" />
+                  <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+                    <feGaussianBlur stdDeviation="4" result="blur" />
                     <feComposite in="SourceGraphic" in2="blur" operator="over" />
                   </filter>
                 </defs>
+                <!-- Injected via renderSvgGraph -->
               </svg>
             </div>
-            <p class="text-center text-[11px] text-slate-400 font-mono" id="graph-caption">Traversing 2 hops from primary card through device fingerprint collisions to uncover syndicate exposure.</p>
+            
+            <p class="text-xs text-slate-400 font-mono text-center leading-relaxed" id="graph-caption">
+              Multi-hop graph traversal from Card through Transactions to shared Device Profile & syndicate ring.
+            </p>
+
+            <!-- Clickable Node Inspector Drawer -->
+            <div id="node-inspector" class="bg-slate-900/90 border border-slate-700/80 p-4 rounded-xl text-xs space-y-2 hidden">
+              <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                <span class="font-bold text-white flex items-center space-x-1.5">
+                  <span class="text-tg-orange">🔍</span>
+                  <span id="insp-title">Node Inspector: Vertex Details</span>
+                </span>
+                <span class="font-mono text-[10px] text-slate-400" id="insp-type">VERTEX</span>
+              </div>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] font-mono text-slate-300" id="insp-props">
+                <!-- Dynamically populated on node click -->
+              </div>
+            </div>
           </div>
 
-          <!-- Evidence Claims & Case Memory Precedents -->
-          <div class="glass-card p-6 rounded-2xl space-y-4">
-            <h3 class="text-sm font-bold text-white flex items-center space-x-2">
-              <span class="text-brand-orange">📋</span>
+          <!-- Evidence Claims & Case Memory Precedents Card -->
+          <div class="bg-tg-surface/90 border border-tg-border p-6 rounded-2xl shadow-lg space-y-4">
+            <h3 class="text-base font-bold text-white flex items-center space-x-2">
+              <span class="text-tg-orange">📋</span>
               <span>GraphRAG Evidence Claims & Case Memory Precedents</span>
             </h3>
 
-            <div id="c-evidence-list" class="space-y-2 text-xs">
+            <div id="c-evidence-list" class="space-y-2.5 text-xs">
               <!-- Dynamically populated evidence items -->
             </div>
 
-            <div class="pt-3 border-t border-brand-border flex items-center justify-between text-xs font-mono">
+            <div class="pt-4 border-t border-tg-border flex flex-wrap items-center justify-between text-xs font-mono gap-2">
               <span class="text-slate-400">Cited Precedents (TigerGraph Case Vertex):</span>
-              <span id="c-prior-cases" class="text-brand-orange font-bold px-2 py-0.5 rounded bg-brand-orange/10 border border-brand-orange/30"></span>
+              <span id="c-prior-cases" class="text-tg-orange font-bold px-3 py-1 rounded-md bg-tg-orange/10 border border-tg-orange/30"></span>
             </div>
           </div>
 
         </div>
 
-        <!-- Right Column: Dual-Stage NBA & FinCEN SAR Narrative (5 cols) -->
+        <!-- Right Column: Dual-Stage NBA & FinCEN SAR (5 Cols) -->
         <div class="lg:col-span-5 space-y-6">
 
           <!-- Dual-Stage Next Best Action Card -->
-          <div class="glass-card p-6 rounded-2xl space-y-5 border-t-4 border-t-brand-orange">
+          <div class="bg-tg-surface/90 border border-tg-border p-6 rounded-2xl shadow-lg space-y-5 border-t-4 border-t-tg-orange">
             <div class="flex items-center justify-between">
               <div>
                 <h3 class="text-base font-bold text-white tracking-tight flex items-center space-x-2">
-                  <span>⚡</span>
+                  <span class="text-tg-orange">⚡</span>
                   <span>Dual-Stage Next-Best Action</span>
                 </h3>
-                <p class="text-[11px] text-slate-400">Strict adherence to Bank Fraud Policies R1–R10</p>
+                <p class="text-xs text-slate-400">Strict adherence to Bank Fraud Policies R1–R10</p>
               </div>
-              <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-slate-800 text-slate-300 border border-slate-700 font-mono">Defensible</span>
+              <span class="px-2.5 py-1 rounded text-[10px] font-bold uppercase bg-slate-800 text-slate-300 border border-slate-700 font-mono">Defensible</span>
             </div>
 
             <!-- Stage 1 (Initial / Pre-Verification) -->
             <div class="space-y-2">
               <div class="flex items-center justify-between text-xs font-semibold text-slate-300">
                 <span class="flex items-center text-amber-400 font-mono">
-                  <span class="w-2 h-2 rounded-full bg-amber-400 mr-1.5"></span>
+                  <span class="w-2 h-2 rounded-full bg-amber-400 mr-1.5 animate-pulse"></span>
                   STAGE 1: Initial Actions (Before Outreach)
                 </span>
                 <span class="text-[10px] text-slate-400">Cautious Containment</span>
               </div>
               <div id="c-actions-initial" class="space-y-2 text-xs">
-                <!-- Dynamically populated initial actions -->
+                <!-- Injected initial actions -->
               </div>
             </div>
 
             <!-- Controlled Customer Validation Box -->
-            <div class="p-3.5 rounded-xl bg-slate-900/80 border border-slate-700/80 text-xs space-y-2">
+            <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-700/80 text-xs space-y-2">
               <div class="flex items-center justify-between font-mono text-[11px] text-slate-300 font-bold">
                 <span class="text-blue-400 flex items-center">
-                  <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                  <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
                   Controlled Evidence Request
                 </span>
                 <span class="text-slate-400 font-normal">Push Authentication / Call</span>
               </div>
-              <p class="text-slate-200 italic" id="c-evidence-req"></p>
+              <p class="text-slate-200 italic leading-relaxed" id="c-evidence-req"></p>
             </div>
 
             <!-- Stage 2 (Final / Post-Verification) -->
@@ -392,47 +408,41 @@
                 <span class="text-[10px] text-slate-400">Defensible Execution</span>
               </div>
               <div id="c-actions-final" class="space-y-2 text-xs">
-                <!-- Dynamically populated final actions -->
+                <!-- Injected final actions -->
               </div>
             </div>
 
             <!-- What Changed? Rationale Box -->
-            <div class="p-3.5 rounded-xl bg-brand-orange/10 border border-brand-orange/30 text-xs space-y-1">
-              <div class="text-brand-orange font-bold uppercase tracking-wider text-[10px] flex items-center">
-                <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <div class="p-4 rounded-xl bg-tg-orange/10 border border-tg-orange/30 text-xs space-y-1.5">
+              <div class="text-tg-orange font-bold uppercase tracking-wider text-[10px] flex items-center">
+                <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 What Changed (Verification Impact)
               </div>
               <p class="text-slate-200 leading-relaxed text-[11px]" id="c-what-changed"></p>
             </div>
           </div>
 
-          <!-- FinCEN SAR Part V Narrative Box -->
-          <div class="glass-card p-6 rounded-2xl space-y-4">
+          <!-- FinCEN SAR Part V Narrative Card -->
+          <div class="bg-tg-surface/90 border border-tg-border p-6 rounded-2xl shadow-lg space-y-4">
             <div class="flex items-center justify-between">
-              <div class="flex items-center space-x-2">
-                <div class="p-1.5 rounded-lg bg-purple-500/20 text-purple-400">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+              <div class="flex items-center space-x-3">
+                <div class="p-2 rounded-xl bg-purple-500/20 text-purple-400 border border-purple-500/30">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                 </div>
                 <div>
                   <h3 class="text-sm font-bold text-white">FinCEN SAR Narrative</h3>
                   <p class="text-[10px] text-slate-400 font-mono">Suspicious Activity Report Part V</p>
                 </div>
               </div>
-              <button onclick="copySAR()" class="px-3 py-1.5 rounded-lg bg-purple-600/30 hover:bg-purple-600/50 border border-purple-500/40 text-purple-300 text-xs font-mono font-semibold transition flex items-center space-x-1">
+              <button onclick="copySAR()" id="btn-copy-sar" class="px-3 py-1.5 rounded-lg bg-purple-600/30 hover:bg-purple-600/50 border border-purple-500/40 text-purple-300 text-xs font-mono font-semibold transition flex items-center space-x-1.5 shadow-sm">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
                 <span id="copy-sar-text">Copy SAR</span>
               </button>
             </div>
 
-            <!-- SAR Document Window -->
-            <div class="bg-[#050814] rounded-xl border border-slate-800 p-4 font-mono text-[11px] text-slate-300 max-h-72 overflow-y-auto custom-scroll space-y-3" id="sar-doc-container">
-              <div class="text-purple-400 font-bold border-b border-slate-800 pb-2 flex items-center justify-between">
-                <span>CONFIDENTIAL BSA/AML SUSPICIOUS ACTIVITY REPORT</span>
-                <span class="text-[10px] text-slate-500">FORM 111</span>
-              </div>
-              <div id="c-sar-content" class="leading-relaxed whitespace-pre-line text-slate-300">
-                <!-- Injected via JS -->
-              </div>
+            <!-- SAR Narrative Document Content Container -->
+            <div class="bg-[#050814] rounded-xl border border-slate-800 p-4 font-mono text-[11px] text-slate-300 max-h-80 overflow-y-auto custom-scroll space-y-3" id="sar-doc-container">
+              <!-- Dynamically populated SAR narrative -->
             </div>
           </div>
 
@@ -442,52 +452,52 @@
 
     </div>
 
-    <!-- ==================== VIEW 2: Live Autonomous Agent Simulator ==================== -->
+    <!-- ==================== TAB 2: Live Autonomous Agent Simulator ==================== -->
     <div id="view-simulator" class="space-y-6 hidden">
-      <div class="glass-card p-6 rounded-2xl space-y-6">
-        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-brand-border pb-4">
+      <div class="bg-tg-surface/90 border border-tg-border p-6 rounded-2xl shadow-xl space-y-6">
+        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-tg-border pb-4">
           <div>
             <h2 class="text-xl font-bold text-white tracking-tight flex items-center space-x-2">
-              <span class="text-brand-orange">⚡</span>
+              <span class="text-tg-orange">⚡</span>
               <span>Autonomous Agent Investigation Simulator</span>
             </h2>
-            <p class="text-xs text-slate-400 mt-0.5">Select any alert from the 20 benchmark cases and trigger the autonomous multi-stage investigation agent in real-time.</p>
+            <p class="text-xs text-slate-400 mt-1">Select any alert from the 20 benchmark cases and trigger the autonomous multi-stage investigation agent in real-time.</p>
           </div>
 
           <div class="flex items-center space-x-3">
-            <select id="sim-case-select" class="bg-slate-900 border border-slate-700 text-white rounded-xl px-4 py-2 text-xs font-mono focus:outline-none focus:border-brand-orange">
-              <!-- Dynamically populated with all 20 cases -->
+            <select id="sim-case-select" class="bg-slate-900 border border-slate-700 text-white rounded-xl px-4 py-2.5 text-xs font-mono focus:outline-none focus:border-tg-orange">
+              <!-- Dynamically populated with 20 cases -->
             </select>
-            <button onclick="runSimulation()" id="sim-run-btn" class="px-5 py-2 rounded-xl bg-gradient-to-r from-brand-orange to-orange-600 hover:from-orange-500 hover:to-orange-700 text-white font-bold text-xs shadow-lg shadow-brand-orange/30 transition flex items-center space-x-2">
+            <button onclick="runSimulation()" id="sim-run-btn" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-tg-orange to-orange-600 hover:from-orange-500 hover:to-orange-700 text-white font-bold text-xs shadow-lg shadow-tg-orange/30 transition flex items-center space-x-2">
               <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
               <span>Run Autonomous Agent</span>
             </button>
           </div>
         </div>
 
-        <!-- Investigation Lifecycle Stages Tracker -->
-        <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
-          <div id="step-1" class="glass-card-sub p-3.5 rounded-xl border border-slate-800 text-slate-400 space-y-1">
+        <!-- 5-Stage Agentic Pipeline Status -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3">
+          <div id="step-1" class="bg-slate-900/70 border border-slate-800 p-4 rounded-xl text-slate-400 space-y-1 transition duration-300">
             <div class="text-[10px] font-mono text-slate-500 font-bold uppercase">Stage 1</div>
             <div class="text-xs font-bold text-slate-300">Alert Triage</div>
             <div class="text-[11px] text-slate-400">Model scoring & customer baseline retrieval</div>
           </div>
-          <div id="step-2" class="glass-card-sub p-3.5 rounded-xl border border-slate-800 text-slate-400 space-y-1">
+          <div id="step-2" class="bg-slate-900/70 border border-slate-800 p-4 rounded-xl text-slate-400 space-y-1 transition duration-300">
             <div class="text-[10px] font-mono text-slate-500 font-bold uppercase">Stage 2</div>
             <div class="text-xs font-bold text-slate-300">TigerGraph Traversal</div>
             <div class="text-[11px] text-slate-400">2-hop card window & device collision query</div>
           </div>
-          <div id="step-3" class="glass-card-sub p-3.5 rounded-xl border border-slate-800 text-slate-400 space-y-1">
+          <div id="step-3" class="bg-slate-900/70 border border-slate-800 p-4 rounded-xl text-slate-400 space-y-1 transition duration-300">
             <div class="text-[10px] font-mono text-slate-500 font-bold uppercase">Stage 3</div>
             <div class="text-xs font-bold text-slate-300">Policy R1 Evaluation</div>
-            <div class="text-[11px] text-slate-400">Uncertainty analysis & interim action recommendation</div>
+            <div class="text-[11px] text-slate-400">Uncertainty analysis & interim hold recommendation</div>
           </div>
-          <div id="step-4" class="glass-card-sub p-3.5 rounded-xl border border-slate-800 text-slate-400 space-y-1">
+          <div id="step-4" class="bg-slate-900/70 border border-slate-800 p-4 rounded-xl text-slate-400 space-y-1 transition duration-300">
             <div class="text-[10px] font-mono text-slate-500 font-bold uppercase">Stage 4</div>
             <div class="text-xs font-bold text-slate-300">Controlled Validation</div>
             <div class="text-[11px] text-slate-400">Cardholder validation & step-up verification</div>
           </div>
-          <div id="step-5" class="glass-card-sub p-3.5 rounded-xl border border-slate-800 text-slate-400 space-y-1">
+          <div id="step-5" class="bg-slate-900/70 border border-slate-800 p-4 rounded-xl text-slate-400 space-y-1 transition duration-300">
             <div class="text-[10px] font-mono text-slate-500 font-bold uppercase">Stage 5</div>
             <div class="text-xs font-bold text-slate-300">Defensible NBA & Memory</div>
             <div class="text-[11px] text-slate-400">Execute final action & upsert case into graph</div>
@@ -495,7 +505,7 @@
         </div>
 
         <!-- Terminal Execution Log -->
-        <div class="rounded-2xl bg-[#02050E] border border-slate-800/80 p-5 font-mono text-xs text-slate-300 shadow-2xl relative">
+        <div class="rounded-2xl bg-[#02050E] border border-slate-800 p-5 font-mono text-xs text-slate-300 shadow-2xl relative">
           <div class="flex items-center justify-between pb-3 border-b border-slate-800 text-slate-500 text-[11px]">
             <div class="flex items-center space-x-2">
               <span class="w-3 h-3 rounded-full bg-rose-500/80 inline-block"></span>
@@ -503,7 +513,7 @@
               <span class="w-3 h-3 rounded-full bg-emerald-500/80 inline-block"></span>
               <span class="ml-2 font-bold text-slate-400">TigerGraph Agent Core Runtime — Terminal v2.4</span>
             </div>
-            <span class="text-brand-orange font-bold">READY</span>
+            <span class="text-tg-orange font-bold">READY</span>
           </div>
 
           <div id="sim-terminal" class="mt-4 space-y-2 h-72 overflow-y-auto custom-scroll text-slate-300 font-mono text-[12px] leading-relaxed">
@@ -516,13 +526,13 @@
       </div>
     </div>
 
-    <!-- ==================== VIEW 3: 20-Case Benchmark Command Matrix ==================== -->
+    <!-- ==================== TAB 3: 20-Case Benchmark Command Matrix ==================== -->
     <div id="view-matrix" class="space-y-6 hidden">
-      <div class="glass-card p-6 rounded-2xl space-y-5">
+      <div class="bg-tg-surface/90 border border-tg-border p-6 rounded-2xl shadow-xl space-y-5">
         <div class="flex flex-wrap items-center justify-between gap-4">
           <div>
             <h2 class="text-xl font-bold text-white tracking-tight flex items-center space-x-2">
-              <span>📊</span>
+              <span class="text-blue-400">📊</span>
               <span>Official 20-Case Benchmark Matrix</span>
             </h2>
             <p class="text-xs text-slate-400">All 20 test cases evaluated against the IEEE-CIS dataset with dual-stage next best actions & FinCEN filings.</p>
@@ -530,11 +540,11 @@
 
           <!-- Search & Filter Controls -->
           <div class="flex flex-wrap items-center gap-2 text-xs">
-            <button onclick="setMatrixFilter('all')" id="btn-filt-all" class="px-3 py-1.5 rounded-lg bg-brand-orange text-white font-bold transition">All (20)</button>
-            <button onclick="setMatrixFilter('fraud')" id="btn-filt-fraud" class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white transition">Fraud (10)</button>
-            <button onclick="setMatrixFilter('legit')" id="btn-filt-legit" class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white transition">Legitimate (10)</button>
-            <button onclick="setMatrixFilter('sar')" id="btn-filt-sar" class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white transition">SAR Filed (4)</button>
-            <input type="text" id="matrix-search" oninput="filterMatrix()" placeholder="Search Case, Card, Pattern..." class="bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-1.5 text-xs font-mono focus:outline-none focus:border-brand-orange w-48" />
+            <button onclick="setMatrixFilter('all')" id="btn-filt-all" class="px-3.5 py-1.5 rounded-lg bg-tg-orange text-white font-bold transition">All (20)</button>
+            <button onclick="setMatrixFilter('fraud')" id="btn-filt-fraud" class="px-3.5 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white transition">Fraud (10)</button>
+            <button onclick="setMatrixFilter('legit')" id="btn-filt-legit" class="px-3.5 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white transition">Legitimate (10)</button>
+            <button onclick="setMatrixFilter('sar')" id="btn-filt-sar" class="px-3.5 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white transition">SAR Filed (4)</button>
+            <input type="text" id="matrix-search" oninput="filterMatrix()" placeholder="Search Case, Card, Pattern..." class="bg-slate-900 border border-slate-700 text-white rounded-lg px-3.5 py-1.5 text-xs font-mono focus:outline-none focus:border-tg-orange w-52" />
           </div>
         </div>
 
@@ -562,22 +572,22 @@
       </div>
     </div>
 
-    <!-- ==================== VIEW 4: TigerGraph & GSQL Engine ==================== -->
+    <!-- ==================== TAB 4: TigerGraph & GSQL Engine ==================== -->
     <div id="view-architecture" class="space-y-6 hidden">
-      <div class="glass-card p-6 rounded-2xl space-y-6">
+      <div class="bg-tg-surface/90 border border-tg-border p-6 rounded-2xl shadow-xl space-y-6">
         <div>
           <h2 class="text-xl font-bold text-white tracking-tight flex items-center space-x-2">
             <span class="text-purple-400">🏗️</span>
             <span>TigerGraph Native Schema & MCP Architecture</span>
           </h2>
-          <p class="text-xs text-slate-400 mt-0.5">End-to-end integration diagram showing GraphRAG, GSQL queries, Model Context Protocol, and multi-tier approval routing.</p>
+          <p class="text-xs text-slate-400 mt-1">End-to-end integration diagram showing GraphRAG, GSQL queries, Model Context Protocol, and multi-tier approval routing.</p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <!-- Graph Schema Card -->
-          <div class="glass-card-sub p-5 rounded-xl space-y-3">
+          <div class="bg-slate-900/80 border border-slate-800 p-5 rounded-xl space-y-3">
             <h3 class="text-sm font-bold text-white flex items-center space-x-2 font-mono">
-              <span class="text-brand-orange">●</span>
+              <span class="text-tg-orange">●</span>
               <span>GSQL Graph Schema (6 Vertices, 4 Edges)</span>
             </h3>
             <div class="space-y-2 text-xs font-mono text-slate-300 leading-relaxed bg-[#050914] p-4 rounded-xl border border-slate-800">
@@ -597,7 +607,7 @@
           </div>
 
           <!-- MCP Server Capabilities -->
-          <div class="glass-card-sub p-5 rounded-xl space-y-3">
+          <div class="bg-slate-900/80 border border-slate-800 p-5 rounded-xl space-y-3">
             <h3 class="text-sm font-bold text-white flex items-center space-x-2 font-mono">
               <span class="text-emerald-400">●</span>
               <span>TigerGraph MCP Tool Endpoints</span>
@@ -618,30 +628,30 @@
           </div>
         </div>
 
-        <!-- Bank Fraud Policy Summary Strip -->
-        <div class="glass-card-sub p-5 rounded-xl space-y-3">
+        <!-- Policy Rules R1–R10 -->
+        <div class="bg-slate-900/80 border border-slate-800 p-5 rounded-xl space-y-3">
           <h3 class="text-sm font-bold text-white flex items-center space-x-2">
             <span class="text-amber-400">⚖️</span>
             <span>Bank Fraud Policy Engine (Rules R1 through R10)</span>
           </h3>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 text-xs">
-            <div class="bg-slate-900/80 p-3 rounded-lg border border-slate-800">
+            <div class="bg-slate-950 p-3.5 rounded-lg border border-slate-800">
               <div class="font-bold text-amber-400 font-mono">Rule R1</div>
               <div class="text-slate-300 text-[11px] mt-1">Solitary high risk score without corroborating graph evidence shall NEVER trigger hard card block.</div>
             </div>
-            <div class="bg-slate-900/80 p-3 rounded-lg border border-slate-800">
+            <div class="bg-slate-950 p-3.5 rounded-lg border border-slate-800">
               <div class="font-bold text-amber-400 font-mono">Rule R3</div>
               <div class="text-slate-300 text-[11px] mt-1">Confirmed customer report with matching device collision mandates immediate card block (L1 approval).</div>
             </div>
-            <div class="bg-slate-900/80 p-3 rounded-lg border border-slate-800">
+            <div class="bg-slate-950 p-3.5 rounded-lg border border-slate-800">
               <div class="font-bold text-amber-400 font-mono">Rule R7</div>
               <div class="text-slate-300 text-[11px] mt-1">Exposure exceeding $10,000 across connected syndicate cards requires mandatory FinCEN SAR Part V.</div>
             </div>
-            <div class="bg-slate-900/80 p-3 rounded-lg border border-slate-800">
+            <div class="bg-slate-950 p-3.5 rounded-lg border border-slate-800">
               <div class="font-bold text-amber-400 font-mono">Rule R8</div>
               <div class="text-slate-300 text-[11px] mt-1">All final post-verification actions must document explicit 'what_changed' rationale in case record.</div>
             </div>
-            <div class="bg-slate-900/80 p-3 rounded-lg border border-slate-800">
+            <div class="bg-slate-950 p-3.5 rounded-lg border border-slate-800">
               <div class="font-bold text-amber-400 font-mono">Rule R9</div>
               <div class="text-slate-300 text-[11px] mt-1">Unrecognized fraud topologies must be flagged as 'undocumented' and escalated for policy review.</div>
             </div>
@@ -654,13 +664,13 @@
   </main>
 
   <!-- Footer -->
-  <footer class="border-t border-brand-border py-6 px-4 text-center text-xs text-slate-500 font-mono bg-brand-dark/80">
-    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+  <footer class="border-t border-tg-border py-6 px-4 text-center text-xs text-slate-500 font-mono bg-tg-dark">
+    <div class="max-w-[1600px] mx-auto flex flex-wrap items-center justify-between gap-4">
       <div>Hacker House Goa 2026 — Task 4 Submission | TigerGraph Agentic Fraud Investigation Copilot</div>
       <div class="flex items-center space-x-4">
         <span>Team Lead Devfolio ID: shrutirai29</span>
         <span>•</span>
-        <a href="https://github.com/shrutirai29/GOA" target="_blank" class="text-brand-orange hover:underline">GitHub Repository ↗</a>
+        <a href="https://github.com/shrutirai29/GOA" target="_blank" class="text-tg-orange hover:underline">GitHub Repository ↗</a>
       </div>
     </div>
   </footer>
@@ -4003,7 +4013,7 @@ window.CASES_DATA = {
 };
   </script>
 
-  <!-- ==================== APPLICATION LOGIC ==================== -->
+  <!-- ==================== COMPLETE APPLICATION JAVASCRIPT ==================== -->
   <script>
     let currentCaseId = 'HHG-006';
     let currentFilter = 'all';
@@ -4022,10 +4032,10 @@ window.CASES_DATA = {
         const btn = document.getElementById('tab-' + t);
         if (t === tabId) {
           view.classList.remove('hidden');
-          btn.className = 'px-4 py-2.5 rounded-t-xl border-b-2 border-brand-orange text-white bg-brand-card/60 flex items-center space-x-2 transition font-semibold';
+          btn.className = 'px-5 py-3 rounded-xl border-b-2 border-tg-orange text-white bg-tg-surface/80 flex items-center space-x-2 transition font-semibold shadow-sm';
         } else {
           view.classList.add('hidden');
-          btn.className = 'px-4 py-2.5 rounded-t-xl border-b-2 border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/40 flex items-center space-x-2 transition font-semibold';
+          btn.className = 'px-5 py-3 rounded-xl border-b-2 border-transparent text-slate-400 hover:text-slate-200 hover:bg-tg-surface/40 flex items-center space-x-2 transition font-semibold';
         }
       });
     }
@@ -4033,6 +4043,7 @@ window.CASES_DATA = {
     function renderPills() {
       const container = document.getElementById('case-pills-container');
       container.innerHTML = '';
+
       Object.keys(window.CASES_DATA).forEach(cid => {
         const c = window.CASES_DATA[cid];
         const isFraud = c.case.verdict === 'fraud';
@@ -4043,19 +4054,19 @@ window.CASES_DATA = {
         btn.id = 'pill-' + cid;
         btn.onclick = () => loadCase(cid);
 
-        let baseClasses = 'px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition flex items-center space-x-1.5 whitespace-nowrap ';
+        let baseClasses = 'px-3.5 py-2 rounded-xl text-xs font-mono font-bold transition-all duration-200 flex items-center space-x-1.5 whitespace-nowrap ';
         if (isSelected) {
           baseClasses += isFraud 
-            ? 'bg-rose-500 text-white shadow-lg shadow-rose-500/30 ring-2 ring-rose-400' 
-            : 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30 ring-2 ring-emerald-400';
+            ? 'bg-rose-500 text-white shadow-lg shadow-rose-500/40 ring-2 ring-rose-400 scale-105' 
+            : 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/40 ring-2 ring-emerald-400 scale-105';
         } else {
           baseClasses += isFraud
-            ? 'bg-rose-950/40 text-rose-300 border border-rose-800/60 hover:bg-rose-900/60'
-            : 'bg-emerald-950/40 text-emerald-300 border border-emerald-800/60 hover:bg-emerald-900/60';
+            ? 'bg-rose-950/40 text-rose-300 border border-rose-800/60 hover:bg-rose-900/60 hover:border-rose-600'
+            : 'bg-emerald-950/40 text-emerald-300 border border-emerald-800/60 hover:bg-emerald-900/60 hover:border-emerald-600';
         }
 
         btn.className = baseClasses;
-        btn.innerHTML = `<span>${cid}</span>${isUndoc ? '<span class="text-purple-300 text-[10px]">★</span>' : ''}`;
+        btn.innerHTML = `<span>${cid}</span>${isUndoc ? '<span class="text-purple-300 text-[11px]">★</span>' : ''}`;
         container.appendChild(btn);
       });
     }
@@ -4067,33 +4078,36 @@ window.CASES_DATA = {
       const data = window.CASES_DATA[cid];
       if (!data) return;
 
-      const cp = data.case;
-      const sar = data.sar;
+      const cp = data.case || {};
+      const sar = data.sar || {};
       const meta = data.pack_meta || {};
       const isFraud = cp.verdict === 'fraud';
 
+      // Header Elements
       document.getElementById('c-id').innerText = cid;
+
       const vb = document.getElementById('c-verdict-badge');
-      vb.innerText = cp.verdict.toUpperCase();
+      vb.innerText = (cp.verdict || 'legitimate').toUpperCase();
       vb.className = isFraud 
-        ? 'px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider bg-rose-500 text-white shadow-[0_0_12px_rgba(244,63,94,0.4)]'
-        : 'px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider bg-emerald-500 text-white shadow-[0_0_12px_rgba(16,185,129,0.4)]';
+        ? 'px-3.5 py-1 rounded-lg text-xs font-bold uppercase tracking-wider bg-rose-500 text-white shadow-[0_0_12px_rgba(244,63,94,0.4)]'
+        : 'px-3.5 py-1 rounded-lg text-xs font-bold uppercase tracking-wider bg-emerald-500 text-white shadow-[0_0_12px_rgba(16,185,129,0.4)]';
 
       const pb = document.getElementById('c-pattern-badge');
-      pb.innerText = cp.pattern;
+      pb.innerText = cp.pattern || 'none';
       pb.className = cp.pattern === 'undocumented'
-        ? 'px-3 py-1 rounded-md text-xs font-medium font-mono bg-purple-500/20 text-purple-300 border border-purple-500/40'
-        : 'px-3 py-1 rounded-md text-xs font-medium font-mono bg-slate-800 text-slate-300 border border-slate-700';
+        ? 'px-3 py-1 rounded-lg text-xs font-medium font-mono bg-purple-500/20 text-purple-300 border border-purple-500/40'
+        : 'px-3 py-1 rounded-lg text-xs font-medium font-mono bg-slate-800 text-slate-300 border border-slate-700';
 
-      document.getElementById('c-graph-id').innerText = cp.graph_case_id;
-      document.getElementById('c-prob').innerText = cp.fraud_probability.toFixed(2);
-      document.getElementById('c-exposure').innerText = '$' + cp.exposure_usd.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
-      document.getElementById('c-cards').innerText = cp.connected_card_ids.length;
+      document.getElementById('c-graph-id').innerText = cp.graph_case_id || ('CASE-TG-' + cid);
+      document.getElementById('c-prob').innerText = (cp.fraud_probability !== undefined) ? cp.fraud_probability.toFixed(2) : '0.00';
+      document.getElementById('c-exposure').innerText = '$' + (cp.exposure_usd !== undefined ? cp.exposure_usd : 0.0).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+      document.getElementById('c-cards').innerText = (cp.connected_card_ids || []).length;
 
       const sarStat = document.getElementById('c-sar-stat');
-      sarStat.innerText = sar.file ? 'FILED' : 'NOT FILED';
-      sarStat.className = sar.file ? 'text-lg font-bold font-mono text-purple-400 mt-0.5' : 'text-lg font-bold font-mono text-slate-500 mt-0.5';
+      sarStat.innerText = sar.file ? 'FILED' : 'NOT REQUIRED';
+      sarStat.className = sar.file ? 'text-xl font-bold font-mono text-purple-400 mt-1' : 'text-xl font-bold font-mono text-slate-500 mt-1';
 
+      // Novel pattern box
       const undocBox = document.getElementById('c-pattern-desc-box');
       if (cp.pattern === 'undocumented' && cp.pattern_description) {
         undocBox.classList.remove('hidden');
@@ -4102,27 +4116,44 @@ window.CASES_DATA = {
         undocBox.classList.add('hidden');
       }
 
+      // Metadata Banner
       document.getElementById('c-meta-cust').innerText = meta.customer_id || 'C07297';
       document.getElementById('c-meta-card').innerText = meta.card_id || 'C07297-K1';
-      document.getElementById('c-meta-txn').innerText = meta.flagged_txn_id || (cp.affected_txn_ids[0] || 'N/A');
-      document.getElementById('c-meta-score').innerText = meta.risk_score !== null && meta.risk_score !== undefined ? meta.risk_score : (cp.fraud_probability.toFixed(2));
-      document.getElementById('c-trigger-text').innerText = meta.trigger_text || 'Standard real-time risk alert flagged for multi-hop graph investigation.';
+      document.getElementById('c-meta-txn').innerText = meta.flagged_txn_id || (cp.affected_txn_ids && cp.affected_txn_ids[0]) || '3476682';
+      document.getElementById('c-meta-score').innerText = meta.risk_score !== null && meta.risk_score !== undefined ? meta.risk_score : (cp.fraud_probability ? cp.fraud_probability.toFixed(2) : '0.00');
+      document.getElementById('c-trigger-text').innerText = meta.trigger_text || (cp.summary || 'Real-time alert flagged for multi-hop graph investigation.');
 
-      renderEvidence(data.evidence_claims);
-      document.getElementById('c-prior-cases').innerText = data.cited_prior_cases && data.cited_prior_cases.length > 0 ? data.cited_prior_cases.join(', ') : 'None Required (R1 Cleared)';
+      // Evidence Claims (supports both cp.evidence and data.evidence_claims)
+      const evidenceList = cp.evidence || data.evidence_claims || [];
+      renderEvidence(evidenceList);
 
-      renderActions('c-actions-initial', data.next_best_actions.initial, false);
-      renderActions('c-actions-final', data.next_best_actions.final, true);
+      // Precedents (supports both cp.similar_prior_cases and data.cited_prior_cases)
+      const precedents = cp.similar_prior_cases || data.cited_prior_cases || [];
+      document.getElementById('c-prior-cases').innerText = precedents.length > 0 ? precedents.join(', ') : 'None Required (R1 Cleared)';
 
-      const evReq = data.evidence_requests && data.evidence_requests[0];
-      document.getElementById('c-evidence-req').innerText = evReq ? `Outreach: "${evReq.policy_reason}" -> Customer Response: "${evReq.assumed_response}"` : 'No additional outreach necessary; solitary signal cleared by historical baseline.';
+      // Dual-Stage Next Best Actions
+      const nba = data.next_best_actions || {};
+      renderActions('c-actions-initial', nba.initial || [], false);
+      renderActions('c-actions-final', nba.final || [], true);
 
-      const whatChanged = data.next_best_actions.final && data.next_best_actions.final[0]?.what_changed;
-      document.getElementById('c-what-changed').innerText = whatChanged || 'No change. Customer confirmation aligned with historical baseline.';
+      // Evidence request details
+      const evReq = (data.evidence_requests && data.evidence_requests[0]) || null;
+      document.getElementById('c-evidence-req').innerText = evReq 
+        ? `Outreach dispatched: "${evReq.policy_reason || evReq.type}" -> Customer Response: "${evReq.assumed_response}"` 
+        : 'Solitary signal cleared by historical customer baseline. No step-up outreach required.';
 
-      document.getElementById('c-sar-content').innerText = sar.narrative || 'SAR Not Filed: Legitimate customer activity confirmed. Total suspicious exposure does not meet Bank Fraud Policy R7 thresholds.';
+      // What changed explanation
+      const whatChanged = nba.what_changed || (nba.final && nba.final[0] && nba.final[0].what_changed) || cp.summary || 'Customer confirmation settled the inquiry; historical baseline confirms legitimate spending.';
+      document.getElementById('c-what-changed').innerText = whatChanged;
 
+      // SAR Narrative Formatting
+      renderSar(sar, cid);
+
+      // SVG Knowledge Graph
       renderSvgGraph(cid, cp, meta);
+      
+      // Hide inspector on case change
+      document.getElementById('node-inspector').classList.add('hidden');
     }
 
     function renderEvidence(claims) {
@@ -4132,14 +4163,18 @@ window.CASES_DATA = {
         container.innerHTML = '<div class="text-slate-400 italic">No evidence claims documented.</div>';
         return;
       }
-      claims.forEach(cl => {
+      claims.forEach((cl, idx) => {
         const item = document.createElement('div');
-        item.className = 'glass-card-sub p-3 rounded-xl flex items-start space-x-2.5 border border-slate-800';
+        item.className = 'bg-slate-900/80 border border-slate-800/80 p-3.5 rounded-xl flex items-start space-x-3 hover:border-slate-700 transition';
+        const claimText = cl.claim || cl.evidence || JSON.stringify(cl);
+        const sourceText = cl.source ? `Source: ${cl.source.toUpperCase()}` : (cl.ref ? `Ref: ${cl.ref}` : `Claim #${idx+1}`);
         item.innerHTML = `
-          <span class="text-brand-orange mt-0.5 font-bold">›</span>
+          <div class="w-5 h-5 rounded-full bg-tg-orange/20 text-tg-orange font-mono font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">
+            ${idx+1}
+          </div>
           <div class="flex-1">
-            <div class="font-bold text-slate-200 text-xs">${cl.claim}</div>
-            <div class="text-[11px] text-slate-400 mt-0.5">${cl.evidence}</div>
+            <div class="font-semibold text-slate-200 text-xs leading-relaxed">${claimText}</div>
+            <div class="text-[10px] text-slate-400 font-mono mt-1">${sourceText}</div>
           </div>
         `;
         container.appendChild(item);
@@ -4156,23 +4191,60 @@ window.CASES_DATA = {
 
       actions.forEach(a => {
         const card = document.createElement('div');
-        const tierBadge = a.approval_tier === 'auto'
-          ? '<span class="px-1.5 py-0.5 rounded text-[9px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">AUTO</span>'
-          : `<span class="px-1.5 py-0.5 rounded text-[9px] bg-amber-500/20 text-amber-400 border border-amber-500/30 font-bold">${a.approval_tier.toUpperCase()} APPROVAL</span>`;
+        const routeVal = a.route || a.approval_tier || 'auto';
+        const isAuto = routeVal.toLowerCase() === 'auto';
+        const tierBadge = isAuto
+          ? '<span class="px-2 py-0.5 rounded text-[9px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold uppercase">AUTO EXECUTE</span>'
+          : `<span class="px-2 py-0.5 rounded text-[9px] bg-amber-500/20 text-amber-400 border border-amber-500/30 font-bold uppercase">${routeVal.toUpperCase()} APPROVAL</span>`;
 
-        card.className = 'glass-card-sub p-3 rounded-xl space-y-1.5 border border-slate-800 hover:border-slate-700 transition';
+        card.className = 'bg-slate-900/80 border border-slate-800 p-3.5 rounded-xl space-y-1.5 hover:border-slate-700 transition';
         card.innerHTML = `
           <div class="flex items-center justify-between">
-            <span class="font-bold text-white font-mono flex items-center space-x-1.5">
+            <span class="font-bold text-white font-mono text-xs flex items-center space-x-2">
               <span class="${isFinal ? 'text-emerald-400' : 'text-amber-400'}">●</span>
               <span>${a.action}</span>
             </span>
             ${tierBadge}
           </div>
-          <p class="text-[11px] text-slate-300 leading-snug">${a.reason}</p>
+          <p class="text-[11px] text-slate-300 leading-relaxed font-sans">${a.reason}</p>
         `;
         container.appendChild(card);
       });
+    }
+
+    function renderSar(sar, cid) {
+      const container = document.getElementById('sar-doc-container');
+      const copyBtn = document.getElementById('btn-copy-sar');
+
+      if (sar && sar.file && sar.narrative) {
+        copyBtn.classList.remove('hidden');
+        container.innerHTML = `
+          <div class="text-purple-400 font-bold border-b border-slate-800 pb-2 flex items-center justify-between">
+            <span>OFFICIAL BSA/AML SUSPICIOUS ACTIVITY REPORT</span>
+            <span class="text-[10px] text-slate-500">FORM 111 (FINCEN PART V)</span>
+          </div>
+          <div class="text-[10px] text-slate-400 border-b border-slate-800/80 pb-2 space-y-0.5">
+            <div><span class="text-slate-300 font-bold">CASE ID:</span> ${cid} | <span class="text-slate-300 font-bold">DATE:</span> 2016-12-31</div>
+            <div><span class="text-slate-300 font-bold">RED FLAGS:</span> ${sar.red_flags ? sar.red_flags.join(', ') : 'Velocity surge, multi-card collision'}</div>
+          </div>
+          <div class="leading-relaxed whitespace-pre-line text-slate-200 text-xs font-sans pt-1">
+            ${sar.narrative}
+          </div>
+        `;
+      } else {
+        copyBtn.classList.add('hidden');
+        container.innerHTML = `
+          <div class="p-4 rounded-xl bg-emerald-950/30 border border-emerald-500/30 text-emerald-300 space-y-2">
+            <div class="flex items-center space-x-2 font-bold text-xs">
+              <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+              <span>CLEARED UNDER BANK FRAUD POLICY RULE R1 & R3</span>
+            </div>
+            <p class="text-[11px] text-slate-300 font-sans leading-relaxed">
+              Legitimate customer authorization verified through step-up authentication. Historical baseline matches 6-month profile. Total suspicious exposure is $0.00. Under FinCEN & BSA/AML regulatory thresholds, no SAR filing is required for cleared transactions.
+            </p>
+          </div>
+        `;
+      }
     }
 
     function renderSvgGraph(cid, cp, meta) {
@@ -4180,110 +4252,133 @@ window.CASES_DATA = {
       const isFraud = cp.verdict === 'fraud';
       const custId = meta.customer_id || 'C07297';
       const cardId = meta.card_id || 'C07297-K1';
-      const txnId = meta.flagged_txn_id || '3476682';
+      const txnId = meta.flagged_txn_id || (cp.affected_txn_ids && cp.affected_txn_ids[0]) || '3476682';
 
       let svgHtml = '';
 
       if (isFraud) {
-        // Multi-hop Syndicate Topology
+        // Multi-Hop Syndicate Collision Graph
         svgHtml = `
-          <!-- Glowing Connection Lines -->
-          <line x1="80" y1="140" x2="200" y2="140" stroke="#3B82F6" stroke-width="2.5" class="flow-dash" />
-          <line x1="200" y1="140" x2="330" y2="140" stroke="#F43F5E" stroke-width="2.5" class="flow-dash" />
-          <line x1="330" y1="140" x2="460" y2="140" stroke="#A855F7" stroke-width="2.5" class="flow-dash" />
+          <!-- Flowing Connecting Lines -->
+          <line x1="90" y1="145" x2="220" y2="145" stroke="#3B82F6" stroke-width="2.5" class="flow-line" />
+          <line x1="220" y1="145" x2="350" y2="145" stroke="#F43F5E" stroke-width="2.5" class="flow-line" />
+          <line x1="350" y1="145" x2="480" y2="145" stroke="#A855F7" stroke-width="2.5" class="flow-line" />
 
-          <!-- Multi-Card Collision Branches -->
-          <line x1="460" y1="140" x2="570" y2="70" stroke="#EAB308" stroke-width="1.8" stroke-dasharray="4" />
-          <line x1="460" y1="140" x2="570" y2="140" stroke="#EAB308" stroke-width="1.8" stroke-dasharray="4" />
-          <line x1="460" y1="140" x2="570" y2="210" stroke="#EAB308" stroke-width="1.8" stroke-dasharray="4" />
+          <!-- Fan-out Syndicate Edges -->
+          <line x1="480" y1="145" x2="600" y2="65" stroke="#EAB308" stroke-width="1.8" class="flow-line" />
+          <line x1="480" y1="145" x2="600" y2="145" stroke="#EAB308" stroke-width="1.8" class="flow-line" />
+          <line x1="480" y1="145" x2="600" y2="225" stroke="#EAB308" stroke-width="1.8" class="flow-line" />
 
           <!-- Node 1: Customer -->
-          <g transform="translate(80, 140)">
-            <circle r="26" fill="#1E3A8A" stroke="#3B82F6" stroke-width="2.5" filter="url(#glow-orange)" />
-            <text y="-3" fill="#FFFFFF" font-size="10" font-weight="bold" font-family="monospace" text-anchor="middle">Customer</text>
-            <text y="10" fill="#93C5FD" font-size="8.5" font-family="monospace" text-anchor="middle">${custId}</text>
+          <g transform="translate(90, 145)" class="cursor-pointer" onclick="inspectNode('Customer', '${custId}', 'Legitimate cardholder profile with 6-month historical baseline')">
+            <circle r="30" fill="#1E3A8A" stroke="#3B82F6" stroke-width="3" filter="url(#glow)" />
+            <text y="-4" fill="#FFFFFF" font-size="10" font-weight="bold" font-family="monospace" text-anchor="middle">Customer</text>
+            <text y="11" fill="#93C5FD" font-size="9" font-family="monospace" text-anchor="middle">${custId}</text>
           </g>
 
           <!-- Node 2: Card -->
-          <g transform="translate(200, 140)">
-            <circle r="26" fill="#78350F" stroke="#F59E0B" stroke-width="2.5" />
-            <text y="-3" fill="#FFFFFF" font-size="10" font-weight="bold" font-family="monospace" text-anchor="middle">Card</text>
-            <text y="10" fill="#FDE68A" font-size="8" font-family="monospace" text-anchor="middle">${cardId.substring(0,9)}</text>
+          <g transform="translate(220, 145)" class="cursor-pointer" onclick="inspectNode('Card', '${cardId}', 'Compromised card vertex involved in velocity surge')">
+            <circle r="30" fill="#78350F" stroke="#F59E0B" stroke-width="3" />
+            <text y="-4" fill="#FFFFFF" font-size="10" font-weight="bold" font-family="monospace" text-anchor="middle">Card</text>
+            <text y="11" fill="#FDE68A" font-size="8.5" font-family="monospace" text-anchor="middle">${cardId.substring(0,9)}</text>
           </g>
 
           <!-- Node 3: Flagged Txn -->
-          <g transform="translate(330, 140)">
-            <circle r="28" fill="#881337" stroke="#F43F5E" stroke-width="3" />
-            <text y="-4" fill="#FFFFFF" font-size="10" font-weight="bold" font-family="monospace" text-anchor="middle">Txn (Alert)</text>
-            <text y="9" fill="#FECDD3" font-size="8.5" font-family="monospace" text-anchor="middle">#${txnId}</text>
+          <g transform="translate(350, 145)" class="cursor-pointer" onclick="inspectNode('Transaction', '#${txnId}', 'Flagged transaction triggered by real-time model or report')">
+            <circle r="32" fill="#881337" stroke="#F43F5E" stroke-width="3.5" class="pulse-glow" />
+            <text y="-5" fill="#FFFFFF" font-size="10" font-weight="bold" font-family="monospace" text-anchor="middle">Txn Alert</text>
+            <text y="11" fill="#FECDD3" font-size="9" font-family="monospace" text-anchor="middle">#${txnId}</text>
           </g>
 
-          <!-- Node 4: Shared Device -->
-          <g transform="translate(460, 140)">
-            <circle r="28" fill="#581C87" stroke="#A855F7" stroke-width="3" />
-            <text y="-4" fill="#FFFFFF" font-size="10" font-weight="bold" font-family="monospace" text-anchor="middle">Device ID</text>
-            <text y="9" fill="#E9D5FF" font-size="8.5" font-family="monospace" text-anchor="middle">D13840</text>
+          <!-- Node 4: Shared Device Profile -->
+          <g transform="translate(480, 145)" class="cursor-pointer" onclick="inspectNode('DeviceProfile', 'D13840', 'Shared endpoint profile colliding with multiple disjoint accounts')">
+            <circle r="32" fill="#581C87" stroke="#A855F7" stroke-width="3.5" filter="url(#glow)" />
+            <text y="-5" fill="#FFFFFF" font-size="10" font-weight="bold" font-family="monospace" text-anchor="middle">Device ID</text>
+            <text y="11" fill="#E9D5FF" font-size="9" font-family="monospace" text-anchor="middle">D13840</text>
           </g>
 
-          <!-- Node 5A: Syndicate Card 1 -->
-          <g transform="translate(570, 70)">
-            <circle r="20" fill="#713F12" stroke="#EAB308" stroke-width="2" />
-            <text y="3" fill="#FEF08A" font-size="8" font-family="monospace" text-anchor="middle">+${cp.connected_card_ids.length} Cards</text>
+          <!-- Syndicate Nodes -->
+          <g transform="translate(600, 65)" class="cursor-pointer" onclick="inspectNode('SyndicateRing', '542 Cards', 'Distributed card ring sharing proxy endpoint fingerprint')">
+            <circle r="22" fill="#713F12" stroke="#EAB308" stroke-width="2" />
+            <text y="3" fill="#FEF08A" font-size="8.5" font-family="monospace" text-anchor="middle">+${cp.connected_card_ids ? cp.connected_card_ids.length : 542} Cards</text>
           </g>
 
-          <!-- Node 5B: Syndicate Card 2 -->
-          <g transform="translate(570, 140)">
-            <circle r="20" fill="#713F12" stroke="#EAB308" stroke-width="2" />
-            <text y="3" fill="#FEF08A" font-size="8" font-family="monospace" text-anchor="middle">Ring C082</text>
+          <g transform="translate(600, 145)" class="cursor-pointer" onclick="inspectNode('SyndicateRing', 'Card C08299', 'Linked syndicate card entity identified in 2-hop traversal')">
+            <circle r="22" fill="#713F12" stroke="#EAB308" stroke-width="2" />
+            <text y="3" fill="#FEF08A" font-size="8.5" font-family="monospace" text-anchor="middle">Ring Card</text>
           </g>
 
-          <!-- Node 5C: Syndicate Card 3 -->
-          <g transform="translate(570, 210)">
-            <circle r="20" fill="#713F12" stroke="#EAB308" stroke-width="2" />
-            <text y="3" fill="#FEF08A" font-size="8" font-family="monospace" text-anchor="middle">Ring C099</text>
+          <g transform="translate(600, 225)" class="cursor-pointer" onclick="inspectNode('SyndicateRing', 'Card C09988', 'Secondary syndicate card entity confirmed compromised')">
+            <circle r="22" fill="#713F12" stroke="#EAB308" stroke-width="2" />
+            <text y="3" fill="#FEF08A" font-size="8.5" font-family="monospace" text-anchor="middle">Ring Card</text>
           </g>
         `;
-        document.getElementById('graph-caption').innerHTML = `<span class="text-rose-400 font-bold">SYNDICATE COLLISION:</span> Flagged Transaction connects to Device D13840 shared by <span class="text-amber-400 font-bold">${cp.connected_card_ids.length} unauthorized cards</span> ($${cp.exposure_usd.toFixed(2)} exposure).`;
+        document.getElementById('graph-caption').innerHTML = 
+          `<span class="text-rose-400 font-bold">MULTI-HOP SYNDICATE DISCOVERY:</span> Flagged Transaction connects to Device D13840 shared across <span class="text-amber-400 font-bold">${(cp.connected_card_ids || []).length} unauthorized card accounts</span> ($${(cp.exposure_usd || 0).toFixed(2)} exposure). Click nodes to inspect.`;
       } else {
-        // Legitimate Baseline Topology
+        // Legitimate Single-Tenant Baseline Graph
         svgHtml = `
-          <!-- Connection Lines -->
-          <line x1="120" y1="140" x2="260" y2="140" stroke="#3B82F6" stroke-width="2.5" />
-          <line x1="260" y1="140" x2="400" y2="140" stroke="#10B981" stroke-width="2.5" />
-          <line x1="400" y1="140" x2="540" y2="140" stroke="#10B981" stroke-width="2" stroke-dasharray="4" />
+          <!-- Stable Direct Connections -->
+          <line x1="140" y1="145" x2="300" y2="145" stroke="#3B82F6" stroke-width="3" />
+          <line x1="300" y1="145" x2="460" y2="145" stroke="#10B981" stroke-width="3" />
+          <line x1="460" y1="145" x2="590" y2="145" stroke="#10B981" stroke-width="2.5" stroke-dasharray="5 5" />
 
           <!-- Node 1: Customer -->
-          <g transform="translate(120, 140)">
-            <circle r="28" fill="#1E3A8A" stroke="#3B82F6" stroke-width="2.5" />
-            <text y="-3" fill="#FFFFFF" font-size="10" font-weight="bold" font-family="monospace" text-anchor="middle">Customer</text>
-            <text y="10" fill="#93C5FD" font-size="8.5" font-family="monospace" text-anchor="middle">${custId}</text>
+          <g transform="translate(140, 145)" class="cursor-pointer" onclick="inspectNode('Customer', '${custId}', 'Primary verified cardholder with 6-month historical baseline')">
+            <circle r="34" fill="#1E3A8A" stroke="#3B82F6" stroke-width="3" filter="url(#glow)" />
+            <text y="-5" fill="#FFFFFF" font-size="10.5" font-weight="bold" font-family="monospace" text-anchor="middle">Customer</text>
+            <text y="12" fill="#93C5FD" font-size="9" font-family="monospace" text-anchor="middle">${custId}</text>
           </g>
 
           <!-- Node 2: Card -->
-          <g transform="translate(260, 140)">
-            <circle r="28" fill="#78350F" stroke="#F59E0B" stroke-width="2.5" />
-            <text y="-3" fill="#FFFFFF" font-size="10" font-weight="bold" font-family="monospace" text-anchor="middle">Card</text>
-            <text y="10" fill="#FDE68A" font-size="8.5" font-family="monospace" text-anchor="middle">${cardId.substring(0,9)}</text>
+          <g transform="translate(300, 145)" class="cursor-pointer" onclick="inspectNode('Card', '${cardId}', 'Active cardholder account with no anomalous velocity')">
+            <circle r="34" fill="#78350F" stroke="#F59E0B" stroke-width="3" />
+            <text y="-5" fill="#FFFFFF" font-size="10.5" font-weight="bold" font-family="monospace" text-anchor="middle">Card</text>
+            <text y="12" fill="#FDE68A" font-size="9" font-family="monospace" text-anchor="middle">${cardId.substring(0,9)}</text>
           </g>
 
           <!-- Node 3: Txn -->
-          <g transform="translate(400, 140)">
-            <circle r="28" fill="#064E3B" stroke="#10B981" stroke-width="2.5" />
-            <text y="-3" fill="#FFFFFF" font-size="10" font-weight="bold" font-family="monospace" text-anchor="middle">Txn (Inquiry)</text>
-            <text y="10" fill="#A7F3D0" font-size="8.5" font-family="monospace" text-anchor="middle">#${txnId}</text>
+          <g transform="translate(460, 145)" class="cursor-pointer" onclick="inspectNode('Transaction', '#${txnId}', 'Inquiry transaction verified as authorized by cardholder')">
+            <circle r="34" fill="#064E3B" stroke="#10B981" stroke-width="3.5" class="pulse-glow" />
+            <text y="-5" fill="#FFFFFF" font-size="10.5" font-weight="bold" font-family="monospace" text-anchor="middle">Txn (Verified)</text>
+            <text y="12" fill="#A7F3D0" font-size="9" font-family="monospace" text-anchor="middle">#${txnId}</text>
           </g>
 
-          <!-- Node 4: Baseline Match -->
-          <g transform="translate(540, 140)">
-            <circle r="28" fill="#064E3B" stroke="#10B981" stroke-width="2.5" />
-            <text y="-3" fill="#FFFFFF" font-size="9" font-weight="bold" font-family="monospace" text-anchor="middle">Home Region</text>
-            <text y="10" fill="#A7F3D0" font-size="8" font-family="monospace" text-anchor="middle">Match 100%</text>
+          <!-- Node 4: Home Region Match -->
+          <g transform="translate(590, 145)" class="cursor-pointer" onclick="inspectNode('Baseline', 'Home Region', 'Matches habitual billing & device geolocation pattern')">
+            <circle r="30" fill="#064E3B" stroke="#10B981" stroke-width="2.5" />
+            <text y="-3" fill="#FFFFFF" font-size="9.5" font-weight="bold" font-family="monospace" text-anchor="middle">Baseline</text>
+            <text y="11" fill="#A7F3D0" font-size="8.5" font-family="monospace" text-anchor="middle">100% Match</text>
           </g>
         `;
-        document.getElementById('graph-caption').innerHTML = `<span class="text-emerald-400 font-bold">LEGITIMATE ACTIVITY:</span> Transaction matches account home region & customer confirmation. <span class="text-white font-bold">Policy Rule R1 enforced: 0 False Blocks.</span>`;
+        document.getElementById('graph-caption').innerHTML = 
+          `<span class="text-emerald-400 font-bold">LEGITIMATE ACTIVITY CONFIRMED:</span> Transaction matches account home region & customer confirmation. <span class="text-white font-bold">Policy Rule R1 enforced: 0 False Blocks.</span> Click nodes to inspect.`;
       }
 
       svg.innerHTML = svgHtml;
+    }
+
+    function inspectNode(type, id, desc) {
+      const drawer = document.getElementById('node-inspector');
+      drawer.classList.remove('hidden');
+      document.getElementById('insp-title').innerText = `Vertex Inspector: ${type} (${id})`;
+      document.getElementById('insp-type').innerText = type.toUpperCase();
+      
+      const propsContainer = document.getElementById('insp-props');
+      propsContainer.innerHTML = `
+        <div class="bg-slate-950 p-2 rounded border border-slate-800">
+          <div class="text-slate-500 text-[9px]">ENTITY ID</div>
+          <div class="text-white font-bold text-[11px] truncate">${id}</div>
+        </div>
+        <div class="bg-slate-950 p-2 rounded border border-slate-800">
+          <div class="text-slate-500 text-[9px]">NODE TYPE</div>
+          <div class="text-tg-orange font-bold text-[11px]">${type}</div>
+        </div>
+        <div class="bg-slate-950 p-2 rounded border border-slate-800 col-span-2">
+          <div class="text-slate-500 text-[9px]">GRAPH REASONING</div>
+          <div class="text-slate-300 text-[10px] leading-snug">${desc}</div>
+        </div>
+      `;
     }
 
     function renderMatrix() {
@@ -4292,8 +4387,8 @@ window.CASES_DATA = {
 
       Object.keys(window.CASES_DATA).forEach(cid => {
         const c = window.CASES_DATA[cid];
-        const cp = c.case;
-        const sar = c.sar;
+        const cp = c.case || {};
+        const sar = c.sar || {};
         const isFraud = cp.verdict === 'fraud';
 
         if (currentFilter === 'fraud' && !isFraud) return;
@@ -4303,24 +4398,27 @@ window.CASES_DATA = {
         const row = document.createElement('tr');
         row.className = 'hover:bg-slate-900/80 cursor-pointer transition';
         row.onclick = () => { switchTab('explorer'); loadCase(cid); };
+        
+        const finalActions = (c.next_best_actions && c.next_best_actions.final) ? c.next_best_actions.final.map(a => a.action).join(', ') : 'None';
+
         row.innerHTML = `
-          <td class="py-3 px-3.5 font-bold text-white flex items-center space-x-1.5">
+          <td class="py-3 px-3.5 font-bold text-white flex items-center space-x-1.5 font-mono">
             <span>${cid}</span>
             ${cp.pattern === 'undocumented' ? '<span class="text-purple-400 text-xs">★</span>' : ''}
           </td>
           <td class="py-3 px-3.5">
             <span class="px-2 py-0.5 rounded text-[10px] font-bold ${isFraud ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30' : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'}">
-              ${cp.verdict.toUpperCase()}
+              ${(cp.verdict || 'legitimate').toUpperCase()}
             </span>
           </td>
-          <td class="py-3 px-3.5 text-slate-300 font-sans text-xs">${cp.pattern}</td>
-          <td class="py-3 px-3.5 text-slate-300 font-mono">${cp.fraud_probability.toFixed(2)}</td>
-          <td class="py-3 px-3.5 text-white font-mono font-bold">$${cp.exposure_usd.toFixed(2)}</td>
+          <td class="py-3 px-3.5 text-slate-300 font-sans text-xs">${cp.pattern || 'none'}</td>
+          <td class="py-3 px-3.5 text-slate-300 font-mono">${cp.fraud_probability !== undefined ? cp.fraud_probability.toFixed(2) : '0.00'}</td>
+          <td class="py-3 px-3.5 text-white font-mono font-bold">$${(cp.exposure_usd || 0).toFixed(2)}</td>
           <td class="py-3 px-3.5 font-bold ${sar.file ? 'text-purple-400' : 'text-slate-500'}">${sar.file ? 'YES (Filed)' : 'No'}</td>
-          <td class="py-3 px-3.5 text-slate-300 font-mono">${cp.connected_card_ids.length}</td>
-          <td class="py-3 px-3.5 text-slate-400 font-sans text-[11px] truncate max-w-xs">${c.next_best_actions.final.map(a => a.action).join(', ')}</td>
+          <td class="py-3 px-3.5 text-slate-300 font-mono">${(cp.connected_card_ids || []).length}</td>
+          <td class="py-3 px-3.5 text-slate-400 font-sans text-[11px] truncate max-w-xs">${finalActions}</td>
           <td class="py-3 px-3.5 text-right font-sans">
-            <button class="px-2.5 py-1 rounded bg-brand-orange/15 hover:bg-brand-orange text-brand-orange hover:text-white transition font-bold text-[11px]">Inspect →</button>
+            <button class="px-2.5 py-1 rounded bg-tg-orange/15 hover:bg-tg-orange text-tg-orange hover:text-white transition font-bold text-[11px]">Inspect →</button>
           </td>
         `;
         tbody.appendChild(row);
@@ -4332,9 +4430,9 @@ window.CASES_DATA = {
       ['all', 'fraud', 'legit', 'sar'].forEach(f => {
         const btn = document.getElementById('btn-filt-' + f);
         if (f === filter) {
-          btn.className = 'px-3 py-1.5 rounded-lg bg-brand-orange text-white font-bold transition';
+          btn.className = 'px-3.5 py-1.5 rounded-lg bg-tg-orange text-white font-bold transition';
         } else {
-          btn.className = 'px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white transition';
+          btn.className = 'px-3.5 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white transition';
         }
       });
       renderMatrix();
@@ -4353,9 +4451,10 @@ window.CASES_DATA = {
       sel.innerHTML = '';
       Object.keys(window.CASES_DATA).forEach(cid => {
         const c = window.CASES_DATA[cid];
+        const cp = c.case || {};
         const opt = document.createElement('option');
         opt.value = cid;
-        opt.innerText = `${cid} - ${c.case.verdict.toUpperCase()} (${c.case.pattern})`;
+        opt.innerText = `${cid} - ${(cp.verdict || 'legitimate').toUpperCase()} (${cp.pattern || 'none'})`;
         sel.appendChild(opt);
       });
       sel.value = currentCaseId;
@@ -4365,30 +4464,35 @@ window.CASES_DATA = {
       const select = document.getElementById('sim-case-select');
       const cid = select.value;
       const data = window.CASES_DATA[cid];
-      const cp = data.case;
+      const cp = data.case || {};
       const term = document.getElementById('sim-terminal');
       const btn = document.getElementById('sim-run-btn');
 
       btn.disabled = true;
       btn.innerText = '⏳ Investigating...';
-      term.innerHTML = `<div class="text-brand-orange font-bold font-mono">>>> [INITIALIZING AGENT] Triggering autonomous investigation for ${cid}...</div>`;
+      term.innerHTML = `<div class="text-tg-orange font-bold font-mono">>>> [INITIALIZING AGENT] Triggering autonomous investigation for ${cid}...</div>`;
 
       // Reset step styles
       [1,2,3,4,5].forEach(i => {
-        document.getElementById('step-' + i).className = 'glass-card-sub p-3.5 rounded-xl border border-slate-800 text-slate-400 space-y-1';
+        document.getElementById('step-' + i).className = 'bg-slate-900/70 border border-slate-800 p-4 rounded-xl text-slate-400 space-y-1 transition duration-300';
       });
+
+      const nba = data.next_best_actions || {};
+      const initialActionsStr = (nba.initial || []).map(a => a.action).join(', ');
+      const finalActionsStr = (nba.final || []).map(a => a.action).join(' -> ');
+      const evResp = (data.evidence_requests && data.evidence_requests[0] && data.evidence_requests[0].assumed_response) || 'Customer authorization confirmed';
 
       const steps = [
         { id: 'step-1', delay: 400, text: `[TRIAGE] Ingesting alert on card ${data.pack_meta?.card_id || 'N/A'}. Establishing customer behavioral baseline over 590,742 transactions.` },
-        { id: 'step-2', delay: 900, text: `[TIGERGRAPH] Invoking card_window(hours=48). Traversing 2 hops to DeviceProfile. Found ${cp.connected_card_ids.length} connected cards sharing endpoint.` },
-        { id: 'step-3', delay: 1400, text: `[POLICY R1] Solitary signal assessment: ${cp.verdict.toUpperCase()}. Recommending Initial Actions: ${data.next_best_actions.initial.map(a => a.action).join(', ')}.` },
-        { id: 'step-4', delay: 1900, text: `[EVIDENCE] Controlled customer validation dispatched. Customer response: "${data.evidence_requests[0]?.assumed_response || 'Complete'}"` },
-        { id: 'step-5', delay: 2400, text: `[RESOLVED] Final Actions: ${data.next_best_actions.final.map(a => a.action).join(' -> ')}. Upserting CaseVertex ${cp.graph_case_id} into TigerGraph Case Memory.` }
+        { id: 'step-2', delay: 900, text: `[TIGERGRAPH] Invoking card_window(hours=48). Traversing 2 hops to DeviceProfile. Found ${(cp.connected_card_ids || []).length} connected cards sharing endpoint.` },
+        { id: 'step-3', delay: 1400, text: `[POLICY R1] Solitary signal assessment: ${(cp.verdict || 'legitimate').toUpperCase()}. Recommending Initial Actions: ${initialActionsStr}.` },
+        { id: 'step-4', delay: 1900, text: `[EVIDENCE] Controlled customer validation dispatched. Customer response: "${evResp}"` },
+        { id: 'step-5', delay: 2400, text: `[RESOLVED] Final Actions: ${finalActionsStr}. Upserting CaseVertex ${cp.graph_case_id} into TigerGraph Case Memory.` }
       ];
 
       steps.forEach((s, idx) => {
         setTimeout(() => {
-          document.getElementById(s.id).className = 'glass-card p-3.5 rounded-xl neon-border-orange text-white space-y-1';
+          document.getElementById(s.id).className = 'bg-tg-surface border-2 border-tg-orange text-white p-4 rounded-xl space-y-1 shadow-lg shadow-tg-orange/20 transition duration-300';
           term.innerHTML += `<div class="text-emerald-400 font-mono">${s.text}</div>`;
           term.scrollTop = term.scrollHeight;
 
@@ -4403,7 +4507,8 @@ window.CASES_DATA = {
     }
 
     function copySAR() {
-      const text = document.getElementById('c-sar-content').innerText;
+      const container = document.getElementById('sar-doc-container');
+      const text = container.innerText;
       navigator.clipboard.writeText(text).then(() => {
         const btnText = document.getElementById('copy-sar-text');
         btnText.innerText = '✓ Copied!';
