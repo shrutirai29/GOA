@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TigerGraph GraphSentinel | Agentic Fraud Investigation Copilot</title>
   
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  
   <!-- Modern Font Pairing -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -55,15 +59,6 @@
     .custom-scroll::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.6); }
     .custom-scroll::-webkit-scrollbar-thumb { background: #334155; border-radius: 9999px; }
     .custom-scroll::-webkit-scrollbar-thumb:hover { background: #FF5722; }
-
-    /* Animated Graph Flow */
-    @keyframes flowDashes {
-      to { stroke-dashoffset: -20; }
-    }
-    .flow-line {
-      stroke-dasharray: 6 4;
-      animation: flowDashes 1.8s linear infinite;
-    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col font-sans antialiased text-slate-100 selection:bg-tg-orange selection:text-white">
@@ -86,7 +81,7 @@
         <div>
           <div class="flex items-center space-x-2">
             <span class="text-lg font-black tracking-tight text-white">TigerGraph <span class="text-tg-orange">GraphSentinel</span></span>
-            <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-tg-orange/15 text-tg-orange border border-tg-orange/30">AI Copilot</span>
+            <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">v2.2 Static</span>
           </div>
           <p class="text-[11px] text-slate-400 font-mono">Agentic Fraud Investigation & Autonomous NBA • Hacker House Goa 2026</p>
         </div>
@@ -4250,15 +4245,15 @@ window.CASES_DATA = {
       if (isFraud) {
         // Multi-Hop Syndicate Collision Graph
         svgHtml = `
-          <!-- Flowing Connecting Lines -->
-          <line x1="90" y1="145" x2="220" y2="145" stroke="#3B82F6" stroke-width="2.5" class="flow-line" />
-          <line x1="220" y1="145" x2="350" y2="145" stroke="#F43F5E" stroke-width="2.5" class="flow-line" />
-          <line x1="350" y1="145" x2="480" y2="145" stroke="#A855F7" stroke-width="2.5" class="flow-line" />
+          <!-- Static Solid Connecting Lines -->
+          <line x1="90" y1="145" x2="220" y2="145" stroke="#3B82F6" stroke-width="2.5" />
+          <line x1="220" y1="145" x2="350" y2="145" stroke="#F43F5E" stroke-width="2.5" />
+          <line x1="350" y1="145" x2="480" y2="145" stroke="#A855F7" stroke-width="2.5" />
 
           <!-- Fan-out Syndicate Edges -->
-          <line x1="480" y1="145" x2="600" y2="65" stroke="#EAB308" stroke-width="1.8" class="flow-line" />
-          <line x1="480" y1="145" x2="600" y2="145" stroke="#EAB308" stroke-width="1.8" class="flow-line" />
-          <line x1="480" y1="145" x2="600" y2="225" stroke="#EAB308" stroke-width="1.8" class="flow-line" />
+          <line x1="480" y1="145" x2="600" y2="65" stroke="#EAB308" stroke-width="1.8" stroke-dasharray="4 3" />
+          <line x1="480" y1="145" x2="600" y2="145" stroke="#EAB308" stroke-width="1.8" stroke-dasharray="4 3" />
+          <line x1="480" y1="145" x2="600" y2="225" stroke="#EAB308" stroke-width="1.8" stroke-dasharray="4 3" />
 
           <!-- Node 1: Customer -->
           <g transform="translate(90, 145)" class="cursor-pointer" onclick="inspectNode('Customer', '${custId}', 'Legitimate cardholder profile with 6-month historical baseline')">
@@ -4276,10 +4271,6 @@ window.CASES_DATA = {
 
           <!-- Node 3: Flagged Txn -->
           <g transform="translate(350, 145)" class="cursor-pointer" onclick="inspectNode('Transaction', '#${txnId}', 'Flagged transaction triggered by real-time model or report')">
-            <circle r="32" fill="none" stroke="#F43F5E" stroke-width="2">
-              <animate attributeName="r" values="32;44;32" dur="2.4s" repeatCount="indefinite" />
-              <animate attributeName="opacity" values="0.7;0.05;0.7" dur="2.4s" repeatCount="indefinite" />
-            </circle>
             <circle r="32" fill="#881337" stroke="#F43F5E" stroke-width="3" filter="url(#glow)" />
             <text y="-5" fill="#FFFFFF" font-size="10" font-weight="bold" font-family="monospace" text-anchor="middle">Txn Alert</text>
             <text y="11" fill="#FECDD3" font-size="9" font-family="monospace" text-anchor="middle">#${txnId}</text>
@@ -4334,10 +4325,6 @@ window.CASES_DATA = {
 
           <!-- Node 3: Txn -->
           <g transform="translate(460, 145)" class="cursor-pointer" onclick="inspectNode('Transaction', '#${txnId}', 'Inquiry transaction verified as authorized by cardholder')">
-            <circle r="34" fill="none" stroke="#10B981" stroke-width="2">
-              <animate attributeName="r" values="34;46;34" dur="2.4s" repeatCount="indefinite" />
-              <animate attributeName="opacity" values="0.7;0.05;0.7" dur="2.4s" repeatCount="indefinite" />
-            </circle>
             <circle r="34" fill="#064E3B" stroke="#10B981" stroke-width="3" filter="url(#glow)" />
             <text y="-5" fill="#FFFFFF" font-size="10.5" font-weight="bold" font-family="monospace" text-anchor="middle">Txn (Verified)</text>
             <text y="12" fill="#A7F3D0" font-size="9" font-family="monospace" text-anchor="middle">#${txnId}</text>
