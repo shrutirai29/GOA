@@ -275,6 +275,7 @@ streamlit run ui/dashboard.py
 | Resource | URL |
 |----------|-----|
 | **GitHub Repo** | https://github.com/shrutirai29/GOA |
+| **Task 4 Live Demo (GraphSentinel)** | https://shrutirai29.github.io/GOA/ |
 | **Task 1 (Identity)** | Task 1 folder in this repo |
 | **Task 2 (RAG)** | Task 2 folder in this repo |
 | **API Docs** | http://localhost:8000/docs |
