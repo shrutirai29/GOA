@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en" class="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,7 +14,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   
-  <!-- Tailwind CSS via CDN -->
+  <!-- Tailwind CSS via CDN with class dark-mode -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -43,34 +43,89 @@
     }
   </script>
   <style>
+    /* Light Theme (Default: High-Trust Enterprise Fintech) */
     :root {
-      color-scheme: dark;
+      --bg-page: #F8FAFC;
+      --bg-card: #FFFFFF;
+      --bg-card-subtle: #F1F5F9;
+      --text-heading: #0F172A;
+      --text-body: #334155;
+      --text-muted: #64748B;
+      --border-card: #E2E8F0;
+      --border-inner: #CBD5E1;
+      --nav-bg: rgba(255, 255, 255, 0.95);
+      --code-bg: #F1F5F9;
+      --code-text: #0F172A;
     }
+
+    /* Dark Theme (Executive Midnight Slate) */
+    html.dark {
+      --bg-page: #080D1A;
+      --bg-card: #0F172A;
+      --bg-card-subtle: #1E293B;
+      --text-heading: #F8FAFC;
+      --text-body: #CBD5E1;
+      --text-muted: #94A3B8;
+      --border-card: #1E293B;
+      --border-inner: #334155;
+      --nav-bg: rgba(8, 13, 26, 0.95);
+      --code-bg: #050814;
+      --code-text: #E2E8F0;
+    }
+
     body {
-      background-color: #070B14;
-      color: #F1F5F9;
+      background-color: var(--bg-page);
+      color: var(--text-body);
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    html.light body {
       background-image: 
-        radial-gradient(circle at 15% 15%, rgba(255, 87, 34, 0.07) 0%, transparent 40%),
-        radial-gradient(circle at 85% 10%, rgba(99, 102, 241, 0.08) 0%, transparent 45%),
-        radial-gradient(circle at 50% 90%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
+        radial-gradient(circle at 15% 10%, rgba(255, 87, 34, 0.05) 0%, transparent 40%),
+        radial-gradient(circle at 85% 15%, rgba(79, 70, 229, 0.05) 0%, transparent 45%),
+        radial-gradient(circle at 50% 90%, rgba(16, 185, 129, 0.04) 0%, transparent 50%);
       background-attachment: fixed;
     }
+
+    html.dark body {
+      background-image: 
+        radial-gradient(circle at 15% 10%, rgba(255, 87, 34, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 85% 15%, rgba(99, 102, 241, 0.09) 0%, transparent 45%),
+        radial-gradient(circle at 50% 90%, rgba(16, 185, 129, 0.06) 0%, transparent 50%);
+      background-attachment: fixed;
+    }
+
+    .theme-card {
+      background-color: var(--bg-card);
+      border-color: var(--border-card);
+    }
+    .theme-card-subtle {
+      background-color: var(--bg-card-subtle);
+      border-color: var(--border-inner);
+    }
+    .theme-heading {
+      color: var(--text-heading);
+    }
+    .theme-muted {
+      color: var(--text-muted);
+    }
+
     .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
-    .custom-scroll::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.6); }
-    .custom-scroll::-webkit-scrollbar-thumb { background: #334155; border-radius: 9999px; }
+    .custom-scroll::-webkit-scrollbar-track { background: var(--bg-card-subtle); }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #94A3B8; border-radius: 9999px; }
     .custom-scroll::-webkit-scrollbar-thumb:hover { background: #FF5722; }
   </style>
 </head>
-<body class="min-h-screen flex flex-col font-sans antialiased text-slate-100 selection:bg-tg-orange selection:text-white">
+<body class="min-h-screen flex flex-col font-sans antialiased selection:bg-tg-orange selection:text-white">
 
   <!-- ==================== HEADER NAVBAR ==================== -->
-  <header class="border-b border-tg-border/80 bg-tg-dark/95 backdrop-blur-xl sticky top-0 z-50 px-4 sm:px-6 lg:px-10 py-3 shadow-md">
+  <header class="border-b transition-colors duration-200 sticky top-0 z-50 px-4 sm:px-6 lg:px-10 py-3 shadow-sm backdrop-blur-xl" style="background-color: var(--nav-bg); border-color: var(--border-card);">
     <div class="max-w-[1600px] mx-auto flex items-center justify-between gap-4">
       
       <!-- Brand Logo -->
       <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('explorer')">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-tg-orange via-orange-600 to-amber-500 p-0.5 shadow-lg shadow-tg-orange/20 flex items-center justify-center">
-          <div class="w-full h-full bg-tg-dark rounded-[10px] flex items-center justify-center">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-tg-orange via-orange-600 to-amber-500 p-0.5 shadow-md shadow-tg-orange/20 flex items-center justify-center">
+          <div class="w-full h-full bg-slate-900 rounded-[10px] flex items-center justify-center">
             <svg class="w-5 h-5 text-tg-orange" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
               <polyline points="2 17 12 22 22 17"></polyline>
@@ -80,23 +135,31 @@
         </div>
         <div>
           <div class="flex items-center space-x-2">
-            <span class="text-lg font-black tracking-tight text-white">TigerGraph <span class="text-tg-orange">GraphSentinel</span></span>
-            <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">v2.2 Static</span>
+            <span class="text-lg font-black tracking-tight theme-heading">TigerGraph <span class="text-tg-orange">GraphSentinel</span></span>
+            <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-tg-orange/10 text-tg-orange border border-tg-orange/30">AI Copilot</span>
           </div>
-          <p class="text-[11px] text-slate-400 font-mono">Agentic Fraud Investigation & Autonomous NBA • Hacker House Goa 2026</p>
+          <p class="text-[11px] theme-muted font-mono">Agentic Fraud Investigation & Autonomous NBA • Hacker House Goa 2026</p>
         </div>
       </div>
 
       <!-- Header Statuses & Actions -->
       <div class="flex items-center space-x-3 text-xs">
-        <div class="hidden md:flex items-center space-x-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-mono">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span class="font-semibold">TigerGraph MCP Online</span>
-          <span class="text-slate-600">|</span>
-          <span class="text-slate-400">GSQL: 12ms</span>
+        
+        <!-- Live GSQL Pill -->
+        <div class="hidden md:flex items-center space-x-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 font-mono font-medium">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span class="font-bold">TigerGraph MCP Online</span>
+          <span class="opacity-40">|</span>
+          <span>GSQL: 12ms</span>
         </div>
 
-        <a href="https://github.com/shrutirai29/GOA" target="_blank" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 font-mono transition flex items-center space-x-1.5 shadow-sm">
+        <!-- 1-Click Theme Switcher (Light / Dark) -->
+        <button onclick="toggleTheme()" id="btn-theme-toggle" class="px-3 py-1.5 rounded-lg border font-mono font-semibold transition flex items-center space-x-1.5 shadow-sm theme-card hover:bg-slate-100 dark:hover:bg-slate-800">
+          <span id="theme-icon">🌙</span>
+          <span id="theme-text">Dark Mode</span>
+        </button>
+
+        <a href="https://github.com/shrutirai29/GOA" target="_blank" class="px-3 py-1.5 rounded-lg theme-card hover:bg-slate-100 dark:hover:bg-slate-800 font-mono font-semibold transition flex items-center space-x-1.5 shadow-sm">
           <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
           <span class="hidden sm:inline">GitHub Repository</span>
         </a>
@@ -109,83 +172,83 @@
 
     <!-- KPI Metric Cards Strip -->
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
-      <div class="bg-tg-surface/90 border border-tg-border hover:border-tg-orange/50 transition-all duration-300 p-4 rounded-2xl shadow-lg relative overflow-hidden group">
+      <div class="theme-card border hover:border-tg-orange/60 transition-all duration-300 p-4 rounded-2xl shadow-sm relative overflow-hidden group">
         <div class="absolute -right-4 -bottom-4 w-16 h-16 bg-tg-orange/10 rounded-full blur-xl group-hover:bg-tg-orange/20 transition"></div>
-        <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Benchmark Cases</div>
-        <div class="text-2xl font-black text-white font-mono mt-1">20 / 20</div>
-        <div class="text-[11px] text-emerald-400 font-medium flex items-center mt-1">
+        <div class="text-[11px] font-bold theme-muted uppercase tracking-wider">Benchmark Cases</div>
+        <div class="text-2xl font-black theme-heading font-mono mt-1">20 / 20</div>
+        <div class="text-[11px] text-emerald-600 dark:text-emerald-400 font-bold flex items-center mt-1">
           <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
           100% Schema Valid
         </div>
       </div>
 
-      <div class="bg-tg-surface/90 border border-tg-border hover:border-emerald-500/50 transition-all duration-300 p-4 rounded-2xl shadow-lg relative overflow-hidden group">
+      <div class="theme-card border hover:border-emerald-500/60 transition-all duration-300 p-4 rounded-2xl shadow-sm relative overflow-hidden group">
         <div class="absolute -right-4 -bottom-4 w-16 h-16 bg-emerald-500/10 rounded-full blur-xl group-hover:bg-emerald-500/20 transition"></div>
-        <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Cleared Legitimate</div>
-        <div class="text-2xl font-black text-emerald-400 font-mono mt-1">10 <span class="text-xs text-slate-400 font-sans font-normal">(50%)</span></div>
-        <div class="text-[11px] text-emerald-400 font-medium flex items-center mt-1">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5"></span>
+        <div class="text-[11px] font-bold theme-muted uppercase tracking-wider">Cleared Legitimate</div>
+        <div class="text-2xl font-black text-emerald-600 dark:text-emerald-400 font-mono mt-1">10 <span class="text-xs theme-muted font-sans font-normal">(50%)</span></div>
+        <div class="text-[11px] text-emerald-600 dark:text-emerald-400 font-bold flex items-center mt-1">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"></span>
           0 False Blocks (R1/R3)
         </div>
       </div>
 
-      <div class="bg-tg-surface/90 border border-tg-border hover:border-rose-500/50 transition-all duration-300 p-4 rounded-2xl shadow-lg relative overflow-hidden group">
+      <div class="theme-card border hover:border-rose-500/60 transition-all duration-300 p-4 rounded-2xl shadow-sm relative overflow-hidden group">
         <div class="absolute -right-4 -bottom-4 w-16 h-16 bg-rose-500/10 rounded-full blur-xl group-hover:bg-rose-500/20 transition"></div>
-        <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Confirmed Fraud</div>
-        <div class="text-2xl font-black text-rose-400 font-mono mt-1">10 <span class="text-xs text-slate-400 font-sans font-normal">(50%)</span></div>
-        <div class="text-[11px] text-rose-400 font-medium flex items-center mt-1">
-          <span class="w-1.5 h-1.5 rounded-full bg-rose-400 mr-1.5"></span>
-          Calibrated Ground Truth
+        <div class="text-[11px] font-bold theme-muted uppercase tracking-wider">Confirmed Fraud</div>
+        <div class="text-2xl font-black text-rose-600 dark:text-rose-400 font-mono mt-1">10 <span class="text-xs theme-muted font-sans font-normal">(50%)</span></div>
+        <div class="text-[11px] text-rose-600 dark:text-rose-400 font-bold flex items-center mt-1">
+          <span class="w-1.5 h-1.5 rounded-full bg-rose-500 mr-1.5"></span>
+          Ground Truth Match
         </div>
       </div>
 
-      <div class="bg-tg-surface/90 border border-tg-border hover:border-amber-500/50 transition-all duration-300 p-4 rounded-2xl shadow-lg relative overflow-hidden group">
+      <div class="theme-card border hover:border-amber-500/60 transition-all duration-300 p-4 rounded-2xl shadow-sm relative overflow-hidden group">
         <div class="absolute -right-4 -bottom-4 w-16 h-16 bg-amber-500/10 rounded-full blur-xl group-hover:bg-amber-500/20 transition"></div>
-        <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Contained Exposure</div>
-        <div class="text-2xl font-black text-white font-mono mt-1">$3,504.19</div>
-        <div class="text-[11px] text-amber-400 font-medium flex items-center mt-1">
+        <div class="text-[11px] font-bold theme-muted uppercase tracking-wider">Contained Exposure</div>
+        <div class="text-2xl font-black theme-heading font-mono mt-1">$3,504.19</div>
+        <div class="text-[11px] text-amber-600 dark:text-amber-400 font-bold flex items-center mt-1">
           <span>Shielded 100% via NBA</span>
         </div>
       </div>
 
-      <div class="bg-tg-surface/90 border border-tg-border hover:border-purple-500/50 transition-all duration-300 p-4 rounded-2xl shadow-lg relative overflow-hidden group">
+      <div class="theme-card border hover:border-purple-500/60 transition-all duration-300 p-4 rounded-2xl shadow-sm relative overflow-hidden group">
         <div class="absolute -right-4 -bottom-4 w-16 h-16 bg-purple-500/10 rounded-full blur-xl group-hover:bg-purple-500/20 transition"></div>
-        <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">FinCEN SARs Filed</div>
-        <div class="text-2xl font-black text-purple-400 font-mono mt-1">4 <span class="text-xs text-slate-400 font-sans font-normal">Filed</span></div>
-        <div class="text-[11px] text-purple-300 font-medium flex items-center mt-1">
+        <div class="text-[11px] font-bold theme-muted uppercase tracking-wider">FinCEN SARs Filed</div>
+        <div class="text-2xl font-black text-purple-600 dark:text-purple-400 font-mono mt-1">4 <span class="text-xs theme-muted font-sans font-normal">Filed</span></div>
+        <div class="text-[11px] text-purple-600 dark:text-purple-300 font-bold flex items-center mt-1">
           <span>BSA/AML Part V Full</span>
         </div>
       </div>
 
-      <div class="bg-tg-surface/90 border border-tg-border hover:border-blue-500/50 transition-all duration-300 p-4 rounded-2xl shadow-lg relative overflow-hidden group">
+      <div class="theme-card border hover:border-blue-500/60 transition-all duration-300 p-4 rounded-2xl shadow-sm relative overflow-hidden group">
         <div class="absolute -right-4 -bottom-4 w-16 h-16 bg-blue-500/10 rounded-full blur-xl group-hover:bg-blue-500/20 transition"></div>
-        <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Graph Case Memory</div>
-        <div class="text-2xl font-black text-blue-400 font-mono mt-1">5,565</div>
-        <div class="text-[11px] text-blue-300 font-medium flex items-center mt-1">
-          <span>Historical Precedents</span>
+        <div class="text-[11px] font-bold theme-muted uppercase tracking-wider">Graph Case Memory</div>
+        <div class="text-2xl font-black text-blue-600 dark:text-blue-400 font-mono mt-1">5,565</div>
+        <div class="text-[11px] text-blue-600 dark:text-blue-300 font-bold flex items-center mt-1">
+          <span>Closed Precedents</span>
         </div>
       </div>
     </div>
 
     <!-- Navigation Tabs -->
-    <div class="flex items-center space-x-2 border-b border-tg-border text-sm font-semibold overflow-x-auto custom-scroll pb-1">
-      <button onclick="switchTab('explorer')" id="tab-explorer" class="px-5 py-3 rounded-xl border-b-2 border-tg-orange text-white bg-tg-surface/80 flex items-center space-x-2 transition shadow-sm">
-        <svg class="w-4 h-4 text-tg-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+    <div class="flex items-center space-x-2 border-b text-sm font-bold overflow-x-auto custom-scroll pb-1" style="border-color: var(--border-card);">
+      <button onclick="switchTab('explorer')" id="tab-explorer" class="px-5 py-3 rounded-xl border-b-2 border-tg-orange text-white bg-tg-orange font-bold flex items-center space-x-2 transition shadow-sm">
+        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
         <span>Case Deep Dive & Subgraph</span>
       </button>
 
-      <button onclick="switchTab('simulator')" id="tab-simulator" class="px-5 py-3 rounded-xl border-b-2 border-transparent text-slate-400 hover:text-slate-200 hover:bg-tg-surface/40 flex items-center space-x-2 transition">
-        <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+      <button onclick="switchTab('simulator')" id="tab-simulator" class="px-5 py-3 rounded-xl border-b-2 border-transparent theme-muted hover:theme-heading hover:bg-slate-200/50 dark:hover:bg-slate-800/50 flex items-center space-x-2 transition">
+        <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
         <span>Live Agent Simulator</span>
       </button>
 
-      <button onclick="switchTab('matrix')" id="tab-matrix" class="px-5 py-3 rounded-xl border-b-2 border-transparent text-slate-400 hover:text-slate-200 hover:bg-tg-surface/40 flex items-center space-x-2 transition">
-        <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+      <button onclick="switchTab('matrix')" id="tab-matrix" class="px-5 py-3 rounded-xl border-b-2 border-transparent theme-muted hover:theme-heading hover:bg-slate-200/50 dark:hover:bg-slate-800/50 flex items-center space-x-2 transition">
+        <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
         <span>20-Case Benchmark Matrix</span>
       </button>
 
-      <button onclick="switchTab('architecture')" id="tab-architecture" class="px-5 py-3 rounded-xl border-b-2 border-transparent text-slate-400 hover:text-slate-200 hover:bg-tg-surface/40 flex items-center space-x-2 transition">
-        <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+      <button onclick="switchTab('architecture')" id="tab-architecture" class="px-5 py-3 rounded-xl border-b-2 border-transparent theme-muted hover:theme-heading hover:bg-slate-200/50 dark:hover:bg-slate-800/50 flex items-center space-x-2 transition">
+        <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
         <span>TigerGraph & GSQL Engine</span>
       </button>
     </div>
@@ -194,13 +257,13 @@
     <div id="view-explorer" class="space-y-6">
 
       <!-- Case Selection Pill Carousel -->
-      <div class="bg-tg-surface/90 border border-tg-border p-4 rounded-2xl shadow-lg space-y-3">
-        <div class="flex flex-wrap items-center justify-between text-xs text-slate-400 font-semibold gap-2">
+      <div class="theme-card border p-4 rounded-2xl shadow-sm space-y-3">
+        <div class="flex flex-wrap items-center justify-between text-xs theme-muted font-bold gap-2">
           <span class="flex items-center space-x-2">
             <span class="w-2.5 h-2.5 rounded-full bg-tg-orange animate-pulse"></span>
             <span>CHOOSE AN ALERT TO INSPECT (20 OFFICIAL BENCHMARK CASES):</span>
           </span>
-          <span class="text-slate-500 font-mono text-[11px]">★ = Novel Undocumented Topology Discovery (Policy R9)</span>
+          <span class="font-mono text-[11px] text-purple-600 dark:text-purple-400">★ = Novel Undocumented Topology Discovery (Policy R9)</span>
         </div>
         <div class="flex items-center space-x-2.5 overflow-x-auto pb-1.5 custom-scroll" id="case-pills-container">
           <!-- Dynamically populated -->
@@ -214,118 +277,112 @@
         <div class="lg:col-span-7 space-y-6">
 
           <!-- Case Header & Key Parameters Card -->
-          <div class="bg-tg-surface/90 border border-tg-border p-6 rounded-2xl shadow-lg space-y-4">
-            <div class="flex flex-wrap items-center justify-between gap-3 border-b border-tg-border pb-4">
+          <div class="theme-card border p-6 rounded-2xl shadow-sm space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-3 border-b pb-4" style="border-color: var(--border-card);">
               <div class="flex items-center space-x-3">
-                <span class="text-3xl font-black text-white font-mono" id="c-id">HHG-006</span>
+                <span class="text-3xl font-black theme-heading font-mono" id="c-id">HHG-006</span>
                 <span id="c-verdict-badge" class="px-3.5 py-1 rounded-lg text-xs font-bold uppercase tracking-wider">FRAUD</span>
                 <span id="c-pattern-badge" class="px-3 py-1 rounded-lg text-xs font-medium font-mono">undocumented</span>
               </div>
               <div class="flex items-center space-x-2 font-mono text-xs">
-                <span class="text-slate-400">TigerGraph Vertex:</span>
-                <span class="px-2.5 py-1 rounded-md bg-slate-900 border border-slate-700 font-bold text-tg-orange" id="c-graph-id">CASE-TG-HHG-006</span>
+                <span class="theme-muted">TigerGraph Vertex:</span>
+                <span class="px-2.5 py-1 rounded-md theme-card-subtle border font-bold text-tg-orange" id="c-graph-id">CASE-TG-HHG-006</span>
               </div>
             </div>
 
             <!-- Stats Bar -->
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-              <div class="bg-slate-900/70 border border-slate-800 p-3 rounded-xl">
-                <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Model Risk Score</div>
-                <div class="text-xl font-bold font-mono text-white mt-1" id="c-prob">0.92</div>
+              <div class="theme-card-subtle border p-3 rounded-xl">
+                <div class="text-[10px] theme-muted font-bold uppercase tracking-wider">Model Risk Score</div>
+                <div class="text-xl font-bold font-mono theme-heading mt-1" id="c-prob">0.92</div>
               </div>
-              <div class="bg-slate-900/70 border border-slate-800 p-3 rounded-xl">
-                <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Calculated Exposure</div>
-                <div class="text-xl font-bold font-mono text-emerald-400 mt-1" id="c-exposure">$1,906.07</div>
+              <div class="theme-card-subtle border p-3 rounded-xl">
+                <div class="text-[10px] theme-muted font-bold uppercase tracking-wider">Calculated Exposure</div>
+                <div class="text-xl font-bold font-mono text-emerald-600 dark:text-emerald-400 mt-1" id="c-exposure">$1,906.07</div>
               </div>
-              <div class="bg-slate-900/70 border border-slate-800 p-3 rounded-xl">
-                <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Connected Ring Cards</div>
-                <div class="text-xl font-bold font-mono text-purple-400 mt-1" id="c-cards">542</div>
+              <div class="theme-card-subtle border p-3 rounded-xl">
+                <div class="text-[10px] theme-muted font-bold uppercase tracking-wider">Connected Ring Cards</div>
+                <div class="text-xl font-bold font-mono text-purple-600 dark:text-purple-400 mt-1" id="c-cards">542</div>
               </div>
-              <div class="bg-slate-900/70 border border-slate-800 p-3 rounded-xl">
-                <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">SAR Part V Status</div>
+              <div class="theme-card-subtle border p-3 rounded-xl">
+                <div class="text-[10px] theme-muted font-bold uppercase tracking-wider">SAR Part V Status</div>
                 <div class="text-xl font-bold font-mono mt-1" id="c-sar-stat">FILED</div>
               </div>
             </div>
 
             <!-- Novel Undocumented Alert Box -->
-            <div id="c-pattern-desc-box" class="p-4 rounded-xl bg-purple-950/40 border border-purple-500/40 space-y-1.5 hidden">
-              <div class="flex items-center space-x-2 text-purple-300 font-bold text-xs uppercase tracking-wider">
-                <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+            <div id="c-pattern-desc-box" class="p-4 rounded-xl bg-purple-50 dark:bg-purple-950/40 border border-purple-300 dark:border-purple-500/40 space-y-1.5 hidden">
+              <div class="flex items-center space-x-2 text-purple-800 dark:text-purple-300 font-bold text-xs uppercase tracking-wider">
+                <svg class="w-4 h-4 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                 <span>Novel Undocumented Topology Discovered (Policy Rule R9)</span>
               </div>
-              <p class="text-xs text-purple-200 leading-relaxed" id="c-pattern-desc"></p>
+              <p class="text-xs text-purple-900 dark:text-purple-200 leading-relaxed" id="c-pattern-desc"></p>
             </div>
 
             <!-- Ingested Alert Banner -->
-            <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-xl space-y-2 text-xs">
-              <div class="flex flex-wrap items-center justify-between text-[11px] text-slate-400 font-mono border-b border-slate-800 pb-2 gap-2">
-                <div>Customer: <span class="text-white font-bold" id="c-meta-cust">C07297</span></div>
-                <div>Primary Card: <span class="text-white font-bold" id="c-meta-card">C07297-K1</span></div>
+            <div class="theme-card-subtle border p-4 rounded-xl space-y-2 text-xs">
+              <div class="flex flex-wrap items-center justify-between text-[11px] theme-muted font-mono border-b pb-2 gap-2" style="border-color: var(--border-inner);">
+                <div>Customer: <span class="theme-heading font-bold" id="c-meta-cust">C07297</span></div>
+                <div>Primary Card: <span class="theme-heading font-bold" id="c-meta-card">C07297-K1</span></div>
                 <div>Trigger Txn ID: <span class="text-tg-orange font-bold" id="c-meta-txn">3476682</span></div>
-                <div>Model Score: <span class="text-white font-bold" id="c-meta-score">0.25</span></div>
+                <div>Model Score: <span class="theme-heading font-bold" id="c-meta-score">0.25</span></div>
               </div>
-              <div class="text-slate-200 leading-relaxed font-sans" id="c-trigger-text"></div>
+              <div class="theme-heading leading-relaxed font-sans" id="c-trigger-text"></div>
             </div>
           </div>
 
-          <!-- Interactive Knowledge Subgraph Card -->
-          <div class="bg-tg-surface/90 border border-tg-border p-6 rounded-2xl shadow-lg space-y-4">
+          <!-- Interactive Knowledge Subgraph Card (ENLARGED HIGH-CONTRAST CANVAS) -->
+          <div class="theme-card border p-6 rounded-2xl shadow-sm space-y-4">
             <div class="flex flex-wrap items-center justify-between gap-3">
               <div class="flex items-center space-x-3">
                 <div class="p-2 rounded-xl bg-tg-orange/15 text-tg-orange border border-tg-orange/30">
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path></svg>
                 </div>
                 <div>
-                  <h3 class="text-base font-bold text-white tracking-tight">TigerGraph 2-Hop Knowledge Subgraph</h3>
-                  <p class="text-xs text-slate-400">Live multi-hop relationship traversal across Card, Txn, Device Profile, and Syndicate</p>
+                  <h3 class="text-base font-bold theme-heading tracking-tight">TigerGraph 2-Hop Knowledge Subgraph</h3>
+                  <p class="text-xs theme-muted">Live multi-hop relationship traversal across Card, Txn, Device Profile, and Syndicate</p>
                 </div>
               </div>
 
               <!-- Legend Chips -->
-              <div class="flex flex-wrap items-center gap-2 text-[10px] font-mono">
-                <span class="px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30">● Customer</span>
-                <span class="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">● Card</span>
-                <span class="px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30">● Txn</span>
-                <span class="px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">● Device</span>
-                <span class="px-2 py-0.5 rounded-full bg-yellow-500/20 text-yellow-300 border border-yellow-500/30">● Ring</span>
+              <div class="flex flex-wrap items-center gap-2 text-[10px] font-mono font-semibold">
+                <span class="px-2.5 py-1 rounded-full bg-blue-500/20 text-blue-700 dark:text-blue-300 border border-blue-500/30">● Customer</span>
+                <span class="px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/30">● Card</span>
+                <span class="px-2.5 py-1 rounded-full bg-rose-500/20 text-rose-700 dark:text-rose-300 border border-rose-500/30">● Txn</span>
+                <span class="px-2.5 py-1 rounded-full bg-purple-500/20 text-purple-700 dark:text-purple-300 border border-purple-500/30">● Device</span>
+                <span class="px-2.5 py-1 rounded-full bg-yellow-500/20 text-yellow-700 dark:text-yellow-300 border border-yellow-500/30">● Ring</span>
               </div>
             </div>
 
-            <!-- SVG Visualizer Canvas Container -->
-            <div class="w-full bg-[#050914] rounded-2xl border border-slate-800 p-4 relative overflow-hidden flex flex-col items-center justify-center min-h-[300px] shadow-inner">
-              <svg id="subgraph-svg" class="w-full h-72 cursor-crosshair" viewBox="0 0 680 290">
-                <defs>
-                  <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
-                    <feGaussianBlur stdDeviation="4" result="blur" />
-                    <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                  </filter>
-                </defs>
-                <!-- Injected via renderSvgGraph -->
+            <!-- SVG Visualizer Canvas Container (High-Contrast Radar Console) -->
+            <div class="w-full bg-[#080D1A] rounded-2xl border border-slate-700/80 p-4 relative overflow-hidden flex flex-col items-center justify-center min-h-[340px] shadow-inner">
+              <svg id="subgraph-svg" class="w-full h-80 sm:h-96 cursor-crosshair" viewBox="0 0 920 340">
+                <!-- Injected via renderSvgGraph with ENLARGED nodes -->
               </svg>
             </div>
             
-            <p class="text-xs text-slate-400 font-mono text-center leading-relaxed" id="graph-caption">
+            <p class="text-xs theme-muted font-mono text-center leading-relaxed" id="graph-caption">
               Multi-hop graph traversal from Card through Transactions to shared Device Profile & syndicate ring.
             </p>
 
             <!-- Clickable Node Inspector Drawer -->
-            <div id="node-inspector" class="bg-slate-900/90 border border-slate-700/80 p-4 rounded-xl text-xs space-y-2 hidden">
-              <div class="flex items-center justify-between border-b border-slate-800 pb-2">
-                <span class="font-bold text-white flex items-center space-x-1.5">
+            <div id="node-inspector" class="theme-card-subtle border p-4 rounded-xl text-xs space-y-2 hidden">
+              <div class="flex items-center justify-between border-b pb-2" style="border-color: var(--border-inner);">
+                <span class="font-bold theme-heading flex items-center space-x-1.5">
                   <span class="text-tg-orange">🔍</span>
                   <span id="insp-title">Node Inspector: Vertex Details</span>
                 </span>
-                <span class="font-mono text-[10px] text-slate-400" id="insp-type">VERTEX</span>
+                <span class="font-mono text-[10px] theme-muted" id="insp-type">VERTEX</span>
               </div>
-              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] font-mono text-slate-300" id="insp-props">
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] font-mono" id="insp-props">
                 <!-- Dynamically populated on node click -->
               </div>
             </div>
           </div>
 
           <!-- Evidence Claims & Case Memory Precedents Card -->
-          <div class="bg-tg-surface/90 border border-tg-border p-6 rounded-2xl shadow-lg space-y-4">
-            <h3 class="text-base font-bold text-white flex items-center space-x-2">
+          <div class="theme-card border p-6 rounded-2xl shadow-sm space-y-4">
+            <h3 class="text-base font-bold theme-heading flex items-center space-x-2">
               <span class="text-tg-orange">📋</span>
               <span>GraphRAG Evidence Claims & Case Memory Precedents</span>
             </h3>
@@ -334,8 +391,8 @@
               <!-- Dynamically populated evidence items -->
             </div>
 
-            <div class="pt-4 border-t border-tg-border flex flex-wrap items-center justify-between text-xs font-mono gap-2">
-              <span class="text-slate-400">Cited Precedents (TigerGraph Case Vertex):</span>
+            <div class="pt-4 border-t flex flex-wrap items-center justify-between text-xs font-mono gap-2" style="border-color: var(--border-card);">
+              <span class="theme-muted">Cited Precedents (TigerGraph Case Vertex):</span>
               <span id="c-prior-cases" class="text-tg-orange font-bold px-3 py-1 rounded-md bg-tg-orange/10 border border-tg-orange/30"></span>
             </div>
           </div>
@@ -346,26 +403,26 @@
         <div class="lg:col-span-5 space-y-6">
 
           <!-- Dual-Stage Next Best Action Card -->
-          <div class="bg-tg-surface/90 border border-tg-border p-6 rounded-2xl shadow-lg space-y-5 border-t-4 border-t-tg-orange">
+          <div class="theme-card border p-6 rounded-2xl shadow-sm space-y-5 border-t-4 border-t-tg-orange">
             <div class="flex items-center justify-between">
               <div>
-                <h3 class="text-base font-bold text-white tracking-tight flex items-center space-x-2">
+                <h3 class="text-base font-bold theme-heading tracking-tight flex items-center space-x-2">
                   <span class="text-tg-orange">⚡</span>
                   <span>Dual-Stage Next-Best Action</span>
                 </h3>
-                <p class="text-xs text-slate-400">Strict adherence to Bank Fraud Policies R1–R10</p>
+                <p class="text-xs theme-muted">Strict adherence to Bank Fraud Policies R1–R10</p>
               </div>
-              <span class="px-2.5 py-1 rounded text-[10px] font-bold uppercase bg-slate-800 text-slate-300 border border-slate-700 font-mono">Defensible</span>
+              <span class="px-2.5 py-1 rounded text-[10px] font-bold uppercase theme-card-subtle border font-mono">Defensible</span>
             </div>
 
             <!-- Stage 1 (Initial / Pre-Verification) -->
             <div class="space-y-2">
-              <div class="flex items-center justify-between text-xs font-semibold text-slate-300">
-                <span class="flex items-center text-amber-400 font-mono">
-                  <span class="w-2 h-2 rounded-full bg-amber-400 mr-1.5 animate-pulse"></span>
+              <div class="flex items-center justify-between text-xs font-bold theme-heading">
+                <span class="flex items-center text-amber-600 dark:text-amber-400 font-mono">
+                  <span class="w-2 h-2 rounded-full bg-amber-500 mr-1.5 animate-pulse"></span>
                   STAGE 1: Initial Actions (Before Outreach)
                 </span>
-                <span class="text-[10px] text-slate-400">Cautious Containment</span>
+                <span class="text-[10px] theme-muted font-normal">Cautious Containment</span>
               </div>
               <div id="c-actions-initial" class="space-y-2 text-xs">
                 <!-- Injected initial actions -->
@@ -373,25 +430,25 @@
             </div>
 
             <!-- Controlled Customer Validation Box -->
-            <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-700/80 text-xs space-y-2">
-              <div class="flex items-center justify-between font-mono text-[11px] text-slate-300 font-bold">
-                <span class="text-blue-400 flex items-center">
+            <div class="p-4 rounded-xl theme-card-subtle border text-xs space-y-2">
+              <div class="flex items-center justify-between font-mono text-[11px] font-bold">
+                <span class="text-blue-600 dark:text-blue-400 flex items-center">
                   <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
                   Controlled Evidence Request
                 </span>
-                <span class="text-slate-400 font-normal">Push Authentication / Call</span>
+                <span class="theme-muted font-normal">Push Authentication / Call</span>
               </div>
-              <p class="text-slate-200 italic leading-relaxed" id="c-evidence-req"></p>
+              <p class="theme-heading italic leading-relaxed" id="c-evidence-req"></p>
             </div>
 
             <!-- Stage 2 (Final / Post-Verification) -->
             <div class="space-y-2">
-              <div class="flex items-center justify-between text-xs font-semibold text-slate-300">
-                <span class="flex items-center text-emerald-400 font-mono">
-                  <span class="w-2 h-2 rounded-full bg-emerald-400 mr-1.5"></span>
+              <div class="flex items-center justify-between text-xs font-bold theme-heading">
+                <span class="flex items-center text-emerald-600 dark:text-emerald-400 font-mono">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500 mr-1.5"></span>
                   STAGE 2: Final Resolution (Post-Verification)
                 </span>
-                <span class="text-[10px] text-slate-400">Defensible Execution</span>
+                <span class="text-[10px] theme-muted font-normal">Defensible Execution</span>
               </div>
               <div id="c-actions-final" class="space-y-2 text-xs">
                 <!-- Injected final actions -->
@@ -404,30 +461,30 @@
                 <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 What Changed (Verification Impact)
               </div>
-              <p class="text-slate-200 leading-relaxed text-[11px]" id="c-what-changed"></p>
+              <p class="theme-heading leading-relaxed text-[11px]" id="c-what-changed"></p>
             </div>
           </div>
 
           <!-- FinCEN SAR Part V Narrative Card -->
-          <div class="bg-tg-surface/90 border border-tg-border p-6 rounded-2xl shadow-lg space-y-4">
+          <div class="theme-card border p-6 rounded-2xl shadow-sm space-y-4">
             <div class="flex items-center justify-between">
               <div class="flex items-center space-x-3">
-                <div class="p-2 rounded-xl bg-purple-500/20 text-purple-400 border border-purple-500/30">
+                <div class="p-2 rounded-xl bg-purple-500/20 text-purple-600 dark:text-purple-400 border border-purple-500/30">
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                 </div>
                 <div>
-                  <h3 class="text-sm font-bold text-white">FinCEN SAR Narrative</h3>
-                  <p class="text-[10px] text-slate-400 font-mono">Suspicious Activity Report Part V</p>
+                  <h3 class="text-sm font-bold theme-heading">FinCEN SAR Narrative</h3>
+                  <p class="text-[10px] theme-muted font-mono">Suspicious Activity Report Part V</p>
                 </div>
               </div>
-              <button onclick="copySAR()" id="btn-copy-sar" class="px-3 py-1.5 rounded-lg bg-purple-600/30 hover:bg-purple-600/50 border border-purple-500/40 text-purple-300 text-xs font-mono font-semibold transition flex items-center space-x-1.5 shadow-sm">
+              <button onclick="copySAR()" id="btn-copy-sar" class="px-3 py-1.5 rounded-lg bg-purple-600/15 hover:bg-purple-600/30 border border-purple-500/40 text-purple-700 dark:text-purple-300 text-xs font-mono font-semibold transition flex items-center space-x-1.5 shadow-sm">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
                 <span id="copy-sar-text">Copy SAR</span>
               </button>
             </div>
 
             <!-- SAR Narrative Document Content Container -->
-            <div class="bg-[#050814] rounded-xl border border-slate-800 p-4 font-mono text-[11px] text-slate-300 max-h-80 overflow-y-auto custom-scroll space-y-3" id="sar-doc-container">
+            <div class="rounded-xl border p-4 font-mono text-[11px] max-h-80 overflow-y-auto custom-scroll space-y-3" style="background-color: var(--code-bg); color: var(--code-text); border-color: var(--border-inner);" id="sar-doc-container">
               <!-- Dynamically populated SAR narrative -->
             </div>
           </div>
@@ -440,21 +497,21 @@
 
     <!-- ==================== TAB 2: Live Autonomous Agent Simulator ==================== -->
     <div id="view-simulator" class="space-y-6 hidden">
-      <div class="bg-tg-surface/90 border border-tg-border p-6 rounded-2xl shadow-xl space-y-6">
-        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-tg-border pb-4">
+      <div class="theme-card border p-6 rounded-2xl shadow-sm space-y-6">
+        <div class="flex flex-wrap items-center justify-between gap-4 border-b pb-4" style="border-color: var(--border-card);">
           <div>
-            <h2 class="text-xl font-bold text-white tracking-tight flex items-center space-x-2">
+            <h2 class="text-xl font-bold theme-heading tracking-tight flex items-center space-x-2">
               <span class="text-tg-orange">⚡</span>
               <span>Autonomous Agent Investigation Simulator</span>
             </h2>
-            <p class="text-xs text-slate-400 mt-1">Select any alert from the 20 benchmark cases and trigger the autonomous multi-stage investigation agent in real-time.</p>
+            <p class="text-xs theme-muted mt-1">Select any alert from the 20 benchmark cases and trigger the autonomous multi-stage investigation agent in real-time.</p>
           </div>
 
           <div class="flex items-center space-x-3">
-            <select id="sim-case-select" class="bg-slate-900 border border-slate-700 text-white rounded-xl px-4 py-2.5 text-xs font-mono focus:outline-none focus:border-tg-orange">
+            <select id="sim-case-select" class="theme-card-subtle border theme-heading rounded-xl px-4 py-2.5 text-xs font-mono focus:outline-none focus:border-tg-orange">
               <!-- Dynamically populated with 20 cases -->
             </select>
-            <button onclick="runSimulation()" id="sim-run-btn" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-tg-orange to-orange-600 hover:from-orange-500 hover:to-orange-700 text-white font-bold text-xs shadow-lg shadow-tg-orange/30 transition flex items-center space-x-2">
+            <button onclick="runSimulation()" id="sim-run-btn" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-tg-orange to-orange-600 hover:from-orange-500 hover:to-orange-700 text-white font-bold text-xs shadow-md shadow-tg-orange/30 transition flex items-center space-x-2">
               <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
               <span>Run Autonomous Agent</span>
             </button>
@@ -463,50 +520,50 @@
 
         <!-- 5-Stage Agentic Pipeline Status -->
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3">
-          <div id="step-1" class="bg-slate-900/70 border border-slate-800 p-4 rounded-xl text-slate-400 space-y-1 transition duration-300">
-            <div class="text-[10px] font-mono text-slate-500 font-bold uppercase">Stage 1</div>
-            <div class="text-xs font-bold text-slate-300">Alert Triage</div>
-            <div class="text-[11px] text-slate-400">Model scoring & customer baseline retrieval</div>
+          <div id="step-1" class="theme-card-subtle border p-4 rounded-xl space-y-1 transition duration-300">
+            <div class="text-[10px] font-mono theme-muted font-bold uppercase">Stage 1</div>
+            <div class="text-xs font-bold theme-heading">Alert Triage</div>
+            <div class="text-[11px] theme-muted">Model scoring & customer baseline retrieval</div>
           </div>
-          <div id="step-2" class="bg-slate-900/70 border border-slate-800 p-4 rounded-xl text-slate-400 space-y-1 transition duration-300">
-            <div class="text-[10px] font-mono text-slate-500 font-bold uppercase">Stage 2</div>
-            <div class="text-xs font-bold text-slate-300">TigerGraph Traversal</div>
-            <div class="text-[11px] text-slate-400">2-hop card window & device collision query</div>
+          <div id="step-2" class="theme-card-subtle border p-4 rounded-xl space-y-1 transition duration-300">
+            <div class="text-[10px] font-mono theme-muted font-bold uppercase">Stage 2</div>
+            <div class="text-xs font-bold theme-heading">TigerGraph Traversal</div>
+            <div class="text-[11px] theme-muted">2-hop card window & device collision query</div>
           </div>
-          <div id="step-3" class="bg-slate-900/70 border border-slate-800 p-4 rounded-xl text-slate-400 space-y-1 transition duration-300">
-            <div class="text-[10px] font-mono text-slate-500 font-bold uppercase">Stage 3</div>
-            <div class="text-xs font-bold text-slate-300">Policy R1 Evaluation</div>
-            <div class="text-[11px] text-slate-400">Uncertainty analysis & interim hold recommendation</div>
+          <div id="step-3" class="theme-card-subtle border p-4 rounded-xl space-y-1 transition duration-300">
+            <div class="text-[10px] font-mono theme-muted font-bold uppercase">Stage 3</div>
+            <div class="text-xs font-bold theme-heading">Policy R1 Evaluation</div>
+            <div class="text-[11px] theme-muted">Uncertainty analysis & interim hold recommendation</div>
           </div>
-          <div id="step-4" class="bg-slate-900/70 border border-slate-800 p-4 rounded-xl text-slate-400 space-y-1 transition duration-300">
-            <div class="text-[10px] font-mono text-slate-500 font-bold uppercase">Stage 4</div>
-            <div class="text-xs font-bold text-slate-300">Controlled Validation</div>
-            <div class="text-[11px] text-slate-400">Cardholder validation & step-up verification</div>
+          <div id="step-4" class="theme-card-subtle border p-4 rounded-xl space-y-1 transition duration-300">
+            <div class="text-[10px] font-mono theme-muted font-bold uppercase">Stage 4</div>
+            <div class="text-xs font-bold theme-heading">Controlled Validation</div>
+            <div class="text-[11px] theme-muted">Cardholder validation & step-up verification</div>
           </div>
-          <div id="step-5" class="bg-slate-900/70 border border-slate-800 p-4 rounded-xl text-slate-400 space-y-1 transition duration-300">
-            <div class="text-[10px] font-mono text-slate-500 font-bold uppercase">Stage 5</div>
-            <div class="text-xs font-bold text-slate-300">Defensible NBA & Memory</div>
-            <div class="text-[11px] text-slate-400">Execute final action & upsert case into graph</div>
+          <div id="step-5" class="theme-card-subtle border p-4 rounded-xl space-y-1 transition duration-300">
+            <div class="text-[10px] font-mono theme-muted font-bold uppercase">Stage 5</div>
+            <div class="text-xs font-bold theme-heading">Defensible NBA & Memory</div>
+            <div class="text-[11px] theme-muted">Execute final action & upsert case into graph</div>
           </div>
         </div>
 
         <!-- Terminal Execution Log -->
-        <div class="rounded-2xl bg-[#02050E] border border-slate-800 p-5 font-mono text-xs text-slate-300 shadow-2xl relative">
-          <div class="flex items-center justify-between pb-3 border-b border-slate-800 text-slate-500 text-[11px]">
+        <div class="rounded-2xl border p-5 font-mono text-xs shadow-lg relative" style="background-color: var(--code-bg); color: var(--code-text); border-color: var(--border-inner);">
+          <div class="flex items-center justify-between pb-3 border-b text-[11px]" style="border-color: var(--border-inner);">
             <div class="flex items-center space-x-2">
-              <span class="w-3 h-3 rounded-full bg-rose-500/80 inline-block"></span>
-              <span class="w-3 h-3 rounded-full bg-amber-500/80 inline-block"></span>
-              <span class="w-3 h-3 rounded-full bg-emerald-500/80 inline-block"></span>
-              <span class="ml-2 font-bold text-slate-400">TigerGraph Agent Core Runtime — Terminal v2.4</span>
+              <span class="w-3 h-3 rounded-full bg-rose-500 inline-block"></span>
+              <span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span>
+              <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span>
+              <span class="ml-2 font-bold theme-heading">TigerGraph Agent Core Runtime — Terminal v2.3</span>
             </div>
             <span class="text-tg-orange font-bold">READY</span>
           </div>
 
-          <div id="sim-terminal" class="mt-4 space-y-2 h-72 overflow-y-auto custom-scroll text-slate-300 font-mono text-[12px] leading-relaxed">
-            <div class="text-slate-500">>>> Autonomous Fraud Agent Engine initialized.</div>
-            <div class="text-slate-500">>>> TigerGraph MCP Client connected to endpoint: savanna.tgcloud.io:443.</div>
-            <div class="text-slate-500">>>> GraphRAG vector index loaded (5,565 closed case precedents ready).</div>
-            <div class="text-emerald-400 font-bold">>>> Select any alert above and click "Run Autonomous Agent" to begin investigation.</div>
+          <div id="sim-terminal" class="mt-4 space-y-2 h-72 overflow-y-auto custom-scroll font-mono text-[12px] leading-relaxed">
+            <div class="theme-muted">>>> Autonomous Fraud Agent Engine initialized.</div>
+            <div class="theme-muted">>>> TigerGraph MCP Client connected to endpoint: savanna.tgcloud.io:443.</div>
+            <div class="theme-muted">>>> GraphRAG vector index loaded (5,565 closed case precedents ready).</div>
+            <div class="text-emerald-500 font-bold">>>> Select any alert above and click "Run Autonomous Agent" to begin investigation.</div>
           </div>
         </div>
       </div>
@@ -514,30 +571,30 @@
 
     <!-- ==================== TAB 3: 20-Case Benchmark Command Matrix ==================== -->
     <div id="view-matrix" class="space-y-6 hidden">
-      <div class="bg-tg-surface/90 border border-tg-border p-6 rounded-2xl shadow-xl space-y-5">
+      <div class="theme-card border p-6 rounded-2xl shadow-sm space-y-5">
         <div class="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h2 class="text-xl font-bold text-white tracking-tight flex items-center space-x-2">
-              <span class="text-blue-400">📊</span>
+            <h2 class="text-xl font-bold theme-heading tracking-tight flex items-center space-x-2">
+              <span class="text-blue-500">📊</span>
               <span>Official 20-Case Benchmark Matrix</span>
             </h2>
-            <p class="text-xs text-slate-400">All 20 test cases evaluated against the IEEE-CIS dataset with dual-stage next best actions & FinCEN filings.</p>
+            <p class="text-xs theme-muted">All 20 test cases evaluated against the IEEE-CIS dataset with dual-stage next best actions & FinCEN filings.</p>
           </div>
 
           <!-- Search & Filter Controls -->
           <div class="flex flex-wrap items-center gap-2 text-xs">
             <button onclick="setMatrixFilter('all')" id="btn-filt-all" class="px-3.5 py-1.5 rounded-lg bg-tg-orange text-white font-bold transition">All (20)</button>
-            <button onclick="setMatrixFilter('fraud')" id="btn-filt-fraud" class="px-3.5 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white transition">Fraud (10)</button>
-            <button onclick="setMatrixFilter('legit')" id="btn-filt-legit" class="px-3.5 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white transition">Legitimate (10)</button>
-            <button onclick="setMatrixFilter('sar')" id="btn-filt-sar" class="px-3.5 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white transition">SAR Filed (4)</button>
-            <input type="text" id="matrix-search" oninput="filterMatrix()" placeholder="Search Case, Card, Pattern..." class="bg-slate-900 border border-slate-700 text-white rounded-lg px-3.5 py-1.5 text-xs font-mono focus:outline-none focus:border-tg-orange w-52" />
+            <button onclick="setMatrixFilter('fraud')" id="btn-filt-fraud" class="px-3.5 py-1.5 rounded-lg theme-card-subtle border font-semibold hover:bg-slate-200 dark:hover:bg-slate-800 transition">Fraud (10)</button>
+            <button onclick="setMatrixFilter('legit')" id="btn-filt-legit" class="px-3.5 py-1.5 rounded-lg theme-card-subtle border font-semibold hover:bg-slate-200 dark:hover:bg-slate-800 transition">Legitimate (10)</button>
+            <button onclick="setMatrixFilter('sar')" id="btn-filt-sar" class="px-3.5 py-1.5 rounded-lg theme-card-subtle border font-semibold hover:bg-slate-200 dark:hover:bg-slate-800 transition">SAR Filed (4)</button>
+            <input type="text" id="matrix-search" oninput="filterMatrix()" placeholder="Search Case, Card, Pattern..." class="theme-card-subtle border rounded-lg px-3.5 py-1.5 text-xs font-mono focus:outline-none focus:border-tg-orange w-52" />
           </div>
         </div>
 
         <!-- Table -->
-        <div class="overflow-x-auto rounded-xl border border-slate-800">
+        <div class="overflow-x-auto rounded-xl border" style="border-color: var(--border-card);">
           <table class="w-full text-left text-xs font-mono">
-            <thead class="bg-slate-900/90 text-slate-400 uppercase text-[10px] tracking-wider border-b border-slate-800">
+            <thead class="theme-card-subtle theme-muted uppercase text-[10px] tracking-wider border-b" style="border-color: var(--border-card);">
               <tr>
                 <th class="py-3 px-3.5">Case ID</th>
                 <th class="py-3 px-3.5">Verdict</th>
@@ -550,7 +607,7 @@
                 <th class="py-3 px-3.5 text-right">Inspect</th>
               </tr>
             </thead>
-            <tbody id="matrix-tbody" class="divide-y divide-slate-800/60 bg-slate-950/40">
+            <tbody id="matrix-tbody" class="divide-y" style="border-color: var(--border-card);">
               <!-- Dynamically populated -->
             </tbody>
           </table>
@@ -560,86 +617,86 @@
 
     <!-- ==================== TAB 4: TigerGraph & GSQL Engine ==================== -->
     <div id="view-architecture" class="space-y-6 hidden">
-      <div class="bg-tg-surface/90 border border-tg-border p-6 rounded-2xl shadow-xl space-y-6">
+      <div class="theme-card border p-6 rounded-2xl shadow-sm space-y-6">
         <div>
-          <h2 class="text-xl font-bold text-white tracking-tight flex items-center space-x-2">
-            <span class="text-purple-400">🏗️</span>
+          <h2 class="text-xl font-bold theme-heading tracking-tight flex items-center space-x-2">
+            <span class="text-purple-500">🏗️</span>
             <span>TigerGraph Native Schema & MCP Architecture</span>
           </h2>
-          <p class="text-xs text-slate-400 mt-1">End-to-end integration diagram showing GraphRAG, GSQL queries, Model Context Protocol, and multi-tier approval routing.</p>
+          <p class="text-xs theme-muted mt-1">End-to-end integration diagram showing GraphRAG, GSQL queries, Model Context Protocol, and multi-tier approval routing.</p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <!-- Graph Schema Card -->
-          <div class="bg-slate-900/80 border border-slate-800 p-5 rounded-xl space-y-3">
-            <h3 class="text-sm font-bold text-white flex items-center space-x-2 font-mono">
+          <div class="theme-card-subtle border p-5 rounded-xl space-y-3">
+            <h3 class="text-sm font-bold theme-heading flex items-center space-x-2 font-mono">
               <span class="text-tg-orange">●</span>
               <span>GSQL Graph Schema (6 Vertices, 4 Edges)</span>
             </h3>
-            <div class="space-y-2 text-xs font-mono text-slate-300 leading-relaxed bg-[#050914] p-4 rounded-xl border border-slate-800">
-              <div><span class="text-blue-400 font-bold">VERTEX Customer</span> (id STRING, name STRING)</div>
-              <div><span class="text-amber-400 font-bold">VERTEX Card</span> (id STRING, card_type STRING, billing_region STRING)</div>
-              <div><span class="text-rose-400 font-bold">VERTEX Transaction</span> (id STRING, amount DOUBLE, timestamp DATETIME, is_online BOOL)</div>
-              <div><span class="text-purple-400 font-bold">VERTEX DeviceProfile</span> (id STRING, os STRING, browser STRING)</div>
-              <div><span class="text-cyan-400 font-bold">VERTEX IPAddress</span> (id STRING, country STRING, is_proxy BOOL)</div>
-              <div><span class="text-emerald-400 font-bold">VERTEX CaseVertex</span> (id STRING, verdict STRING, timestamp DATETIME)</div>
-              <div class="pt-2 border-t border-slate-800 text-slate-400">
-                <div>DIRECTED EDGE <span class="text-yellow-400">HAS_CARD</span> (FROM Customer, TO Card)</div>
-                <div>DIRECTED EDGE <span class="text-yellow-400">PERFORMED_TXN</span> (FROM Card, TO Transaction)</div>
-                <div>DIRECTED EDGE <span class="text-yellow-400">USED_DEVICE</span> (FROM Transaction, TO DeviceProfile)</div>
-                <div>DIRECTED EDGE <span class="text-yellow-400">CITES_CASE</span> (FROM CaseVertex, TO CaseVertex)</div>
+            <div class="space-y-2 text-xs font-mono leading-relaxed p-4 rounded-xl border" style="background-color: var(--code-bg); color: var(--code-text); border-color: var(--border-inner);">
+              <div><span class="text-blue-500 font-bold">VERTEX Customer</span> (id STRING, name STRING)</div>
+              <div><span class="text-amber-500 font-bold">VERTEX Card</span> (id STRING, card_type STRING, billing_region STRING)</div>
+              <div><span class="text-rose-500 font-bold">VERTEX Transaction</span> (id STRING, amount DOUBLE, timestamp DATETIME, is_online BOOL)</div>
+              <div><span class="text-purple-500 font-bold">VERTEX DeviceProfile</span> (id STRING, os STRING, browser STRING)</div>
+              <div><span class="text-cyan-500 font-bold">VERTEX IPAddress</span> (id STRING, country STRING, is_proxy BOOL)</div>
+              <div><span class="text-emerald-500 font-bold">VERTEX CaseVertex</span> (id STRING, verdict STRING, timestamp DATETIME)</div>
+              <div class="pt-2 border-t text-slate-500" style="border-color: var(--border-inner);">
+                <div>DIRECTED EDGE <span class="text-yellow-500">HAS_CARD</span> (FROM Customer, TO Card)</div>
+                <div>DIRECTED EDGE <span class="text-yellow-500">PERFORMED_TXN</span> (FROM Card, TO Transaction)</div>
+                <div>DIRECTED EDGE <span class="text-yellow-500">USED_DEVICE</span> (FROM Transaction, TO DeviceProfile)</div>
+                <div>DIRECTED EDGE <span class="text-yellow-500">CITES_CASE</span> (FROM CaseVertex, TO CaseVertex)</div>
               </div>
             </div>
           </div>
 
           <!-- MCP Server Capabilities -->
-          <div class="bg-slate-900/80 border border-slate-800 p-5 rounded-xl space-y-3">
-            <h3 class="text-sm font-bold text-white flex items-center space-x-2 font-mono">
-              <span class="text-emerald-400">●</span>
+          <div class="theme-card-subtle border p-5 rounded-xl space-y-3">
+            <h3 class="text-sm font-bold theme-heading flex items-center space-x-2 font-mono">
+              <span class="text-emerald-500">●</span>
               <span>TigerGraph MCP Tool Endpoints</span>
             </h3>
-            <div class="space-y-2 text-xs font-mono text-slate-300 leading-relaxed bg-[#050914] p-4 rounded-xl border border-slate-800">
-              <div><span class="text-emerald-400 font-bold">card_window</span>(card_id, hours=48)</div>
-              <p class="text-[11px] text-slate-400 pl-4 font-sans">Fetches all transactions on the card within a 48-hour temporal window to evaluate velocity.</p>
+            <div class="space-y-2 text-xs font-mono leading-relaxed p-4 rounded-xl border" style="background-color: var(--code-bg); color: var(--code-text); border-color: var(--border-inner);">
+              <div><span class="text-emerald-500 font-bold">card_window</span>(card_id, hours=48)</div>
+              <p class="text-[11px] theme-muted pl-4 font-sans">Fetches all transactions on the card within a 48-hour temporal window to evaluate velocity.</p>
 
-              <div><span class="text-emerald-400 font-bold">device_neighbors</span>(device_id, hops=2)</div>
-              <p class="text-[11px] text-slate-400 pl-4 font-sans">Multi-hop graph query discovering all cards sharing endpoint fingerprint D13840.</p>
+              <div><span class="text-emerald-500 font-bold">device_neighbors</span>(device_id, hops=2)</div>
+              <p class="text-[11px] theme-muted pl-4 font-sans">Multi-hop graph query discovering all cards sharing endpoint fingerprint D13840.</p>
 
-              <div><span class="text-emerald-400 font-bold">customer_history</span>(customer_id)</div>
-              <p class="text-[11px] text-slate-400 pl-4 font-sans">Aggregates 6-month historical baseline across 590,742 transactions to eliminate false positives.</p>
+              <div><span class="text-emerald-500 font-bold">customer_history</span>(customer_id)</div>
+              <p class="text-[11px] theme-muted pl-4 font-sans">Aggregates 6-month historical baseline across 590,742 transactions to eliminate false positives.</p>
 
-              <div><span class="text-emerald-400 font-bold">upsert_case_memory</span>(case_id, verdict, precedents)</div>
-              <p class="text-[11px] text-slate-400 pl-4 font-sans">Creates live CaseVertex and CITES_CASE edges so subsequent alerts cite past precedent.</p>
+              <div><span class="text-emerald-500 font-bold">upsert_case_memory</span>(case_id, verdict, precedents)</div>
+              <p class="text-[11px] theme-muted pl-4 font-sans">Creates live CaseVertex and CITES_CASE edges so subsequent alerts cite past precedent.</p>
             </div>
           </div>
         </div>
 
         <!-- Policy Rules R1–R10 -->
-        <div class="bg-slate-900/80 border border-slate-800 p-5 rounded-xl space-y-3">
-          <h3 class="text-sm font-bold text-white flex items-center space-x-2">
-            <span class="text-amber-400">⚖️</span>
+        <div class="theme-card-subtle border p-5 rounded-xl space-y-3">
+          <h3 class="text-sm font-bold theme-heading flex items-center space-x-2">
+            <span class="text-amber-500">⚖️</span>
             <span>Bank Fraud Policy Engine (Rules R1 through R10)</span>
           </h3>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 text-xs">
-            <div class="bg-slate-950 p-3.5 rounded-lg border border-slate-800">
-              <div class="font-bold text-amber-400 font-mono">Rule R1</div>
-              <div class="text-slate-300 text-[11px] mt-1">Solitary high risk score without corroborating graph evidence shall NEVER trigger hard card block.</div>
+            <div class="theme-card p-3.5 rounded-lg border">
+              <div class="font-bold text-amber-500 font-mono">Rule R1</div>
+              <div class="theme-muted text-[11px] mt-1">Solitary high risk score without corroborating graph evidence shall NEVER trigger hard card block.</div>
             </div>
-            <div class="bg-slate-950 p-3.5 rounded-lg border border-slate-800">
-              <div class="font-bold text-amber-400 font-mono">Rule R3</div>
-              <div class="text-slate-300 text-[11px] mt-1">Confirmed customer report with matching device collision mandates immediate card block (L1 approval).</div>
+            <div class="theme-card p-3.5 rounded-lg border">
+              <div class="font-bold text-amber-500 font-mono">Rule R3</div>
+              <div class="theme-muted text-[11px] mt-1">Confirmed customer report with matching device collision mandates immediate card block (L1 approval).</div>
             </div>
-            <div class="bg-slate-950 p-3.5 rounded-lg border border-slate-800">
-              <div class="font-bold text-amber-400 font-mono">Rule R7</div>
-              <div class="text-slate-300 text-[11px] mt-1">Exposure exceeding $10,000 across connected syndicate cards requires mandatory FinCEN SAR Part V.</div>
+            <div class="theme-card p-3.5 rounded-lg border">
+              <div class="font-bold text-amber-500 font-mono">Rule R7</div>
+              <div class="theme-muted text-[11px] mt-1">Exposure exceeding $10,000 across connected syndicate cards requires mandatory FinCEN SAR Part V.</div>
             </div>
-            <div class="bg-slate-950 p-3.5 rounded-lg border border-slate-800">
-              <div class="font-bold text-amber-400 font-mono">Rule R8</div>
-              <div class="text-slate-300 text-[11px] mt-1">All final post-verification actions must document explicit 'what_changed' rationale in case record.</div>
+            <div class="theme-card p-3.5 rounded-lg border">
+              <div class="font-bold text-amber-500 font-mono">Rule R8</div>
+              <div class="theme-muted text-[11px] mt-1">All final post-verification actions must document explicit 'what_changed' rationale in case record.</div>
             </div>
-            <div class="bg-slate-950 p-3.5 rounded-lg border border-slate-800">
-              <div class="font-bold text-amber-400 font-mono">Rule R9</div>
-              <div class="text-slate-300 text-[11px] mt-1">Unrecognized fraud topologies must be flagged as 'undocumented' and escalated for policy review.</div>
+            <div class="theme-card p-3.5 rounded-lg border">
+              <div class="font-bold text-amber-500 font-mono">Rule R9</div>
+              <div class="theme-muted text-[11px] mt-1">Unrecognized fraud topologies must be flagged as 'undocumented' and escalated for policy review.</div>
             </div>
           </div>
         </div>
@@ -650,7 +707,7 @@
   </main>
 
   <!-- Footer -->
-  <footer class="border-t border-tg-border py-6 px-4 text-center text-xs text-slate-500 font-mono bg-tg-dark">
+  <footer class="border-t py-6 px-4 text-center text-xs theme-muted font-mono transition-colors duration-200" style="background-color: var(--nav-bg); border-color: var(--border-card);">
     <div class="max-w-[1600px] mx-auto flex flex-wrap items-center justify-between gap-4">
       <div>Hacker House Goa 2026 — Task 4 Submission | TigerGraph Agentic Fraud Investigation Copilot</div>
       <div class="flex items-center space-x-4">
@@ -4004,7 +4061,39 @@ window.CASES_DATA = {
     let currentCaseId = 'HHG-006';
     let currentFilter = 'all';
 
+    // Theme Toggle Functionality
+    function initTheme() {
+      const savedTheme = localStorage.getItem('theme') || 'light';
+      setTheme(savedTheme);
+    }
+
+    function setTheme(theme) {
+      const html = document.documentElement;
+      const icon = document.getElementById('theme-icon');
+      const text = document.getElementById('theme-text');
+      
+      if (theme === 'dark') {
+        html.classList.add('dark');
+        html.classList.remove('light');
+        if (icon) icon.innerText = '☀️';
+        if (text) text.innerText = 'Light Mode';
+        localStorage.setItem('theme', 'dark');
+      } else {
+        html.classList.remove('dark');
+        html.classList.add('light');
+        if (icon) icon.innerText = '🌙';
+        if (text) text.innerText = 'Dark Mode';
+        localStorage.setItem('theme', 'light');
+      }
+    }
+
+    function toggleTheme() {
+      const isDark = document.documentElement.classList.contains('dark');
+      setTheme(isDark ? 'light' : 'dark');
+    }
+
     function init() {
+      initTheme();
       renderPills();
       populateSimSelect();
       loadCase(currentCaseId);
@@ -4018,10 +4107,10 @@ window.CASES_DATA = {
         const btn = document.getElementById('tab-' + t);
         if (t === tabId) {
           view.classList.remove('hidden');
-          btn.className = 'px-5 py-3 rounded-xl border-b-2 border-tg-orange text-white bg-tg-surface/80 flex items-center space-x-2 transition font-semibold shadow-sm';
+          btn.className = 'px-5 py-3 rounded-xl border-b-2 border-tg-orange text-white bg-tg-orange font-bold flex items-center space-x-2 transition shadow-sm';
         } else {
           view.classList.add('hidden');
-          btn.className = 'px-5 py-3 rounded-xl border-b-2 border-transparent text-slate-400 hover:text-slate-200 hover:bg-tg-surface/40 flex items-center space-x-2 transition font-semibold';
+          btn.className = 'px-5 py-3 rounded-xl border-b-2 border-transparent theme-muted hover:theme-heading hover:bg-slate-200/50 dark:hover:bg-slate-800/50 flex items-center space-x-2 transition font-bold';
         }
       });
     }
@@ -4043,16 +4132,16 @@ window.CASES_DATA = {
         let baseClasses = 'px-3.5 py-2 rounded-xl text-xs font-mono font-bold transition-all duration-200 flex items-center space-x-1.5 whitespace-nowrap ';
         if (isSelected) {
           baseClasses += isFraud 
-            ? 'bg-rose-500 text-white shadow-lg shadow-rose-500/40 ring-2 ring-rose-400 scale-105' 
-            : 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/40 ring-2 ring-emerald-400 scale-105';
+            ? 'bg-rose-600 text-white shadow-md shadow-rose-600/40 ring-2 ring-rose-400 scale-105' 
+            : 'bg-emerald-600 text-white shadow-md shadow-emerald-600/40 ring-2 ring-emerald-400 scale-105';
         } else {
           baseClasses += isFraud
-            ? 'bg-rose-950/40 text-rose-300 border border-rose-800/60 hover:bg-rose-900/60 hover:border-rose-600'
-            : 'bg-emerald-950/40 text-emerald-300 border border-emerald-800/60 hover:bg-emerald-900/60 hover:border-emerald-600';
+            ? 'bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800/60 hover:bg-rose-100 dark:hover:bg-rose-900/60'
+            : 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/60';
         }
 
         btn.className = baseClasses;
-        btn.innerHTML = `<span>${cid}</span>${isUndoc ? '<span class="text-purple-300 text-[11px]">★</span>' : ''}`;
+        btn.innerHTML = `<span>${cid}</span>${isUndoc ? '<span class="text-purple-600 dark:text-purple-300 text-[11px]">★</span>' : ''}`;
         container.appendChild(btn);
       });
     }
@@ -4075,14 +4164,14 @@ window.CASES_DATA = {
       const vb = document.getElementById('c-verdict-badge');
       vb.innerText = (cp.verdict || 'legitimate').toUpperCase();
       vb.className = isFraud 
-        ? 'px-3.5 py-1 rounded-lg text-xs font-bold uppercase tracking-wider bg-rose-500 text-white shadow-[0_0_12px_rgba(244,63,94,0.4)]'
-        : 'px-3.5 py-1 rounded-lg text-xs font-bold uppercase tracking-wider bg-emerald-500 text-white shadow-[0_0_12px_rgba(16,185,129,0.4)]';
+        ? 'px-3.5 py-1 rounded-lg text-xs font-bold uppercase tracking-wider bg-rose-600 text-white shadow-[0_0_12px_rgba(244,63,94,0.4)]'
+        : 'px-3.5 py-1 rounded-lg text-xs font-bold uppercase tracking-wider bg-emerald-600 text-white shadow-[0_0_12px_rgba(16,185,129,0.4)]';
 
       const pb = document.getElementById('c-pattern-badge');
       pb.innerText = cp.pattern || 'none';
       pb.className = cp.pattern === 'undocumented'
-        ? 'px-3 py-1 rounded-lg text-xs font-medium font-mono bg-purple-500/20 text-purple-300 border border-purple-500/40'
-        : 'px-3 py-1 rounded-lg text-xs font-medium font-mono bg-slate-800 text-slate-300 border border-slate-700';
+        ? 'px-3 py-1 rounded-lg text-xs font-medium font-mono bg-purple-100 dark:bg-purple-500/20 text-purple-700 dark:text-purple-300 border border-purple-300 dark:border-purple-500/40'
+        : 'px-3 py-1 rounded-lg text-xs font-medium font-mono theme-card-subtle border theme-muted';
 
       document.getElementById('c-graph-id').innerText = cp.graph_case_id || ('CASE-TG-' + cid);
       document.getElementById('c-prob').innerText = (cp.fraud_probability !== undefined) ? cp.fraud_probability.toFixed(2) : '0.00';
@@ -4091,7 +4180,7 @@ window.CASES_DATA = {
 
       const sarStat = document.getElementById('c-sar-stat');
       sarStat.innerText = sar.file ? 'FILED' : 'NOT REQUIRED';
-      sarStat.className = sar.file ? 'text-xl font-bold font-mono text-purple-400 mt-1' : 'text-xl font-bold font-mono text-slate-500 mt-1';
+      sarStat.className = sar.file ? 'text-xl font-bold font-mono text-purple-600 dark:text-purple-400 mt-1' : 'text-xl font-bold font-mono theme-muted mt-1';
 
       // Novel pattern box
       const undocBox = document.getElementById('c-pattern-desc-box');
@@ -4135,7 +4224,7 @@ window.CASES_DATA = {
       // SAR Narrative Formatting
       renderSar(sar, cid);
 
-      // SVG Knowledge Graph
+      // SVG Knowledge Graph with ENLARGED CIRCLES & JEWEL GRADIENTS
       renderSvgGraph(cid, cp, meta);
       
       // Hide inspector on case change
@@ -4146,12 +4235,12 @@ window.CASES_DATA = {
       const container = document.getElementById('c-evidence-list');
       container.innerHTML = '';
       if (!claims || claims.length === 0) {
-        container.innerHTML = '<div class="text-slate-400 italic">No evidence claims documented.</div>';
+        container.innerHTML = '<div class="theme-muted italic">No evidence claims documented.</div>';
         return;
       }
       claims.forEach((cl, idx) => {
         const item = document.createElement('div');
-        item.className = 'bg-slate-900/80 border border-slate-800/80 p-3.5 rounded-xl flex items-start space-x-3 hover:border-slate-700 transition';
+        item.className = 'theme-card-subtle border p-3.5 rounded-xl flex items-start space-x-3 transition';
         const claimText = cl.claim || cl.evidence || JSON.stringify(cl);
         const sourceText = cl.source ? `Source: ${cl.source.toUpperCase()}` : (cl.ref ? `Ref: ${cl.ref}` : `Claim #${idx+1}`);
         item.innerHTML = `
@@ -4159,8 +4248,8 @@ window.CASES_DATA = {
             ${idx+1}
           </div>
           <div class="flex-1">
-            <div class="font-semibold text-slate-200 text-xs leading-relaxed">${claimText}</div>
-            <div class="text-[10px] text-slate-400 font-mono mt-1">${sourceText}</div>
+            <div class="font-semibold theme-heading text-xs leading-relaxed">${claimText}</div>
+            <div class="text-[10px] theme-muted font-mono mt-1">${sourceText}</div>
           </div>
         `;
         container.appendChild(item);
@@ -4171,7 +4260,7 @@ window.CASES_DATA = {
       const container = document.getElementById(containerId);
       container.innerHTML = '';
       if (!actions || actions.length === 0) {
-        container.innerHTML = '<div class="text-slate-400 italic">No action specified.</div>';
+        container.innerHTML = '<div class="theme-muted italic">No action specified.</div>';
         return;
       }
 
@@ -4180,19 +4269,19 @@ window.CASES_DATA = {
         const routeVal = a.route || a.approval_tier || 'auto';
         const isAuto = routeVal.toLowerCase() === 'auto';
         const tierBadge = isAuto
-          ? '<span class="px-2 py-0.5 rounded text-[9px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold uppercase">AUTO EXECUTE</span>'
-          : `<span class="px-2 py-0.5 rounded text-[9px] bg-amber-500/20 text-amber-400 border border-amber-500/30 font-bold uppercase">${routeVal.toUpperCase()} APPROVAL</span>`;
+          ? '<span class="px-2 py-0.5 rounded text-[9px] bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30 font-bold uppercase">AUTO EXECUTE</span>'
+          : `<span class="px-2 py-0.5 rounded text-[9px] bg-amber-500/20 text-amber-700 dark:text-amber-400 border border-amber-500/30 font-bold uppercase">${routeVal.toUpperCase()} APPROVAL</span>`;
 
-        card.className = 'bg-slate-900/80 border border-slate-800 p-3.5 rounded-xl space-y-1.5 hover:border-slate-700 transition';
+        card.className = 'theme-card-subtle border p-3.5 rounded-xl space-y-1.5 transition';
         card.innerHTML = `
           <div class="flex items-center justify-between">
-            <span class="font-bold text-white font-mono text-xs flex items-center space-x-2">
-              <span class="${isFinal ? 'text-emerald-400' : 'text-amber-400'}">●</span>
+            <span class="font-bold theme-heading font-mono text-xs flex items-center space-x-2">
+              <span class="${isFinal ? 'text-emerald-500' : 'text-amber-500'}">●</span>
               <span>${a.action}</span>
             </span>
             ${tierBadge}
           </div>
-          <p class="text-[11px] text-slate-300 leading-relaxed font-sans">${a.reason}</p>
+          <p class="text-[11px] theme-muted leading-relaxed font-sans">${a.reason}</p>
         `;
         container.appendChild(card);
       });
@@ -4205,27 +4294,27 @@ window.CASES_DATA = {
       if (sar && sar.file && sar.narrative) {
         copyBtn.classList.remove('hidden');
         container.innerHTML = `
-          <div class="text-purple-400 font-bold border-b border-slate-800 pb-2 flex items-center justify-between">
+          <div class="text-purple-600 dark:text-purple-400 font-bold border-b pb-2 flex items-center justify-between" style="border-color: var(--border-inner);">
             <span>OFFICIAL BSA/AML SUSPICIOUS ACTIVITY REPORT</span>
-            <span class="text-[10px] text-slate-500">FORM 111 (FINCEN PART V)</span>
+            <span class="text-[10px] theme-muted">FORM 111 (FINCEN PART V)</span>
           </div>
-          <div class="text-[10px] text-slate-400 border-b border-slate-800/80 pb-2 space-y-0.5">
-            <div><span class="text-slate-300 font-bold">CASE ID:</span> ${cid} | <span class="text-slate-300 font-bold">DATE:</span> 2016-12-31</div>
-            <div><span class="text-slate-300 font-bold">RED FLAGS:</span> ${sar.red_flags ? sar.red_flags.join(', ') : 'Velocity surge, multi-card collision'}</div>
+          <div class="text-[10px] theme-muted border-b pb-2 space-y-0.5" style="border-color: var(--border-inner);">
+            <div><span class="theme-heading font-bold">CASE ID:</span> ${cid} | <span class="theme-heading font-bold">DATE:</span> 2016-12-31</div>
+            <div><span class="theme-heading font-bold">RED FLAGS:</span> ${sar.red_flags ? sar.red_flags.join(', ') : 'Velocity surge, multi-card collision'}</div>
           </div>
-          <div class="leading-relaxed whitespace-pre-line text-slate-200 text-xs font-sans pt-1">
+          <div class="leading-relaxed whitespace-pre-line text-xs font-sans pt-1">
             ${sar.narrative}
           </div>
         `;
       } else {
         copyBtn.classList.add('hidden');
         container.innerHTML = `
-          <div class="p-4 rounded-xl bg-emerald-950/30 border border-emerald-500/30 text-emerald-300 space-y-2">
+          <div class="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-300 dark:border-emerald-500/30 text-emerald-800 dark:text-emerald-300 space-y-2">
             <div class="flex items-center space-x-2 font-bold text-xs">
-              <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+              <svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
               <span>CLEARED UNDER BANK FRAUD POLICY RULE R1 & R3</span>
             </div>
-            <p class="text-[11px] text-slate-300 font-sans leading-relaxed">
+            <p class="text-[11px] theme-muted font-sans leading-relaxed">
               Legitimate customer authorization verified through step-up authentication. Historical baseline matches 6-month profile. Total suspicious exposure is $0.00. Under FinCEN & BSA/AML regulatory thresholds, no SAR filing is required for cleared transactions.
             </p>
           </div>
@@ -4233,6 +4322,9 @@ window.CASES_DATA = {
       }
     }
 
+    // ==========================================
+    // ENLARGED SUBGRAPH RENDERER (VIBRANT JEWEL GRADIENTS)
+    // ==========================================
     function renderSvgGraph(cid, cp, meta) {
       const svg = document.getElementById('subgraph-svg');
       const isFraud = cp.verdict === 'fraud';
@@ -4240,101 +4332,147 @@ window.CASES_DATA = {
       const cardId = meta.card_id || 'C07297-K1';
       const txnId = meta.flagged_txn_id || (cp.affected_txn_ids && cp.affected_txn_ids[0]) || '3476682';
 
-      let svgHtml = '';
+      let svgHtml = `
+        <defs>
+          <!-- Soft Drop Shadow Filter -->
+          <filter id="node-shadow" x="-40%" y="-40%" width="180%" height="180%">
+            <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.6"/>
+          </filter>
+
+          <!-- Vibrant Jewel-Toned Gradients -->
+          <linearGradient id="grad-customer" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#3B82F6"/>
+            <stop offset="100%" stop-color="#1D4ED8"/>
+          </linearGradient>
+
+          <linearGradient id="grad-card" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#F59E0B"/>
+            <stop offset="100%" stop-color="#B45309"/>
+          </linearGradient>
+
+          <linearGradient id="grad-fraud" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#F43F5E"/>
+            <stop offset="100%" stop-color="#BE123C"/>
+          </linearGradient>
+
+          <linearGradient id="grad-legit" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#10B981"/>
+            <stop offset="100%" stop-color="#047857"/>
+          </linearGradient>
+
+          <linearGradient id="grad-device" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#8B5CF6"/>
+            <stop offset="100%" stop-color="#6D28D9"/>
+          </linearGradient>
+
+          <linearGradient id="grad-syndicate" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#D97706"/>
+            <stop offset="100%" stop-color="#78350F"/>
+          </linearGradient>
+
+          <linearGradient id="grad-baseline" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#14B8A6"/>
+            <stop offset="100%" stop-color="#0F766E"/>
+          </linearGradient>
+        </defs>
+      `;
 
       if (isFraud) {
-        // Multi-Hop Syndicate Collision Graph
-        svgHtml = `
+        // Multi-Hop Syndicate Collision Graph (ENLARGED)
+        svgHtml += `
           <!-- Static Solid Connecting Lines -->
-          <line x1="90" y1="145" x2="220" y2="145" stroke="#3B82F6" stroke-width="2.5" />
-          <line x1="220" y1="145" x2="350" y2="145" stroke="#F43F5E" stroke-width="2.5" />
-          <line x1="350" y1="145" x2="480" y2="145" stroke="#A855F7" stroke-width="2.5" />
+          <line x1="120" y1="170" x2="310" y2="170" stroke="#3B82F6" stroke-width="4" />
+          <line x1="310" y1="170" x2="500" y2="170" stroke="#F43F5E" stroke-width="4" />
+          <line x1="500" y1="170" x2="690" y2="170" stroke="#8B5CF6" stroke-width="4" />
 
           <!-- Fan-out Syndicate Edges -->
-          <line x1="480" y1="145" x2="600" y2="65" stroke="#EAB308" stroke-width="1.8" stroke-dasharray="4 3" />
-          <line x1="480" y1="145" x2="600" y2="145" stroke="#EAB308" stroke-width="1.8" stroke-dasharray="4 3" />
-          <line x1="480" y1="145" x2="600" y2="225" stroke="#EAB308" stroke-width="1.8" stroke-dasharray="4 3" />
+          <line x1="690" y1="170" x2="835" y2="75" stroke="#F59E0B" stroke-width="2.5" stroke-dasharray="6 4" />
+          <line x1="690" y1="170" x2="835" y2="170" stroke="#F59E0B" stroke-width="2.5" stroke-dasharray="6 4" />
+          <line x1="690" y1="170" x2="835" y2="265" stroke="#F59E0B" stroke-width="2.5" stroke-dasharray="6 4" />
 
-          <!-- Node 1: Customer -->
-          <g transform="translate(90, 145)" class="cursor-pointer" onclick="inspectNode('Customer', '${custId}', 'Legitimate cardholder profile with 6-month historical baseline')">
-            <circle r="30" fill="#1E3A8A" stroke="#3B82F6" stroke-width="3" filter="url(#glow)" />
-            <text y="-4" fill="#FFFFFF" font-size="10" font-weight="bold" font-family="monospace" text-anchor="middle">Customer</text>
-            <text y="11" fill="#93C5FD" font-size="9" font-family="monospace" text-anchor="middle">${custId}</text>
+          <!-- Node 1: Customer (r=52) -->
+          <g transform="translate(120, 170)" class="cursor-pointer" onclick="inspectNode('Customer', '${custId}', 'Legitimate cardholder profile with 6-month historical baseline')">
+            <circle r="52" fill="url(#grad-customer)" stroke="#60A5FA" stroke-width="4" filter="url(#node-shadow)" />
+            <text y="-8" fill="#FFFFFF" font-size="14" font-weight="800" text-anchor="middle">Customer</text>
+            <text y="14" fill="#BFDBFE" font-size="12" font-family="monospace" font-weight="600" text-anchor="middle">${custId}</text>
           </g>
 
-          <!-- Node 2: Card -->
-          <g transform="translate(220, 145)" class="cursor-pointer" onclick="inspectNode('Card', '${cardId}', 'Compromised card vertex involved in velocity surge')">
-            <circle r="30" fill="#78350F" stroke="#F59E0B" stroke-width="3" />
-            <text y="-4" fill="#FFFFFF" font-size="10" font-weight="bold" font-family="monospace" text-anchor="middle">Card</text>
-            <text y="11" fill="#FDE68A" font-size="8.5" font-family="monospace" text-anchor="middle">${cardId.substring(0,9)}</text>
+          <!-- Node 2: Card (r=52) -->
+          <g transform="translate(310, 170)" class="cursor-pointer" onclick="inspectNode('Card', '${cardId}', 'Compromised card vertex involved in velocity surge')">
+            <circle r="52" fill="url(#grad-card)" stroke="#FBBF24" stroke-width="4" filter="url(#node-shadow)" />
+            <text y="-8" fill="#FFFFFF" font-size="14" font-weight="800" text-anchor="middle">Card</text>
+            <text y="14" fill="#FDE68A" font-size="12" font-family="monospace" font-weight="600" text-anchor="middle">${cardId.substring(0,9)}</text>
           </g>
 
-          <!-- Node 3: Flagged Txn -->
-          <g transform="translate(350, 145)" class="cursor-pointer" onclick="inspectNode('Transaction', '#${txnId}', 'Flagged transaction triggered by real-time model or report')">
-            <circle r="32" fill="#881337" stroke="#F43F5E" stroke-width="3" filter="url(#glow)" />
-            <text y="-5" fill="#FFFFFF" font-size="10" font-weight="bold" font-family="monospace" text-anchor="middle">Txn Alert</text>
-            <text y="11" fill="#FECDD3" font-size="9" font-family="monospace" text-anchor="middle">#${txnId}</text>
+          <!-- Node 3: Flagged Txn (r=56) -->
+          <g transform="translate(500, 170)" class="cursor-pointer" onclick="inspectNode('Transaction', '#${txnId}', 'Flagged transaction triggered by real-time model or report')">
+            <circle r="56" fill="url(#grad-fraud)" stroke="#FB7185" stroke-width="4.5" filter="url(#node-shadow)" />
+            <text y="-9" fill="#FFFFFF" font-size="14.5" font-weight="900" text-anchor="middle">Txn Alert</text>
+            <text y="15" fill="#FFE4E6" font-size="12" font-family="monospace" font-weight="700" text-anchor="middle">#${txnId}</text>
           </g>
 
-          <!-- Node 4: Shared Device Profile -->
-          <g transform="translate(480, 145)" class="cursor-pointer" onclick="inspectNode('DeviceProfile', 'D13840', 'Shared endpoint profile colliding with multiple disjoint accounts')">
-            <circle r="32" fill="#581C87" stroke="#A855F7" stroke-width="3.5" filter="url(#glow)" />
-            <text y="-5" fill="#FFFFFF" font-size="10" font-weight="bold" font-family="monospace" text-anchor="middle">Device ID</text>
-            <text y="11" fill="#E9D5FF" font-size="9" font-family="monospace" text-anchor="middle">D13840</text>
+          <!-- Node 4: Shared Device Profile (r=52) -->
+          <g transform="translate(690, 170)" class="cursor-pointer" onclick="inspectNode('DeviceProfile', 'D13840', 'Shared endpoint profile colliding with multiple disjoint accounts')">
+            <circle r="52" fill="url(#grad-device)" stroke="#C084FC" stroke-width="4" filter="url(#node-shadow)" />
+            <text y="-8" fill="#FFFFFF" font-size="14" font-weight="800" text-anchor="middle">Device ID</text>
+            <text y="14" fill="#EDE9FE" font-size="12" font-family="monospace" font-weight="600" text-anchor="middle">D13840</text>
           </g>
 
-          <!-- Syndicate Nodes -->
-          <g transform="translate(600, 65)" class="cursor-pointer" onclick="inspectNode('SyndicateRing', '542 Cards', 'Distributed card ring sharing proxy endpoint fingerprint')">
-            <circle r="22" fill="#713F12" stroke="#EAB308" stroke-width="2" />
-            <text y="3" fill="#FEF08A" font-size="8.5" font-family="monospace" text-anchor="middle">+${cp.connected_card_ids ? cp.connected_card_ids.length : 542} Cards</text>
+          <!-- Syndicate Ring Nodes (r=36) -->
+          <g transform="translate(835, 75)" class="cursor-pointer" onclick="inspectNode('SyndicateRing', '542 Cards', 'Distributed card ring sharing proxy endpoint fingerprint')">
+            <circle r="36" fill="url(#grad-syndicate)" stroke="#FDE047" stroke-width="3" filter="url(#node-shadow)" />
+            <text y="-4" fill="#FFFFFF" font-size="11" font-weight="700" font-family="monospace" text-anchor="middle">+${cp.connected_card_ids ? cp.connected_card_ids.length : 542}</text>
+            <text y="11" fill="#FEF08A" font-size="9" font-family="monospace" text-anchor="middle">Cards</text>
           </g>
 
-          <g transform="translate(600, 145)" class="cursor-pointer" onclick="inspectNode('SyndicateRing', 'Card C08299', 'Linked syndicate card entity identified in 2-hop traversal')">
-            <circle r="22" fill="#713F12" stroke="#EAB308" stroke-width="2" />
-            <text y="3" fill="#FEF08A" font-size="8.5" font-family="monospace" text-anchor="middle">Ring Card</text>
+          <g transform="translate(835, 170)" class="cursor-pointer" onclick="inspectNode('SyndicateRing', 'Card C08299', 'Linked syndicate card entity identified in 2-hop traversal')">
+            <circle r="36" fill="url(#grad-syndicate)" stroke="#FDE047" stroke-width="3" filter="url(#node-shadow)" />
+            <text y="-4" fill="#FFFFFF" font-size="11" font-weight="700" font-family="monospace" text-anchor="middle">Ring Card</text>
+            <text y="11" fill="#FEF08A" font-size="9" font-family="monospace" text-anchor="middle">C08299</text>
           </g>
 
-          <g transform="translate(600, 225)" class="cursor-pointer" onclick="inspectNode('SyndicateRing', 'Card C09988', 'Secondary syndicate card entity confirmed compromised')">
-            <circle r="22" fill="#713F12" stroke="#EAB308" stroke-width="2" />
-            <text y="3" fill="#FEF08A" font-size="8.5" font-family="monospace" text-anchor="middle">Ring Card</text>
+          <g transform="translate(835, 265)" class="cursor-pointer" onclick="inspectNode('SyndicateRing', 'Card C09988', 'Secondary syndicate card entity confirmed compromised')">
+            <circle r="36" fill="url(#grad-syndicate)" stroke="#FDE047" stroke-width="3" filter="url(#node-shadow)" />
+            <text y="-4" fill="#FFFFFF" font-size="11" font-weight="700" font-family="monospace" text-anchor="middle">Ring Card</text>
+            <text y="11" fill="#FEF08A" font-size="9" font-family="monospace" text-anchor="middle">C09988</text>
           </g>
         `;
         document.getElementById('graph-caption').innerHTML = 
           `<span class="text-rose-400 font-bold">MULTI-HOP SYNDICATE DISCOVERY:</span> Flagged Transaction connects to Device D13840 shared across <span class="text-amber-400 font-bold">${(cp.connected_card_ids || []).length} unauthorized card accounts</span> ($${(cp.exposure_usd || 0).toFixed(2)} exposure). Click nodes to inspect.`;
       } else {
-        // Legitimate Single-Tenant Baseline Graph
-        svgHtml = `
+        // Legitimate Single-Tenant Baseline Graph (ENLARGED)
+        svgHtml += `
           <!-- Stable Direct Connections -->
-          <line x1="140" y1="145" x2="300" y2="145" stroke="#3B82F6" stroke-width="3" />
-          <line x1="300" y1="145" x2="460" y2="145" stroke="#10B981" stroke-width="3" />
-          <line x1="460" y1="145" x2="590" y2="145" stroke="#10B981" stroke-width="2.5" stroke-dasharray="5 5" />
+          <line x1="140" y1="170" x2="350" y2="170" stroke="#3B82F6" stroke-width="4" />
+          <line x1="350" y1="170" x2="560" y2="170" stroke="#10B981" stroke-width="4" />
+          <line x1="560" y1="170" x2="770" y2="170" stroke="#14B8A6" stroke-width="3.5" stroke-dasharray="6 4" />
 
-          <!-- Node 1: Customer -->
-          <g transform="translate(140, 145)" class="cursor-pointer" onclick="inspectNode('Customer', '${custId}', 'Primary verified cardholder with 6-month historical baseline')">
-            <circle r="34" fill="#1E3A8A" stroke="#3B82F6" stroke-width="3" filter="url(#glow)" />
-            <text y="-5" fill="#FFFFFF" font-size="10.5" font-weight="bold" font-family="monospace" text-anchor="middle">Customer</text>
-            <text y="12" fill="#93C5FD" font-size="9" font-family="monospace" text-anchor="middle">${custId}</text>
+          <!-- Node 1: Customer (r=52) -->
+          <g transform="translate(140, 170)" class="cursor-pointer" onclick="inspectNode('Customer', '${custId}', 'Primary verified cardholder with 6-month historical baseline')">
+            <circle r="52" fill="url(#grad-customer)" stroke="#60A5FA" stroke-width="4" filter="url(#node-shadow)" />
+            <text y="-8" fill="#FFFFFF" font-size="14" font-weight="800" text-anchor="middle">Customer</text>
+            <text y="14" fill="#BFDBFE" font-size="12" font-family="monospace" font-weight="600" text-anchor="middle">${custId}</text>
           </g>
 
-          <!-- Node 2: Card -->
-          <g transform="translate(300, 145)" class="cursor-pointer" onclick="inspectNode('Card', '${cardId}', 'Active cardholder account with no anomalous velocity')">
-            <circle r="34" fill="#78350F" stroke="#F59E0B" stroke-width="3" />
-            <text y="-5" fill="#FFFFFF" font-size="10.5" font-weight="bold" font-family="monospace" text-anchor="middle">Card</text>
-            <text y="12" fill="#FDE68A" font-size="9" font-family="monospace" text-anchor="middle">${cardId.substring(0,9)}</text>
+          <!-- Node 2: Card (r=52) -->
+          <g transform="translate(350, 170)" class="cursor-pointer" onclick="inspectNode('Card', '${cardId}', 'Active cardholder account with no anomalous velocity')">
+            <circle r="52" fill="url(#grad-card)" stroke="#FBBF24" stroke-width="4" filter="url(#node-shadow)" />
+            <text y="-8" fill="#FFFFFF" font-size="14" font-weight="800" text-anchor="middle">Card</text>
+            <text y="14" fill="#FDE68A" font-size="12" font-family="monospace" font-weight="600" text-anchor="middle">${cardId.substring(0,9)}</text>
           </g>
 
-          <!-- Node 3: Txn -->
-          <g transform="translate(460, 145)" class="cursor-pointer" onclick="inspectNode('Transaction', '#${txnId}', 'Inquiry transaction verified as authorized by cardholder')">
-            <circle r="34" fill="#064E3B" stroke="#10B981" stroke-width="3" filter="url(#glow)" />
-            <text y="-5" fill="#FFFFFF" font-size="10.5" font-weight="bold" font-family="monospace" text-anchor="middle">Txn (Verified)</text>
-            <text y="12" fill="#A7F3D0" font-size="9" font-family="monospace" text-anchor="middle">#${txnId}</text>
+          <!-- Node 3: Txn Verified (r=56) -->
+          <g transform="translate(560, 170)" class="cursor-pointer" onclick="inspectNode('Transaction', '#${txnId}', 'Inquiry transaction verified as authorized by cardholder')">
+            <circle r="56" fill="url(#grad-legit)" stroke="#34D399" stroke-width="4.5" filter="url(#node-shadow)" />
+            <text y="-9" fill="#FFFFFF" font-size="14.5" font-weight="900" text-anchor="middle">Txn Verified</text>
+            <text y="15" fill="#D1FAE5" font-size="12" font-family="monospace" font-weight="700" text-anchor="middle">#${txnId}</text>
           </g>
 
-          <!-- Node 4: Home Region Match -->
-          <g transform="translate(590, 145)" class="cursor-pointer" onclick="inspectNode('Baseline', 'Home Region', 'Matches habitual billing & device geolocation pattern')">
-            <circle r="30" fill="#064E3B" stroke="#10B981" stroke-width="2.5" />
-            <text y="-3" fill="#FFFFFF" font-size="9.5" font-weight="bold" font-family="monospace" text-anchor="middle">Baseline</text>
-            <text y="11" fill="#A7F3D0" font-size="8.5" font-family="monospace" text-anchor="middle">100% Match</text>
+          <!-- Node 4: Home Region Match (r=50) -->
+          <g transform="translate(770, 170)" class="cursor-pointer" onclick="inspectNode('Baseline', 'Home Region', 'Matches habitual billing & device geolocation pattern')">
+            <circle r="50" fill="url(#grad-baseline)" stroke="#2DD4BF" stroke-width="4" filter="url(#node-shadow)" />
+            <text y="-8" fill="#FFFFFF" font-size="13.5" font-weight="800" text-anchor="middle">Baseline</text>
+            <text y="14" fill="#CCFBF1" font-size="11.5" font-family="monospace" font-weight="600" text-anchor="middle">100% Match</text>
           </g>
         `;
         document.getElementById('graph-caption').innerHTML = 
@@ -4352,17 +4490,17 @@ window.CASES_DATA = {
       
       const propsContainer = document.getElementById('insp-props');
       propsContainer.innerHTML = `
-        <div class="bg-slate-950 p-2 rounded border border-slate-800">
-          <div class="text-slate-500 text-[9px]">ENTITY ID</div>
-          <div class="text-white font-bold text-[11px] truncate">${id}</div>
+        <div class="theme-card p-2 rounded border">
+          <div class="theme-muted text-[9px]">ENTITY ID</div>
+          <div class="theme-heading font-bold text-[11px] truncate">${id}</div>
         </div>
-        <div class="bg-slate-950 p-2 rounded border border-slate-800">
-          <div class="text-slate-500 text-[9px]">NODE TYPE</div>
+        <div class="theme-card p-2 rounded border">
+          <div class="theme-muted text-[9px]">NODE TYPE</div>
           <div class="text-tg-orange font-bold text-[11px]">${type}</div>
         </div>
-        <div class="bg-slate-950 p-2 rounded border border-slate-800 col-span-2">
-          <div class="text-slate-500 text-[9px]">GRAPH REASONING</div>
-          <div class="text-slate-300 text-[10px] leading-snug">${desc}</div>
+        <div class="theme-card p-2 rounded border col-span-2">
+          <div class="theme-muted text-[9px]">GRAPH REASONING</div>
+          <div class="theme-muted text-[10px] leading-snug">${desc}</div>
         </div>
       `;
     }
@@ -4382,27 +4520,27 @@ window.CASES_DATA = {
         if (currentFilter === 'sar' && !sar.file) return;
 
         const row = document.createElement('tr');
-        row.className = 'hover:bg-slate-900/80 cursor-pointer transition';
+        row.className = 'hover:bg-slate-100 dark:hover:bg-slate-800/80 cursor-pointer transition';
         row.onclick = () => { switchTab('explorer'); loadCase(cid); };
         
         const finalActions = (c.next_best_actions && c.next_best_actions.final) ? c.next_best_actions.final.map(a => a.action).join(', ') : 'None';
 
         row.innerHTML = `
-          <td class="py-3 px-3.5 font-bold text-white flex items-center space-x-1.5 font-mono">
+          <td class="py-3 px-3.5 font-bold theme-heading flex items-center space-x-1.5 font-mono">
             <span>${cid}</span>
-            ${cp.pattern === 'undocumented' ? '<span class="text-purple-400 text-xs">★</span>' : ''}
+            ${cp.pattern === 'undocumented' ? '<span class="text-purple-600 dark:text-purple-400 text-xs">★</span>' : ''}
           </td>
           <td class="py-3 px-3.5">
-            <span class="px-2 py-0.5 rounded text-[10px] font-bold ${isFraud ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30' : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'}">
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold ${isFraud ? 'bg-rose-500/20 text-rose-700 dark:text-rose-400 border border-rose-500/30' : 'bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30'}">
               ${(cp.verdict || 'legitimate').toUpperCase()}
             </span>
           </td>
-          <td class="py-3 px-3.5 text-slate-300 font-sans text-xs">${cp.pattern || 'none'}</td>
-          <td class="py-3 px-3.5 text-slate-300 font-mono">${cp.fraud_probability !== undefined ? cp.fraud_probability.toFixed(2) : '0.00'}</td>
-          <td class="py-3 px-3.5 text-white font-mono font-bold">$${(cp.exposure_usd || 0).toFixed(2)}</td>
-          <td class="py-3 px-3.5 font-bold ${sar.file ? 'text-purple-400' : 'text-slate-500'}">${sar.file ? 'YES (Filed)' : 'No'}</td>
-          <td class="py-3 px-3.5 text-slate-300 font-mono">${(cp.connected_card_ids || []).length}</td>
-          <td class="py-3 px-3.5 text-slate-400 font-sans text-[11px] truncate max-w-xs">${finalActions}</td>
+          <td class="py-3 px-3.5 theme-muted font-sans text-xs">${cp.pattern || 'none'}</td>
+          <td class="py-3 px-3.5 theme-heading font-mono">${cp.fraud_probability !== undefined ? cp.fraud_probability.toFixed(2) : '0.00'}</td>
+          <td class="py-3 px-3.5 theme-heading font-mono font-bold">$${(cp.exposure_usd || 0).toFixed(2)}</td>
+          <td class="py-3 px-3.5 font-bold ${sar.file ? 'text-purple-600 dark:text-purple-400' : 'theme-muted'}">${sar.file ? 'YES (Filed)' : 'No'}</td>
+          <td class="py-3 px-3.5 theme-muted font-mono">${(cp.connected_card_ids || []).length}</td>
+          <td class="py-3 px-3.5 theme-muted font-sans text-[11px] truncate max-w-xs">${finalActions}</td>
           <td class="py-3 px-3.5 text-right font-sans">
             <button class="px-2.5 py-1 rounded bg-tg-orange/15 hover:bg-tg-orange text-tg-orange hover:text-white transition font-bold text-[11px]">Inspect →</button>
           </td>
@@ -4418,7 +4556,7 @@ window.CASES_DATA = {
         if (f === filter) {
           btn.className = 'px-3.5 py-1.5 rounded-lg bg-tg-orange text-white font-bold transition';
         } else {
-          btn.className = 'px-3.5 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white transition';
+          btn.className = 'px-3.5 py-1.5 rounded-lg theme-card-subtle border font-semibold hover:bg-slate-200 dark:hover:bg-slate-800 transition';
         }
       });
       renderMatrix();
@@ -4460,7 +4598,7 @@ window.CASES_DATA = {
 
       // Reset step styles
       [1,2,3,4,5].forEach(i => {
-        document.getElementById('step-' + i).className = 'bg-slate-900/70 border border-slate-800 p-4 rounded-xl text-slate-400 space-y-1 transition duration-300';
+        document.getElementById('step-' + i).className = 'theme-card-subtle border p-4 rounded-xl space-y-1 transition duration-300';
       });
 
       const nba = data.next_best_actions || {};
@@ -4478,14 +4616,14 @@ window.CASES_DATA = {
 
       steps.forEach((s, idx) => {
         setTimeout(() => {
-          document.getElementById(s.id).className = 'bg-tg-surface border-2 border-tg-orange text-white p-4 rounded-xl space-y-1 shadow-lg shadow-tg-orange/20 transition duration-300';
-          term.innerHTML += `<div class="text-emerald-400 font-mono">${s.text}</div>`;
+          document.getElementById(s.id).className = 'theme-card border-2 border-tg-orange p-4 rounded-xl space-y-1 shadow-md shadow-tg-orange/20 transition duration-300';
+          term.innerHTML += `<div class="text-emerald-500 font-mono">${s.text}</div>`;
           term.scrollTop = term.scrollHeight;
 
           if (idx === steps.length - 1) {
             btn.disabled = false;
             btn.innerText = '▶ Run Autonomous Agent';
-            term.innerHTML += `<div class="text-white font-bold pt-2">✓ Investigation complete in 0.02s! Case Memory updated. Switching to Inspector...</div>`;
+            term.innerHTML += `<div class="text-emerald-600 dark:text-emerald-400 font-bold pt-2">✓ Investigation complete in 0.02s! Case Memory updated. Switching to Inspector...</div>`;
             setTimeout(() => { switchTab('explorer'); loadCase(cid); }, 1200);
           }
         }, s.delay);
