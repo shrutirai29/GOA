@@ -1,0 +1,82 @@
+{
+  "case_id": "HHG-009",
+  "case": {
+    "status": "closed_fraud",
+    "verdict": "fraud",
+    "fraud_probability": 0.89,
+    "pattern": "card_not_present_fraud",
+    "pattern_description": "",
+    "affected_txn_ids": [
+      "3581141"
+    ],
+    "first_suspicious_txn_id": "3581141",
+    "connected_card_ids": [],
+    "connected_device_profiles": [
+      "|  |  |"
+    ],
+    "exposure_usd": 30.02,
+    "evidence": [
+      {
+        "claim": "Customer explicitly reported transaction 3581141 ($30.02) as unauthorized.",
+        "source": "customer",
+        "ref": "customer_message:report",
+        "entity_ids": [
+          "3581141"
+        ]
+      }
+    ],
+    "similar_prior_cases": [
+      "CC-0007",
+      "CC-0012"
+    ],
+    "summary": "Investigation confirmed card not present fraud on card C08299-K1 totaling $30.02 across 1 transaction(s). Linked to 0 connected cards. Blocked card under Rule R2 and updated graph case memory.",
+    "written_to_graph": true,
+    "graph_case_id": "CASE-TG-HHG-009"
+  },
+  "evidence_requests": [
+    {
+      "type": "customer_validation",
+      "asked_after_step": 2,
+      "assumed_response": "Customer confirmed in their report that they did not authorize the charge and remain in possession of the card."
+    }
+  ],
+  "next_best_actions": {
+    "initial": [
+      {
+        "action": "DECLINE_TRANSACTION",
+        "route": "L1",
+        "reason": "Customer reported unrecognized charge; decline further authorizations"
+      },
+      {
+        "action": "VERIFY_WITH_CUSTOMER",
+        "route": "auto",
+        "reason": "R1: gather formal dispute verification"
+      }
+    ],
+    "final": [
+      {
+        "action": "BLOCK_CARD",
+        "route": "L1",
+        "reason": "R2: customer denied transaction; block and reissue card (exposure $30.02)"
+      },
+      {
+        "action": "CREATE_CASE",
+        "route": "auto",
+        "reason": "R2: open internal fraud case with full evidence attached and write to graph"
+      }
+    ],
+    "what_changed": "Customer denial confirmed fraudulent activity, escalating fraud probability to 0.89. Actions advanced from customer verification to card block (route L1), internal case creation, and regulatory filing."
+  },
+  "sar": {
+    "file": false,
+    "reason": "Legitimate activity confirmed; no report required under policy.",
+    "narrative": "",
+    "subjects": [],
+    "total_amount_usd": 0.0,
+    "activity_dates": []
+  },
+  "stop_reason": "Customer denial confirmed compromise and graph analysis determined complete exposure. Precedent cited and defensible actions taken.",
+  "tool_calls": 4,
+  "tokens": 1618,
+  "latency_s": 0.01
+}
