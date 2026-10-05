@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { BuildItem } from '../../types';
+import { BuildItem, Generated3DExperience } from '../../types';
 import { VipPass } from './VipPass';
 import { HolographicOrb } from './HolographicOrb';
+import { Dynamic3DShowcase } from './Dynamic3DShowcase';
 import { GeneratedCodeModal } from './GeneratedCodeModal';
 import { playClick } from '../../lib/audio';
 
 interface BuildWorkspaceProps {
   activeBuildItem: BuildItem;
+  customExperience?: Generated3DExperience | null;
   onExecutePreset: (cmd: string) => void;
   onToast: (msg: string) => void;
   onResetToEmpty: () => void;
@@ -14,6 +16,7 @@ interface BuildWorkspaceProps {
 
 export const BuildWorkspace: React.FC<BuildWorkspaceProps> = ({
   activeBuildItem,
+  customExperience,
   onExecutePreset,
   onToast,
   onResetToEmpty
@@ -21,6 +24,9 @@ export const BuildWorkspace: React.FC<BuildWorkspaceProps> = ({
   const [isCodeModalOpen, setIsCodeModalOpen] = useState(false);
 
   const presetPills = [
+    { id: 'watch', label: 'Gold Watch', command: 'Create a 3D gold luxury watch with diamond bezel', buildItem: 'custom' },
+    { id: 'sword', label: 'Cyber Blade', command: 'Create a glowing cyber katana with plasma edge', buildItem: 'custom' },
+    { id: 'drone', label: 'Quantum Drone', command: 'Make a futuristic drone with glowing thrusters', buildItem: 'custom' },
     { id: 'vip', label: 'Cyber VIP Pass', command: 'Create a 3D cyber VIP pass with holographic effects', buildItem: 'vip_pass' },
     { id: 'orb', label: 'AI Orb', command: 'Create a holographic AI orb with 440 hertz resonance', buildItem: 'orb' },
     { id: 'prd', label: 'Create PRD', command: 'Create a PRD for a voice-controlled cybersecurity dashboard', buildItem: 'none' },
@@ -101,27 +107,33 @@ export const BuildWorkspace: React.FC<BuildWorkspaceProps> = ({
 
             <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-2.5">
               <button
-                onClick={() => onExecutePreset('Create a 3D cyber VIP pass with holographic effects')}
+                onClick={() => onExecutePreset('Create a 3D gold luxury watch with diamond bezel')}
                 className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-studio-maroon hover:bg-[#681F32] text-white dark:text-[#FEF08A] text-xs font-bold shadow-md transition active:scale-95"
               >
-                Create a 3D Cyber VIP Pass
+                Synthesize 3D Gold Watch
               </button>
 
               <button
-                onClick={() => onExecutePreset('Create a holographic AI orb with 440 hertz resonance')}
+                onClick={() => onExecutePreset('Create a glowing cyber katana with plasma edge')}
                 className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-[rgba(255,250,242,0.6)] dark:bg-[rgba(30,20,24,0.6)] hover:bg-[rgba(255,250,242,0.9)] dark:hover:bg-white/20 text-studio-maroon dark:text-white border border-[rgba(84,28,45,0.2)] dark:border-white/20 text-xs font-bold transition active:scale-95 shadow-xs"
               >
-                Synthesize AI Orb
+                Synthesize Cyber Blade
               </button>
 
               <button
-                onClick={() => onExecutePreset('Create a PRD for a voice-controlled cybersecurity dashboard')}
+                onClick={() => onExecutePreset('Make a futuristic quantum drone with glowing thrusters')}
                 className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-[rgba(255,250,242,0.6)] dark:bg-[rgba(30,20,24,0.6)] hover:bg-[rgba(255,250,242,0.9)] dark:hover:bg-white/20 text-studio-maroon dark:text-white border border-[rgba(84,28,45,0.2)] dark:border-white/20 text-xs font-bold transition active:scale-95 shadow-xs"
               >
-                Create PRD
+                Synthesize Quantum Drone
               </button>
             </div>
           </div>
+        ) : activeBuildItem === 'custom' && customExperience ? (
+          <Dynamic3DShowcase
+            experience={customExperience}
+            onOpenCode={() => setIsCodeModalOpen(true)}
+            onToast={onToast}
+          />
         ) : activeBuildItem === 'vip_pass' ? (
           <VipPass onOpenCode={() => setIsCodeModalOpen(true)} onToast={onToast} />
         ) : activeBuildItem === 'orb' ? (
@@ -134,6 +146,7 @@ export const BuildWorkspace: React.FC<BuildWorkspaceProps> = ({
         isOpen={isCodeModalOpen}
         onClose={() => setIsCodeModalOpen(false)}
         activeBuildItem={activeBuildItem}
+        customExperience={customExperience}
         onToast={onToast}
       />
     </div>

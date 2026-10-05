@@ -1,4 +1,5 @@
-import { IntentType, WorkspaceType, BuildItem } from '../types';
+import { IntentType, WorkspaceType, BuildItem, Generated3DExperience } from '../types';
+import { analyzeUserPrompt } from './promptAnalyzer';
 
 export interface CommandParseResult {
   intent: IntentType;
@@ -6,6 +7,7 @@ export interface CommandParseResult {
   resultTitle: string;
   targetWorkspace: WorkspaceType;
   targetBuildItem: BuildItem;
+  customExperience?: Generated3DExperience;
   meta?: {
     theme?: 'light' | 'dark';
     frequency?: number;
@@ -95,17 +97,12 @@ export function parseCommand(rawText: string, currentWorkspace?: WorkspaceType):
     };
   }
 
-  // 4. Holographic AI Orb
+  // 4. Holographic AI Orb (explicit orb / resonance requests)
   if (
     text.includes('orb') ||
     text.includes('holographic orb') ||
-    text.includes('plasma') ||
-    text.includes('gyro') ||
-    text.includes('sphere') ||
-    text.includes('crystal ball') ||
-    text.includes('glowing ball') ||
-    text.includes('frequency') ||
-    text.includes('resonance')
+    text.includes('plasma orb') ||
+    text.includes('gyro resonance')
   ) {
     // Extract frequency if stated, e.g. "660 hertz" or "440 hz"
     const freqMatch = text.match(/(\d{3})\s*(hz|hertz)?/);
@@ -121,18 +118,15 @@ export function parseCommand(rawText: string, currentWorkspace?: WorkspaceType):
     };
   }
 
-  // 5. 3D Cyber VIP Pass
+  // 5. 3D Cyber VIP Pass (explicit pass/card/badge requests only)
   if (
-    text.includes('vip') ||
-    text.includes('pass') ||
-    text.includes('card') ||
-    text.includes('badge') ||
+    text.includes('vip pass') ||
+    text.includes('cyber pass') ||
+    text.includes('access pass') ||
+    text.includes('vip card') ||
     text.includes('keycard') ||
-    text.includes('ticket') ||
-    text.includes('3d model') ||
-    text.includes('show 3d') ||
-    text.includes('something in 3d') ||
-    text.includes('access card')
+    text.includes('conference pass') ||
+    (text.includes('vip') && (text.includes('pass') || text.includes('card') || text.includes('badge') || text.includes('ticket')))
   ) {
     return {
       intent: 'UI_VIP_PASS',
@@ -279,12 +273,15 @@ export function parseCommand(rawText: string, currentWorkspace?: WorkspaceType):
     };
   }
 
-  // Fallback / Unknown intent
+  // Dynamic Custom 3D Object Synthesis
+  // Synthesizes procedural 3D model based on user's exact semantic prompt
+  const experience = analyzeUserPrompt(rawText);
   return {
-    intent: 'UNKNOWN',
-    intentLabel: 'Natural Query',
-    resultTitle: 'Custom Voice Prompt',
-    targetWorkspace: currentWorkspace || 'build',
-    targetBuildItem: 'vip_pass'
+    intent: 'CUSTOM_3D',
+    intentLabel: 'Dynamic 3D Synthesis',
+    resultTitle: experience.title,
+    targetWorkspace: 'build',
+    targetBuildItem: 'custom',
+    customExperience: experience
   };
 }

@@ -2,10 +2,13 @@ import React, { useState } from 'react';
 import { Copy, X, Check, Code2 } from 'lucide-react';
 import { playClick, playSuccess } from '../../lib/audio';
 
+import { Generated3DExperience } from '../../types';
+
 interface GeneratedCodeModalProps {
   isOpen: boolean;
   onClose: () => void;
-  activeBuildItem: 'vip_pass' | 'orb' | 'none';
+  activeBuildItem: 'vip_pass' | 'orb' | 'custom' | 'none';
+  customExperience?: Generated3DExperience | null;
   onToast: (msg: string) => void;
 }
 
@@ -13,6 +16,7 @@ export const GeneratedCodeModal: React.FC<GeneratedCodeModalProps> = ({
   isOpen,
   onClose,
   activeBuildItem,
+  customExperience,
   onToast
 }) => {
   const [activeTab, setActiveTab] = useState<'react' | 'three' | 'css'>('react');
@@ -20,7 +24,68 @@ export const GeneratedCodeModal: React.FC<GeneratedCodeModalProps> = ({
 
   if (!isOpen) return null;
 
+  const customSnippets = customExperience
+    ? {
+        react: `// React Three Fiber: ${customExperience.title}
+// Generated for: "${customExperience.userPrompt}"
+import { Canvas } from '@react-three/fiber';
+import { OrbitControls, Float } from '@react-three/drei';
+
+export const ${customExperience.title.replace(/[^a-zA-Z0-9]/g, '')}3D = () => (
+  <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
+    <ambientLight intensity={0.9} />
+    <directionalLight position={[5, 8, 5]} intensity={1.8} color="${customExperience.accentColor}" />
+    <pointLight position={[-4, -2, -2]} intensity={1.2} color="${customExperience.glowColor}" />
+    <Float speed={2} rotationIntensity={0.6} floatIntensity={0.8}>
+      <mesh castShadow receiveShadow>
+        {/* Procedural ${customExperience.objectType} architecture */}
+        <meshStandardMaterial
+          color="${customExperience.primaryColor}"
+          metalness={${customExperience.metalness}}
+          roughness={${customExperience.roughness}}
+        />
+      </mesh>
+    </Float>
+    <OrbitControls enableDamping autoRotate autoRotateSpeed={1.5} />
+  </Canvas>
+);`,
+        three: `// Three.js Procedural Mesh: ${customExperience.title}
+import * as THREE from 'three';
+
+const scene = new THREE.Scene();
+const group = new THREE.Group();
+
+// Archetype: ${customExperience.objectType}
+const primaryMaterial = new THREE.MeshStandardMaterial({
+  color: '${customExperience.primaryColor}',
+  metalness: ${customExperience.metalness},
+  roughness: ${customExperience.roughness}
+});
+
+const accentMaterial = new THREE.MeshStandardMaterial({
+  color: '${customExperience.accentColor}',
+  emissive: '${customExperience.glowColor}',
+  emissiveIntensity: 0.4
+});
+
+// Add synthesized procedural geometry
+const mesh = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.2, 0.4, 32), primaryMaterial);
+group.add(mesh);
+scene.add(group);`,
+        css: `/* Studio PBR Lighting & Atmosphere */
+.${customExperience.objectType}-viewport {
+  background: radial-gradient(circle at center, rgba(124, 38, 61, 0.15) 0%, transparent 70%);
+  filter: drop-shadow(0 20px 40px ${customExperience.glowColor}33);
+}`
+      }
+    : null;
+
   const snippets = {
+    custom: customSnippets || {
+      react: `// Custom 3D Component synthesized live`,
+      three: `// Three.js custom geometry generated`,
+      css: `/* Custom studio styling */`
+    },
     vip_pass: {
       react: `// React Three Fiber VIP Pass Hero
 import { Canvas } from '@react-three/fiber';

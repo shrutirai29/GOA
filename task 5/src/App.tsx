@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { WorkspaceType, BuildItem, ProcessingStep, VoiceActivityItem, ToastItem } from './types';
+import { WorkspaceType, BuildItem, ProcessingStep, VoiceActivityItem, ToastItem, Generated3DExperience } from './types';
 import { useTheme } from './hooks/useTheme';
 import { parseCommand } from './lib/commandRouter';
 import { generatePRDData } from './lib/prdGenerator';
@@ -28,6 +28,7 @@ export const App: React.FC = () => {
   // Core state
   const [activeWorkspace, setActiveWorkspace] = useState<WorkspaceType>('build');
   const [activeBuildItem, setActiveBuildItem] = useState<BuildItem>('none');
+  const [customExperience, setCustomExperience] = useState<Generated3DExperience | null>(null);
   const [commandText, setCommandText] = useState('');
   const [processingStep, setProcessingStep] = useState<ProcessingStep>('idle');
   const [currentIntentLabel, setCurrentIntentLabel] = useState('');
@@ -99,6 +100,9 @@ export const App: React.FC = () => {
 
         if (parsed.targetWorkspace === 'build') {
           setActiveBuildItem(parsed.targetBuildItem);
+          if (parsed.customExperience) {
+            setCustomExperience(parsed.customExperience);
+          }
         } else if (parsed.targetWorkspace === 'plan') {
           setPrdData(generatePRDData(textToRun));
         } else if (parsed.targetWorkspace === 'think') {
@@ -149,7 +153,9 @@ export const App: React.FC = () => {
     let textToRead = '';
     if (activeWorkspace === 'build') {
       textToRead =
-        activeBuildItem === 'vip_pass'
+        activeBuildItem === 'custom' && customExperience
+          ? `${customExperience.title}. ${customExperience.subtitle}. Procedural 3D model with dynamic lighting and studio materials.`
+          : activeBuildItem === 'vip_pass'
           ? '3D Cyber VIP Pass with mouse perspective tilt, biometric voice verification, and holographic security backside.'
           : activeBuildItem === 'orb'
           ? 'Holographic AI Orb with harmonic gyro resonance and frequency scaling.'
@@ -206,9 +212,13 @@ export const App: React.FC = () => {
             {activeWorkspace === 'build' && (
               <BuildWorkspace
                 activeBuildItem={activeBuildItem}
+                customExperience={customExperience}
                 onExecutePreset={(cmd) => handleExecuteCommand(cmd)}
                 onToast={addToast}
-                onResetToEmpty={() => setActiveBuildItem('none')}
+                onResetToEmpty={() => {
+                  setActiveBuildItem('none');
+                  setCustomExperience(null);
+                }}
               />
             )}
 

@@ -1,10 +1,11 @@
 export type WorkspaceType = 'build' | 'plan' | 'code' | 'think' | 'play';
 
-export type BuildItem = 'none' | 'vip_pass' | 'orb';
+export type BuildItem = 'none' | 'vip_pass' | 'orb' | 'custom';
 
 export type IntentType =
   | 'UI_VIP_PASS'
   | 'AI_ORB'
+  | 'CUSTOM_3D'
   | 'CREATE_PRD'
   | 'GENERATE_CODE'
   | 'MINDMAP'
@@ -14,6 +15,25 @@ export type IntentType =
   | 'READ_ALOUD'
   | 'RESET'
   | 'UNKNOWN';
+
+export interface Generated3DExperience {
+  id: string;
+  userPrompt: string;
+  title: string;
+  category: string;
+  subtitle: string;
+  objectType: 'watch' | 'sword' | 'drone' | 'bottle' | 'flower' | 'trophy' | 'ring' | 'helmet' | 'tech' | 'abstract';
+  primaryColor: string;
+  secondaryColor: string;
+  accentColor: string;
+  glowColor: string;
+  metalness: number;
+  roughness: number;
+  glass: boolean;
+  wireframe: boolean;
+  specs: string[];
+  colorways: Array<{ name: string; primary: string; secondary: string; accent: string; glow: string }>;
+}
 
 export interface VoiceActivityItem {
   id: string;
