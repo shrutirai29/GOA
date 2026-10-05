@@ -8,6 +8,7 @@
 | **Task 2** | Voice-Enabled RAG System — Multilingual Indian Language QA | ✅ |
 | **Task 3** | TraceFace — Face Identification & Blockchain Evidence Registry | ✅ |
 | **Task 4** | TigerGraph Agentic Fraud Investigation Copilot | ✅ |
+| **Task 5** | VoxForge — Voice-First Creative Development Studio | ✅ |
 
 
 ---
@@ -276,6 +277,7 @@ streamlit run ui/dashboard.py
 |----------|-----|
 | **GitHub Repo** | https://github.com/shrutirai29/GOA |
 | **Task 4 Live Demo (GraphSentinel)** | https://shrutirai29.github.io/GOA/ |
+| **Task 5 (VoxForge)** | Task 5 folder in this repo |
 | **Task 1 (Identity)** | Task 1 folder in this repo |
 | **Task 2 (RAG)** | Task 2 folder in this repo |
 | **API Docs** | http://localhost:8000/docs |

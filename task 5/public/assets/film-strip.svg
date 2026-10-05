@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 28" width="320" height="28" fill="none">
+  <rect x="0" y="0" width="320" height="28" fill="rgba(84, 28, 45, 0.05)" stroke="rgba(84, 28, 45, 0.15)" stroke-width="1"/>
+  <!-- Top perforations -->
+  <g fill="rgba(84, 28, 45, 0.2)">
+    <rect x="10" y="3" width="8" height="5" rx="1"/>
+    <rect x="35" y="3" width="8" height="5" rx="1"/>
+    <rect x="60" y="3" width="8" height="5" rx="1"/>
+    <rect x="85" y="3" width="8" height="5" rx="1"/>
+    <rect x="110" y="3" width="8" height="5" rx="1"/>
+    <rect x="135" y="3" width="8" height="5" rx="1"/>
+    <rect x="160" y="3" width="8" height="5" rx="1"/>
+    <rect x="185" y="3" width="8" height="5" rx="1"/>
+    <rect x="210" y="3" width="8" height="5" rx="1"/>
+    <rect x="235" y="3" width="8" height="5" rx="1"/>
+    <rect x="260" y="3" width="8" height="5" rx="1"/>
+    <rect x="285" y="3" width="8" height="5" rx="1"/>
+  </g>
+  <!-- Bottom perforations -->
+  <g fill="rgba(84, 28, 45, 0.2)">
+    <rect x="10" y="20" width="8" height="5" rx="1"/>
+    <rect x="35" y="20" width="8" height="5" rx="1"/>
+    <rect x="60" y="20" width="8" height="5" rx="1"/>
+    <rect x="85" y="20" width="8" height="5" rx="1"/>
+    <rect x="110" y="20" width="8" height="5" rx="1"/>
+    <rect x="135" y="20" width="8" height="5" rx="1"/>
+    <rect x="160" y="20" width="8" height="5" rx="1"/>
+    <rect x="185" y="20" width="8" height="5" rx="1"/>
+    <rect x="210" y="20" width="8" height="5" rx="1"/>
+    <rect x="235" y="20" width="8" height="5" rx="1"/>
+    <rect x="260" y="20" width="8" height="5" rx="1"/>
+    <rect x="285" y="20" width="8" height="5" rx="1"/>
+  </g>
+</svg>

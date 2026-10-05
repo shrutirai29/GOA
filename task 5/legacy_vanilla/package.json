@@ -1,0 +1,20 @@
+{
+  "name": "wisprcraft-studio",
+  "version": "1.0.0",
+  "description": "WisprCraft: Voice-Driven Creative & Product Studio built with Wispr Flow for Hacker House Goa Task 5",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "wispr-flow",
+    "voice-driven-development",
+    "voice-ui",
+    "ai-studio",
+    "speech-to-code",
+    "hacker-house-goa"
+  ],
+  "author": "Hacker House Goa Participant",
+  "license": "MIT"
+}

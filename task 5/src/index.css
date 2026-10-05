@@ -1,0 +1,128 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-primary: #F7F0E6;
+    --bg-secondary: #EFE4D4;
+    --card-bg: rgba(255, 250, 242, 0.90);
+    --card-secondary: rgba(255, 250, 242, 0.75);
+    --maroon: #7C263D;
+    --wine: #541C2D;
+    --gold: #B58A52;
+    --text-main: #2D2522;
+    --text-muted: #574B46;
+    --border-warm: rgba(84, 28, 45, 0.14);
+  }
+
+  .dark {
+    --bg-primary: #181214;
+    --bg-secondary: #22181B;
+    --card-bg: rgba(30, 20, 24, 0.90);
+    --card-secondary: rgba(30, 20, 24, 0.75);
+    --maroon: #E25574;
+    --wine: #FDE047;
+    --gold: #FDE047;
+    --text-main: #FFFFFF;
+    --text-muted: #E2E8F0;
+    --border-warm: rgba(253, 224, 71, 0.25);
+  }
+
+  html, body, #root {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+}
+
+/* Vivid, clearly visible Retro Cinema Background */
+.retro-studio-backdrop {
+  background-image: 
+    linear-gradient(
+      rgba(247, 240, 230, 0.08),
+      rgba(247, 240, 230, 0.16)
+    ),
+    url('/assets/retro-cinema-bg.jpg');
+  background-size: cover;
+  background-position: center top;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  position: relative;
+}
+
+.dark .retro-studio-backdrop {
+  background-image: 
+    linear-gradient(
+      rgba(25, 18, 20, 0.40),
+      rgba(25, 18, 20, 0.60)
+    ),
+    url('/assets/retro-cinema-bg.jpg');
+  background-size: cover;
+  background-position: center top;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+
+/* Elegant frosted glass cards */
+.glass-panel {
+  background: var(--card-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--border-warm);
+  box-shadow: 0 10px 35px rgba(84, 28, 45, 0.08);
+}
+
+.glass-panel-subtle {
+  background: var(--card-secondary);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--border-warm);
+}
+
+/* Subtle single scan line (20-30% opacity) */
+@keyframes scanline {
+  0% {
+    top: 0%;
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 0.3;
+  }
+  100% {
+    top: 100%;
+    opacity: 0.1;
+  }
+}
+
+.laser-scan-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1.5px;
+  background: linear-gradient(90deg, transparent, rgba(181, 138, 82, 0.25), rgba(124, 38, 61, 0.3), rgba(181, 138, 82, 0.25), transparent);
+  box-shadow: 0 0 6px rgba(181, 138, 82, 0.25);
+  animation: scanline 1.0s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  pointer-events: none;
+}
+
+/* Custom delicate scrollbars */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(84, 28, 45, 0.16);
+  border-radius: 9999px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(235, 220, 203, 0.2);
+}

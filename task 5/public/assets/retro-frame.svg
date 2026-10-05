@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120" fill="none">
+  <!-- Subtle ornate vintage Indian studio corner motif -->
+  <path d="M5 45V15C5 9.477 9.477 5 15 5H45" stroke="#7C263D" stroke-width="1.8" stroke-opacity="0.3"/>
+  <path d="M12 40V18C12 14.686 14.686 12 18 12H40" stroke="#B58A52" stroke-width="1" stroke-opacity="0.35"/>
+  <circle cx="15" cy="15" r="2.5" fill="#7C263D" fill-opacity="0.3"/>
+  <!-- Subtle leaf motif -->
+  <path d="M22 22C26 18 34 18 38 22C38 26 38 34 34 38C30 38 22 34 22 22Z" stroke="#4D7774" stroke-width="0.8" stroke-opacity="0.25"/>
+</svg>
